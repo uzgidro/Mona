@@ -6,8 +6,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.ConfigureKestrel(serverOptions => { serverOptions.AddServerHeader = false; });
 
+builder.Services.AddControllers();
 builder.Services.AddSqlite<MessageContext>("Data Source=UGEChat.db");
 builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var services = builder.Services;
 var configuration = builder.Configuration;
@@ -39,6 +42,9 @@ services.AddControllersWithViews();
 
 
 var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseCors("AllowAllOrigins");
 
 app.UseDefaultFiles();
@@ -47,4 +53,5 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.MapHub<SimpleHub>("/chat");
+app.MapControllers();
 app.Run();
