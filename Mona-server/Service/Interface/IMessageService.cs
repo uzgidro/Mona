@@ -1,6 +1,6 @@
 ﻿using Mona.Model;
 
-namespace Mona.Service;
+namespace Mona.Service.Interface;
 
 public interface IMessageService
 { 

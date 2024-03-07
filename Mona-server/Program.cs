@@ -1,6 +1,7 @@
 using Mona.Context;
 using Mona.Hub;
 using Mona.Service;
+using Mona.Service.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.WebHost.ConfigureKestrel(serverOptions => { serverOptions.AddServerHeade
 builder.Services.AddControllers();
 builder.Services.AddSqlite<MessageContext>("Data Source=UGEChat.db");
 builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<ICryptoService, CryptoService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

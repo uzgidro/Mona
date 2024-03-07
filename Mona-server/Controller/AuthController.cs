@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Mona.Model;
+using Mona.Service.Interface;
 
 namespace Mona.Controller;
 
 [Route("/auth")]
 [ApiController]
-public class AuthController: ControllerBase
+public class AuthController(ICryptoService cryptoService): ControllerBase
 {
     [HttpGet("hello")]
     public IActionResult GetSomeItem()
@@ -16,7 +17,10 @@ public class AuthController: ControllerBase
     [HttpPost("sign-up")]
     public async Task<IResult> PostSomething(User user)
     {
-        return Results.Created("", user);
+        var passwordHash = cryptoService.GetPasswordHash(user.Password);
+        user.Password = passwordHash;
+        
+        return Results.Created("", passwordHash);
     }
     
 }
