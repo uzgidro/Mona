@@ -5,5 +5,5 @@ namespace Mona.Context;
 
 public class UserContext(DbContextOptions<UserContext> options): DbContext(options)
 {
-    // public DbSet<User> Messages => Add(User);
+    public DbSet<User> Users { get; set; }
 }

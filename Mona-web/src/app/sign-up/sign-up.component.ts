@@ -33,7 +33,13 @@ export class SignUpComponent {
       if (model) {
         this.apiService.signUp(model).subscribe({
           next: value => {
+            // TODO(): Add Toast show on success
             console.log(value)
+          },
+          error: err => {
+            // TODO(): Add Toast show on error
+            console.log('Ошибка, добавь вывод тоста!')
+            console.log(err)
           }
         })
       }
