@@ -29,11 +29,13 @@ public class AuthController(
     }
 
     [HttpPost("sign-in")]
-    public async Task<IResult> SignIn(Login login)
+    public IResult SignIn(LoginRequest loginRequest)
     {
-        var user = userContext.Users.FirstOrDefault(user => user.PersonalId == login.PersonalId);
+        var user = userContext.Users.FirstOrDefault(user => user.PersonalId == loginRequest.PersonalId);
         if (user == null) return Results.Unauthorized();
-        var checkPassword = cryptoService.CheckPassword(login.Password, user.Password);
-        return checkPassword ? Results.Ok(jwtService.EncodeToken(user)) : Results.Unauthorized();
+        var checkPassword = cryptoService.CheckPassword(loginRequest.Password, user.Password);
+        if (!checkPassword) return Results.Unauthorized();
+        var response = new AuthResponse(jwtService.EncodeToken(user), jwtService.EncodeRefreshToken(user));
+        return Results.Json(response);
     }
 }

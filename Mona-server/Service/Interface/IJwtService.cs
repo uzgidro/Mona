@@ -1,10 +1,12 @@
-﻿using Mona.Model;
+﻿using System.Security.Claims;
+using Mona.Model;
 
 namespace Mona.Service.Interface;
 
 public interface IJwtService
 {
     string EncodeToken(User user);
-    void DecodeToken(string token);
+    string EncodeRefreshToken(User user);
+    ClaimsPrincipal? DecodeToken(string token);
     bool ValidToken(string token);
 }
