@@ -9,6 +9,8 @@ const routes: Routes = [
   {path: '', component: BlankComponent, canActivate: [appGuardGuard]},
   {path: 'sign-up', component: SignUpComponent},
   {path: 'sign-in', component: SignInComponent},
+  { path: 'auth', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule) },
+  { path: 'message', loadChildren: () => import('./message/message.module').then(m => m.MessageModule) },
 ];
 
 @NgModule({
