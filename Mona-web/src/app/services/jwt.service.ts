@@ -22,4 +22,7 @@ export class JwtService {
   getRefreshToken(): string {
     return this.cookieService.get('jwt_refresh')
   }
+  getToken(): string | undefined {
+    return this.cookieService.get('jwt');
+  }
 }
