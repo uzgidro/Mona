@@ -21,7 +21,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
-    options.TokenValidationParameters = new JwtService(builder.Configuration).getValidationParameters();
+    options.TokenValidationParameters = new JwtService(builder.Configuration).GetValidationParameters();
 });
 builder.Services.AddAuthorization();
 

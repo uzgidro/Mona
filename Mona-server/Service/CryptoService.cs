@@ -6,9 +6,7 @@ public class CryptoService : ICryptoService
 {
     public string GetPasswordHash(string password)
     {
-        var hash = BCrypt.Net.BCrypt.HashPassword(password);
-        BCrypt.Net.BCrypt.Verify(password, hash);
-        return hash;
+        return BCrypt.Net.BCrypt.HashPassword(password);
     }
 
     public bool CheckPassword(string password, string hash)

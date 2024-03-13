@@ -4,6 +4,4 @@ using Mona.Model;
 
 namespace Mona.Context;
 
-public class UserContext(DbContextOptions<UserContext> options) : IdentityDbContext<ApplicationUser>(options)
-{
-}
+public class UserContext(DbContextOptions<UserContext> options) : IdentityDbContext<ApplicationUser>(options);
