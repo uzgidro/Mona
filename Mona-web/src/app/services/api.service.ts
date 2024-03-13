@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {User} from "../models/user";
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class ApiService {
     return this.http.post(BASE_URL + AUTH + SIGN_UP, user);
   }
 
-  signIn(user: Partial<any>) {
+  signIn(user: Partial<any>): Observable<any> {
     return this.http.post(BASE_URL + AUTH + SIGN_IN, user);
   }
 }
