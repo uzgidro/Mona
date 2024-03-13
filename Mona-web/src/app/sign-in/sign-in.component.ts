@@ -20,21 +20,15 @@ export class SignInComponent {
     password: new FormControl('', [Validators.required]),
   })
 
-  constructor(private apiService: ApiService,private jwtService: JwtService) {
+  constructor(private apiService: ApiService, private jwtService: JwtService) {
   }
 
   onSubmit() {
     if (this.profileForm.valid) {
       this.apiService.signIn(this.profileForm.value).subscribe({
-        next: (value: {accessToken: string, refreshToken: string}) => {
-          console.log(value)
-          this.jwtService.saveToken(value.accessToken);
-          this.jwtService.saveToken(value.refreshToken);
-
-          const token = this.jwtService.getToken();
-          console.log('Token from cookie:', token);
+        next: (value: { accessToken: string, refreshToken: string }) => {
+          this.jwtService.saveTokens(value);
         }
-
       })
     }
   }
