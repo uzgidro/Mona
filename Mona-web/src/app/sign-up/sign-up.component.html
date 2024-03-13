@@ -1,0 +1,28 @@
+<form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+  <label for="first-name">First Name: </label>
+  <input id="first-name" type="text" formControlName="firstName">
+  <small *ngIf="profileForm.get('firstName')?.hasError(ErrorCode.REQUIRED) && profileForm.get('firstName')?.touched"
+         style="color: red">Обязательное поле</small>
+
+  <label for="last-name">Last Name: </label>
+  <input id="last-name" type="text" formControlName="lastName">
+  <small *ngIf="profileForm.get('lastName')?.hasError(ErrorCode.REQUIRED) && profileForm.get('lastName')?.touched"
+         style="color: red">Обязательное поле</small>
+
+  <label for="personal_id">Personal ID: </label>
+  <input id="personal_id" type="text" formControlName="personalId">
+  <small *ngIf="profileForm.get('personalId')?.hasError(ErrorCode.REQUIRED) && profileForm.get('personalId')?.touched"
+         style="color: red">Обязательное поле</small>
+
+  <label for="password">Password: </label>
+  <input id="password" type="password" formControlName="password" (input)="onPasswordInput()">
+  <small *ngIf="profileForm.hasError(ErrorCode.PASSWORD_IDENTITY) && profileForm.get('password')?.touched"
+         style="color: red">Пароли не совпадают</small>
+  <small *ngIf="profileForm.get('password')?.hasError(ErrorCode.MIN_LENGTH) && profileForm.get('password')?.touched"
+         style="color: red">Минимальная длина пароля 6</small>
+
+  <label for="password_repeat">Repeat password: </label>
+  <input id="password_repeat" type="password" formControlName="passwordRepeat" (input)="onPasswordInput()">
+  <small *ngIf="profileForm.hasError(ErrorCode.PASSWORD_IDENTITY)" style="color: red">Пароли не совпадают</small>
+  <button type="submit">sign up</button>
+</form>

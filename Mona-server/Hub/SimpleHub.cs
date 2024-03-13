@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Mona.Model;
 using Mona.Service;
+using Mona.Service.Interface;
 
 namespace Mona.Hub;
 
