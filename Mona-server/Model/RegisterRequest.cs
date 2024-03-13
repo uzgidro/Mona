@@ -1,9 +1,9 @@
 namespace Mona.Model;
 
-public class RegisterRequest
+public struct RegisterRequest
 {
-    public string PersonalId { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Password { get; set; }
+    public string UserName { get; init; }
+    public string FirstName { get; init; }
+    public string LastName { get; init; }
+    public string Password { get; init; }
 }

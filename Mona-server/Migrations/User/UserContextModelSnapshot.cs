@@ -189,10 +189,6 @@ namespace Mona.Migrations.User
                     b.Property<string>("PasswordHash")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("PersonalId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("TEXT");
 
@@ -217,9 +213,6 @@ namespace Mona.Migrations.User
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
-
-                    b.HasIndex("PersonalId")
-                        .IsUnique();
 
                     b.ToTable("AspNetUsers", (string)null);
                 });

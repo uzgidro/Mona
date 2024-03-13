@@ -29,7 +29,6 @@ namespace Mona.Migrations.User
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
-                    PersonalId = table.Column<string>(type: "TEXT", nullable: false),
                     FirstName = table.Column<string>(type: "TEXT", nullable: false),
                     LastName = table.Column<string>(type: "TEXT", nullable: false),
                     UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
@@ -185,12 +184,6 @@ namespace Mona.Migrations.User
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_PersonalId",
-                table: "AspNetUsers",
-                column: "PersonalId",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",

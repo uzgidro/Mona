@@ -21,7 +21,7 @@ public class JwtService(IConfiguration configuration) : IJwtService
                 claims: new List<Claim>
                 {
                     new("id", applicationUser.Id),
-                    new("personalId", applicationUser.PersonalId),
+                    new("username", applicationUser.UserName),
                     new("name", applicationUser.LastName),
                     new("surname", applicationUser.LastName),
                 },
@@ -49,7 +49,7 @@ public class JwtService(IConfiguration configuration) : IJwtService
                 claims: new List<Claim>
                 {
                     new("id", applicationUser.Id),
-                    new("personalId", applicationUser.PersonalId),
+                    new("username", applicationUser.UserName),
                 },
                 expires: DateTime.UtcNow.AddHours(24),
                 signingCredentials: credentials
@@ -63,7 +63,7 @@ public class JwtService(IConfiguration configuration) : IJwtService
         }
     }
 
-    public TokenValidationParameters getValidationParameters()
+    public TokenValidationParameters GetValidationParameters()
     {
         var securityKey = GetPublicKey();
         return new TokenValidationParameters
