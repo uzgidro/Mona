@@ -9,7 +9,7 @@ namespace Mona.Service;
 
 public class JwtService(IConfiguration configuration) : IJwtService
 {
-    public string EncodeToken(User user)
+    public string EncodeToken(ApplicationUser applicationUser)
     {
         try
         {
@@ -20,10 +20,10 @@ public class JwtService(IConfiguration configuration) : IJwtService
                 audience: "Client",
                 claims: new List<Claim>
                 {
-                    new("id", user.Id.ToString()),
-                    new("personalId", user.PersonalId),
-                    new("name", user.LastName),
-                    new("surname", user.LastName),
+                    new("id", applicationUser.Id),
+                    new("personalId", applicationUser.PersonalId),
+                    new("name", applicationUser.LastName),
+                    new("surname", applicationUser.LastName),
                 },
                 expires: DateTime.UtcNow.AddHours(1),
                 signingCredentials: credentials
@@ -37,7 +37,7 @@ public class JwtService(IConfiguration configuration) : IJwtService
         }
     }
 
-    public string EncodeRefreshToken(User user)
+    public string EncodeRefreshToken(ApplicationUser applicationUser)
     {
         try
         {
@@ -48,10 +48,10 @@ public class JwtService(IConfiguration configuration) : IJwtService
                 audience: "Client",
                 claims: new List<Claim>
                 {
-                    new("id", user.Id.ToString()),
-                    new("personalId", user.PersonalId),
+                    new("id", applicationUser.Id),
+                    new("personalId", applicationUser.PersonalId),
                 },
-                expires: DateTime.UtcNow.AddHours(4),
+                expires: DateTime.UtcNow.AddHours(24),
                 signingCredentials: credentials
             );
 
@@ -63,18 +63,33 @@ public class JwtService(IConfiguration configuration) : IJwtService
         }
     }
 
+    public TokenValidationParameters getValidationParameters()
+    {
+        var securityKey = GetPublicKey();
+        return new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "Server",
+            ValidAudiences = new List<string> { "Client", "Web", "Mobile" },
+            IssuerSigningKey = securityKey,
+        };
+    }
+
     public ClaimsPrincipal? DecodeToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var securityKey = GetPublicKey();
         var tokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = securityKey,
             ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
             ValidIssuer = "Server",
             ValidAudiences = new List<string> { "Client", "Web", "Mobile" },
-            ValidateAudience = true,
+            IssuerSigningKey = securityKey,
         };
         var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
         if (securityToken is not JwtSecurityToken jwtSecurityToken
@@ -93,11 +108,11 @@ public class JwtService(IConfiguration configuration) : IJwtService
             var validationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
-                ValidateAudience = false,
-                ValidateLifetime = true,
+                ValidateAudience = true,
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = "Server",
-                IssuerSigningKey = securityKey
+                ValidAudiences = new List<string> { "Client", "Web", "Mobile" },
+                IssuerSigningKey = securityKey,
             };
             tokenHandler.ValidateToken(token, validationParameters, out _);
             return true;
