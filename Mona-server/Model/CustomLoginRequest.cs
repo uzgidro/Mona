@@ -1,6 +1,6 @@
 ﻿namespace Mona.Model;
 
-public struct LoginRequest
+public class CustomLoginRequest
 {
     public string PersonalId { get; set; }
     public string Password { get; set; }
