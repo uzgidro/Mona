@@ -12,4 +12,7 @@ export class JwtService {
   saveToken(token: string) {
     this.cookieService.set('jwt', token, {})
   }
+  getToken(): string | undefined {
+    return this.cookieService.get('jwt');
+  }
 }
