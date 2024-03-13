@@ -9,7 +9,17 @@ export class JwtService {
   constructor(private cookieService: CookieService) {
   }
 
-  saveToken(token: string) {
-    this.cookieService.set('jwt', token, {})
+  saveTokens(token: { accessToken: string, refreshToken: string }) {
+    this.cookieService.set('jwt_access', token.accessToken, {})
+    this.cookieService.set('jwt_refresh', token.refreshToken, {})
+
+  }
+
+  getAccessToken(): string {
+    return this.cookieService.get('jwt_access')
+  }
+
+  getRefreshToken(): string {
+    return this.cookieService.get('jwt_refresh')
   }
 }

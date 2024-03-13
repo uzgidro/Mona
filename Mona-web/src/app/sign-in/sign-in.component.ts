@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {ApiService} from "../services/api.service";
+import {JwtService} from "../services/jwt.service";
 
 @Component({
   selector: 'app-sign-in',
@@ -19,14 +20,14 @@ export class SignInComponent {
     password: new FormControl('', [Validators.required]),
   })
 
-  constructor(private apiService: ApiService) {
+  constructor(private apiService: ApiService, private jwtService: JwtService) {
   }
 
   onSubmit() {
     if (this.profileForm.valid) {
       this.apiService.signIn(this.profileForm.value).subscribe({
-        next: value => {
-          console.log(value)
+        next: (value: { accessToken: string, refreshToken: string }) => {
+          this.jwtService.saveTokens(value);
         }
       })
     }
