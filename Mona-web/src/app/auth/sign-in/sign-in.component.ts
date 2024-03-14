@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {ApiService} from "../services/api.service";
-import {JwtService} from "../services/jwt.service";
+import {ApiService} from "../../services/api.service";
+import {JwtService} from "../../services/jwt.service";
 
 @Component({
   selector: 'app-sign-in',

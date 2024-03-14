@@ -1,9 +1,9 @@
 import {Component} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgIf} from "@angular/common";
-import {ConverterService} from "../services/converter.service";
-import {ApiService} from "../services/api.service";
 import {RouterLink} from "@angular/router";
+import {ApiService} from "../../services/api.service";
+import {ConverterService} from "../../services/converter.service";
 
 @Component({
   selector: 'app-sign-up',
