@@ -38,6 +38,7 @@ export class SignUpComponent {
           next: value => {
             // TODO(): Add Toast show on success
             console.log(value)
+
           },
           error: err => {
             // TODO(): Add Toast show on error
@@ -48,6 +49,9 @@ export class SignUpComponent {
       }
 
     }
+    this.profileForm.reset()
+
+
   }
 
   onPasswordInput() {

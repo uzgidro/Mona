@@ -1,16 +1,16 @@
 import {Injectable} from '@angular/core';
-import {CookieService} from "ngx-cookie-service";
-import {jwtDecode} from "jwt-decode";
+import {CookieService} from 'ngx-cookie-service';
+import {jwtDecode} from 'jwt-decode';
+import {Tokens} from "../models/tokens";
 
 @Injectable({
   providedIn: 'root'
 })
 export class JwtService {
-
   constructor(private cookieService: CookieService) {
   }
 
-  saveTokens(token: { accessToken: string, refreshToken: string }) {
+  saveTokens(token: Tokens) {
     this.cookieService.set('jwt_access', token.accessToken, {})
     this.cookieService.set('jwt_refresh', token.refreshToken, {})
   }
@@ -26,6 +26,11 @@ export class JwtService {
     return false
   }
 
+  isTokenExpired(token: string): boolean {
+    const tokenPayload: { exp: number } = jwtDecode(token);
+    const expiryDate: Date = new Date(tokenPayload.exp * 1000);
+    return expiryDate <= new Date();
+  }
   getAccessToken(): string {
     return this.cookieService.get('jwt_access')
   }

@@ -4,9 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="04713e59-7c73-4755-b7c6-c9a567ebf764" name="Changes" comment="changing modules app-routing.module.ts">
+    <list default="true" id="04713e59-7c73-4755-b7c6-c9a567ebf764" name="Changes" comment="auth interceptor with http interceptor auth-interceptor.service.ts">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Mona-web/src/app/auth/auth-routing.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Mona-web/src/app/auth/auth-routing.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mona-web/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Mona-web/src/app/app.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mona-web/src/app/message/message.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Mona-web/src/app/message/message.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mona-web/src/app/services/api.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Mona-web/src/app/services/api.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mona-web/src/app/services/auth.interceptor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Mona-web/src/app/services/auth.interceptor.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,7 +27,7 @@
     </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="develop/auth-interceptor" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -47,7 +50,7 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -65,14 +68,15 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;develop/modules&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop/http-interceptor&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;npm.start.executor&quot;: &quot;Run&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\user\\Desktop\\mona\\Mona-web\\node_modules\\typescript\\lib&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\Admin\\Desktop\\mona\\Mona-web\\node_modules\\typescript\\lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -101,6 +105,9 @@
       <workItem from="1710322497829" duration="2593000" />
       <workItem from="1710325124237" duration="8962000" />
       <workItem from="1710401558607" duration="221000" />
+      <workItem from="1710489257613" duration="712000" />
+      <workItem from="1710499332284" duration="1199000" />
+      <workItem from="1710565498800" duration="146000" />
     </task>
     <task id="LOCAL-00001" summary="getting token values to cookie sign-in.component.ts jwt.service.ts">
       <option name="closed" value="true" />
@@ -166,7 +173,14 @@
       <option name="project" value="LOCAL" />
       <updated>1710401024652</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="auth interceptor with http interceptor auth-interceptor.service.ts">
+      <created>1710421923874</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1710421923874</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -188,6 +202,8 @@
     <MESSAGE value="getting token values to cookie sign-in.component.ts jwt.service.ts" />
     <MESSAGE value="getting tokens values to cookie sign-in.component.ts jwt.service.ts" />
     <MESSAGE value="changing modules app-routing.module.ts" />
-    <option name="LAST_COMMIT_MESSAGE" value="changing modules app-routing.module.ts" />
+    <MESSAGE value="nothing" />
+    <MESSAGE value="auth interceptor with http interceptor auth-interceptor.service.ts" />
+    <option name="LAST_COMMIT_MESSAGE" value="auth interceptor with http interceptor auth-interceptor.service.ts" />
   </component>
 </project>
