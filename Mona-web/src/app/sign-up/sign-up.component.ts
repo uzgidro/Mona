@@ -3,13 +3,15 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {NgIf} from "@angular/common";
 import {ConverterService} from "../services/converter.service";
 import {ApiService} from "../services/api.service";
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-sign-up',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    NgIf
+    NgIf,
+    RouterLink
   ],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.css'

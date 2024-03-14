@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="04713e59-7c73-4755-b7c6-c9a567ebf764" name="Changes" comment="changing modules app-routing.module.ts">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Mona-web/src/app/app-routing.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Mona-web/src/app/app-routing.module.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Mona-web/src/app/auth/auth-routing.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Mona-web/src/app/auth/auth-routing.module.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -47,6 +46,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 6
@@ -59,21 +61,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "develop/modules",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "npm.start.executor": "Run",
-    "ts.external.directory.path": "C:\\Users\\user\\Desktop\\mona\\Mona-web\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop/modules&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.start.executor&quot;: &quot;Run&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\user\\Desktop\\mona\\Mona-web\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="start" type="js.build_tools.npm" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/Mona-web/package.json" />
@@ -97,7 +99,8 @@
       <workItem from="1710312330388" duration="4916000" />
       <workItem from="1710321141550" duration="496000" />
       <workItem from="1710322497829" duration="2593000" />
-      <workItem from="1710325124237" duration="7095000" />
+      <workItem from="1710325124237" duration="8962000" />
+      <workItem from="1710401558607" duration="221000" />
     </task>
     <task id="LOCAL-00001" summary="getting token values to cookie sign-in.component.ts jwt.service.ts">
       <option name="closed" value="true" />
@@ -139,7 +142,31 @@
       <option name="project" value="LOCAL" />
       <updated>1710327998654</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="changing modules app-routing.module.ts">
+      <option name="closed" value="true" />
+      <created>1710334538717</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1710334538718</updated>
+    </task>
+    <task id="LOCAL-00007" summary="changing modules app-routing.module.ts">
+      <option name="closed" value="true" />
+      <created>1710394306540</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1710394306543</updated>
+    </task>
+    <task id="LOCAL-00008" summary="changing modules app-routing.module.ts">
+      <option name="closed" value="true" />
+      <created>1710401024649</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1710401024652</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -162,17 +189,5 @@
     <MESSAGE value="getting tokens values to cookie sign-in.component.ts jwt.service.ts" />
     <MESSAGE value="changing modules app-routing.module.ts" />
     <option name="LAST_COMMIT_MESSAGE" value="changing modules app-routing.module.ts" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/Mona-web/src/app/sign-in/sign-in.component.ts</url>
-          <line>11</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
