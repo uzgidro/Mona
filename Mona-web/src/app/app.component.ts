@@ -8,4 +8,5 @@ import {HubConnection} from "@microsoft/signalr";
   styleUrl: './app.component.css'
 })
 export class AppComponent {
+
 }
