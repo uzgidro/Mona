@@ -3,6 +3,7 @@ import {NgIf} from "@angular/common";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {ApiService} from "../../services/api.service";
 import {JwtService} from "../../services/jwt.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-sign-in',
@@ -16,11 +17,11 @@ import {JwtService} from "../../services/jwt.service";
 })
 export class SignInComponent {
   profileForm = new FormGroup({
-    personalId: new FormControl('', [Validators.required]),
+    username: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required]),
   })
 
-  constructor(private apiService: ApiService, private jwtService: JwtService) {
+  constructor(private apiService: ApiService, private jwtService: JwtService, private router: Router) {
   }
 
   onSubmit() {
@@ -28,6 +29,7 @@ export class SignInComponent {
       this.apiService.signIn(this.profileForm.value).subscribe({
         next: (value: { accessToken: string, refreshToken: string }) => {
           this.jwtService.saveTokens(value);
+          this.router.navigate(['/message'])
         }
       })
     }

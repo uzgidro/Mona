@@ -20,7 +20,7 @@ export class SignUpComponent {
   profileForm = new FormGroup({
     firstName: new FormControl('', [Validators.required]),
     lastName: new FormControl('', [Validators.required]),
-    personalId: new FormControl('', [Validators.required]),
+    username: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required, Validators.minLength(6)]),
     passwordRepeat: new FormControl(''),
   })
@@ -33,6 +33,7 @@ export class SignUpComponent {
     if (this.profileForm.valid) {
       let model = this.converter.convertUserFormToModel(this.profileForm.value);
       if (model) {
+        console.log(model)
         this.apiService.signUp(model).subscribe({
           next: value => {
             // TODO(): Add Toast show on success
