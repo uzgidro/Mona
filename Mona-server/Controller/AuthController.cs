@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Mona.Model;
 using Mona.Service.Interface;
-using RegisterRequest = Mona.Model.RegisterRequest;
 
 namespace Mona.Controller;
 
@@ -15,14 +14,14 @@ public class AuthController(
     UserManager<ApplicationUser> userManager) : ControllerBase
 {
     [HttpPost("sign-up")]
-    public async Task<IResult> SignUp(RegisterRequest registerRequest)
+    public async Task<IResult> SignUp(CustomRegisterRequest customRegisterRequest)
     {
         var user = new ApplicationUser
         {
-            UserName = registerRequest.UserName,
-            FirstName = registerRequest.FirstName,
-            LastName = registerRequest.LastName,
-            PasswordHash = cryptoService.GetPasswordHash(registerRequest.Password)
+            UserName = customRegisterRequest.Username,
+            FirstName = customRegisterRequest.FirstName,
+            LastName = customRegisterRequest.LastName,
+            PasswordHash = cryptoService.GetPasswordHash(customRegisterRequest.Password)
         };
         var identityResult = await userManager.CreateAsync(user);
         return identityResult.Succeeded ? Results.Created() : Results.BadRequest();
@@ -31,18 +30,22 @@ public class AuthController(
     [HttpPost("sign-in")]
     public async Task<IResult> SignIn(CustomLoginRequest loginRequest)
     {
-        var user = await userManager.FindByNameAsync(loginRequest.UserName);
-        if (user == null) return Results.Unauthorized();
+        var user = await userManager.FindByNameAsync(loginRequest.Username);
+        if (user == null) return Results.BadRequest();
         var checkPassword = cryptoService.CheckPassword(loginRequest.Password, user.PasswordHash);
-        if (!checkPassword) return Results.Unauthorized();
-        var response = new AuthResponse(jwtService.EncodeToken(user), jwtService.EncodeRefreshToken(user));
-        return Results.Json(response);
+        if (!checkPassword) return Results.BadRequest();
+        var tokens = jwtService.EncodeTokenPair(user);
+        return Results.Json(tokens);
     }
 
-    [HttpGet("secure")]
-    [Authorize]
-    public IResult Secure()
+    [HttpPost("refresh")]
+    public async Task<IResult> RefreshToken(TokenPair tokenPair)
     {
-        return Results.Ok();
+        var id = jwtService.RefreshTokens(tokenPair);
+        if (id.IsNullOrEmpty()) return Results.Unauthorized();
+        var user = await userManager.FindByIdAsync(id);
+        if (user == null) return Results.BadRequest();
+        var tokens = jwtService.EncodeTokenPair(user);
+        return Results.Json(tokens);
     }
 }
