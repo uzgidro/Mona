@@ -1,14 +1,15 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Mona.Context;
 using Mona.Hub;
+using Mona.Model;
 using Mona.Service;
 using Mona.Service.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+    .AddEntityFrameworkStores<UserContext>();
 builder.WebHost.ConfigureKestrel(serverOptions => { serverOptions.AddServerHeader = false; });
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 builder.Services.AddControllers();
 builder.Services.AddSqlite<MessageContext>("Data Source=UGEChat.db");
 builder.Services.AddSqlite<UserContext>("Data Source=UGEChat.db");
@@ -17,6 +18,12 @@ builder.Services.AddScoped<ICryptoService, CryptoService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new JwtService(builder.Configuration).GetValidationParameters();
+});
+builder.Services.AddAuthorization();
 
 var services = builder.Services;
 var configuration = builder.Configuration;
@@ -49,8 +56,6 @@ services.AddControllersWithViews();
 
 var app = builder.Build();
 
-app.UseAuthentication();
-app.UseAuthorization();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseCors("AllowAllOrigins");
@@ -59,7 +64,9 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapIdentityApi<ApplicationUser>();
 app.MapHub<SimpleHub>("/chat");
 app.MapControllers();
 app.Run();
