@@ -17,7 +17,10 @@ builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<ICryptoService, CryptoService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
@@ -31,7 +34,7 @@ var env = builder.Environment;
 
 // services.AddTransient<ValidateMimeMultipartContentFilter>();
 
-var sqlConnectionString = configuration.GetConnectionString("DefaultConnection");
+configuration.GetConnectionString("DefaultConnection");
 
 
 services.AddCors(options =>
