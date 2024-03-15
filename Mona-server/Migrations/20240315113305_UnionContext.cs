@@ -1,18 +1,16 @@
-﻿#nullable disable
-
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Mona.Migrations.User
+#nullable disable
+
+namespace Mona.Migrations
 {
     /// <inheritdoc />
-    public partial class Identity : Migration
+    public partial class UnionContext : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Users");
-
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -22,7 +20,10 @@ namespace Mona.Migrations.User
                     NormalizedName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true)
                 },
-                constraints: table => { table.PrimaryKey("PK_AspNetRoles", x => x.Id); });
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "AspNetUsers",
@@ -46,7 +47,24 @@ namespace Mona.Migrations.User
                     LockoutEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
                     AccessFailedCount = table.Column<int>(type: "INTEGER", nullable: false)
                 },
-                constraints: table => { table.PrimaryKey("PK_AspNetUsers", x => x.Id); });
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Messages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Text = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
+                    Group = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Messages", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
@@ -211,29 +229,13 @@ namespace Mona.Migrations.User
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Messages");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    FirstName = table.Column<string>(type: "TEXT", nullable: false),
-                    LastName = table.Column<string>(type: "TEXT", nullable: false),
-                    Password = table.Column<string>(type: "TEXT", nullable: false),
-                    PersonalId = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table => { table.PrimaryKey("PK_Users", x => x.Id); });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_PersonalId",
-                table: "Users",
-                column: "PersonalId",
-                unique: true);
         }
     }
 }

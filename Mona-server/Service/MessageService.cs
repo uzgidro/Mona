@@ -5,7 +5,7 @@ using Mona.Service.Interface;
 
 namespace Mona.Service;
 
-public class MessageService(MessageContext context) : IMessageService
+public class MessageService(ApplicationContext context) : IMessageService
 {
     public async void CreateMessage(MessageItem message)
     {
@@ -16,7 +16,7 @@ public class MessageService(MessageContext context) : IMessageService
 
     public async Task<IEnumerable<MessageItem>> GetMessages()
     {
-       return await context.Messages.AsNoTracking().ToListAsync();
+        return await context.Messages.AsNoTracking().ToListAsync();
     }
 
     public async Task<IEnumerable<MessageItem>> GetMessagesByGroup(string group)
