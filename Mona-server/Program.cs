@@ -14,9 +14,11 @@ builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
 builder.WebHost.ConfigureKestrel(serverOptions => { serverOptions.AddServerHeader = false; });
 builder.Services.AddControllers();
 builder.Services.AddSqlite<ApplicationContext>("Data Source=UGEChat.db");
-builder.Services.AddScoped<IMessageService, MessageService>();
-builder.Services.AddScoped<ICryptoService, CryptoService>();
-builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services
+    .AddScoped<IMessageService, MessageService>()
+    .AddScoped<ICryptoService, CryptoService>()
+    .AddScoped<IJwtService, JwtService>()
+    .AddScoped<IUserService, UserService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {

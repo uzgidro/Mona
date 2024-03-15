@@ -1,8 +1,9 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 
-import { MessageRoutingModule } from './message-routing.module';
-import { MessageComponent } from './message.component';
+import {MessageRoutingModule} from './message-routing.module';
+import {MessageComponent} from './message.component';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 
 @NgModule({
@@ -11,7 +12,9 @@ import { MessageComponent } from './message.component';
   ],
   imports: [
     CommonModule,
-    MessageRoutingModule
+    MessageRoutingModule,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class MessageModule { }
