@@ -1,2 +1,12 @@
-<p>message works!</p>
-<button (click)="refresh()">refresh</button>
+<ul>
+  <li (click)="selectChat(user.username)" *ngFor="let user of users">{{ user.username }}</li>
+</ul>
+
+<form (submit)="sendMessage()" [formGroup]="message">
+  <input formControlName="message" type="text">
+  <button type="submit">send</button>
+</form>
+
+<ul>
+  <li *ngFor="let message of income"><b>{{ message.sender }}: </b>{{ message.message }}</li>
+</ul>

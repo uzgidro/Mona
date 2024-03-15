@@ -2,5 +2,5 @@
 
 public interface IHubInterfaces
 {
-    Task ReceiveMessage(string message);
+    Task ReceiveMessage(string sender, string message);
 }
