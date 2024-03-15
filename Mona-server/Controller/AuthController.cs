@@ -24,6 +24,11 @@ public class AuthController(
             PasswordHash = cryptoService.GetPasswordHash(customRegisterRequest.Password)
         };
         var identityResult = await userManager.CreateAsync(user);
+        if (identityResult.Errors.FirstOrDefault(error => error.Code.Equals("DuplicateUserName")) != null)
+        {
+            return Results.Conflict();
+        }
+
         return identityResult.Succeeded ? Results.Created() : Results.BadRequest();
     }
 
@@ -41,9 +46,9 @@ public class AuthController(
     [HttpPost("refresh")]
     public async Task<IResult> RefreshToken(TokenPair tokenPair)
     {
-        var id = jwtService.RefreshTokens(tokenPair);
-        if (id.IsNullOrEmpty()) return Results.Unauthorized();
-        var user = await userManager.FindByIdAsync(id);
+        var username = jwtService.RefreshTokens(tokenPair);
+        if (username.IsNullOrEmpty()) return Results.Unauthorized();
+        var user = await userManager.FindByNameAsync(username);
         if (user == null) return Results.BadRequest();
         var tokens = jwtService.EncodeTokenPair(user);
         return Results.Json(tokens);

@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
+using Mona.Config;
 using Mona.Context;
 using Mona.Hub;
 using Mona.Model;
@@ -25,14 +27,27 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new JwtService(builder.Configuration).GetValidationParameters();
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                // Read the token out of the query string
+                context.Token = accessToken;
+            }
+
+            return Task.CompletedTask;
+        }
+    };
 });
 builder.Services.AddAuthorization();
 
 var services = builder.Services;
 var configuration = builder.Configuration;
 var env = builder.Environment;
-
-// services.AddTransient<ValidateMimeMultipartContentFilter>();
 
 configuration.GetConnectionString("DefaultConnection");
 
@@ -52,8 +67,8 @@ services.AddCors(options =>
         });
 });
 
-services.AddSignalR()
-    .AddMessagePackProtocol();
+services.AddSignalR();
+services.AddSingleton<IUserIdProvider, UserIdProvider>();
 services.AddControllersWithViews();
 
 
@@ -70,6 +85,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapIdentityApi<ApplicationUser>();
-app.MapHub<SimpleHub>("/chat");
+app.MapHub<SimpleHub>("/hub");
 app.MapControllers();
 app.Run();

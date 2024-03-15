@@ -9,9 +9,9 @@
   <small *ngIf="profileForm.get('lastName')?.hasError(ErrorCode.REQUIRED) && profileForm.get('lastName')?.touched"
          style="color: red">Обязательное поле</small>
 
-  <label for="personal_id">Personal ID: </label>
-  <input id="personal_id" type="text" formControlName="personalId">
-  <small *ngIf="profileForm.get('personalId')?.hasError(ErrorCode.REQUIRED) && profileForm.get('personalId')?.touched"
+  <label for="username">Personal ID: </label>
+  <input formControlName="username" id="username" type="text">
+  <small *ngIf="profileForm.get('username')?.hasError(ErrorCode.REQUIRED) && profileForm.get('username')?.touched"
          style="color: red">Обязательное поле</small>
 
   <label for="password">Password: </label>
@@ -25,4 +25,6 @@
   <input id="password_repeat" type="password" formControlName="passwordRepeat" (input)="onPasswordInput()">
   <small *ngIf="profileForm.hasError(ErrorCode.PASSWORD_IDENTITY)" style="color: red">Пароли не совпадают</small>
   <button type="submit">sign up</button>
+
+  <small *ngIf="conflictError" style="color: red">Пользователь уже существует</small>
 </form>

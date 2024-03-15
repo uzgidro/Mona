@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {HubConnection} from "@microsoft/signalr";
-import * as signalR from "@microsoft/signalr";
+import {JwtService} from "../services/jwt.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-blank',
@@ -17,34 +18,40 @@ import * as signalR from "@microsoft/signalr";
   templateUrl: './blank.component.html',
   styleUrl: './blank.component.css'
 })
-export class BlankComponent {
+export class BlankComponent implements OnInit {
   private hubConnection: HubConnection | undefined;
   message = '';
   messages: MessageItem[] = [];
   groupMessages: MessageItem[] = []
   group: 'forum' | 'work' | 'gamers' | 'weekend' = 'forum'
 
+  constructor(private service: JwtService, private router: Router) {
+  }
+
   ngOnInit() {
-    this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`http://localhost:5031/chat`)
-      .configureLogging(signalR.LogLevel.Information)
-      .build();
+    this.service.removeTokens()
+    this.router.navigate(['/'])
 
-    // Listen Task
-    this.hubConnection.on('ReceiveMessage', (data: MessageItem) => {
-      this.messages.push(data)
-      if (data.group === this.group) this.groupMessages.push(data)
-    })
-
-    // On Start get history
-    this.hubConnection.start().catch((err) => console.error(err.toString())).then(() => {
-      if (this.hubConnection) {
-        this.hubConnection.invoke("Ident").then((data: any) => {
-          console.log(data)
-        })
-      }
-      this.joinGroup()
-    });
+    // this.hubConnection = new signalR.HubConnectionBuilder()
+    //   .withUrl(`http://localhost:5031/chat`)
+    //   .configureLogging(signalR.LogLevel.Information)
+    //   .build();
+    //
+    // // Listen Task
+    // this.hubConnection.on('ReceiveMessage', (data: MessageItem) => {
+    //   this.messages.push(data)
+    //   if (data.group === this.group) this.groupMessages.push(data)
+    // })
+    //
+    // // On Start get history
+    // this.hubConnection.start().catch((err) => console.error(err.toString())).then(() => {
+    //   if (this.hubConnection) {
+    //     this.hubConnection.invoke("Ident").then((data: any) => {
+    //       console.log(data)
+    //     })
+    //   }
+    //   this.joinGroup()
+    // });
 
   }
 

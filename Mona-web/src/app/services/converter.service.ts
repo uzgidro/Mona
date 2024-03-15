@@ -12,15 +12,15 @@ export class ConverterService {
   convertUserFormToModel(userForm: Partial<{
     firstName: string | null;
     lastName: string | null;
-    personalId: string | null;
+    username: string | null;
     password: string | null;
     passwordRepeat: string | null;
   }>) {
-    if (userForm.firstName && userForm.lastName && userForm.password && userForm.personalId) {
+    if (userForm.firstName && userForm.lastName && userForm.password && userForm.username) {
       const model: User = {
         firstName: userForm.firstName,
         lastName: userForm.lastName,
-        personalId: userForm.personalId,
+        username: userForm.username,
         password: userForm.password
       }
       return model
