@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
+using Mona.Config;
 using Mona.Context;
 using Mona.Hub;
 using Mona.Model;
@@ -29,11 +31,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     {
         OnMessageReceived = context =>
         {
-            var accessToken = context.Request.Query["accessToken"];
+            var accessToken = context.Request.Query["access_token"];
 
-            var path = context.HttpContext.Request.Path;
-            if (!string.IsNullOrEmpty(accessToken) &&
-                path.StartsWithSegments("/hub"))
+            if (!string.IsNullOrEmpty(accessToken))
             {
                 // Read the token out of the query string
                 context.Token = accessToken;
@@ -48,8 +48,6 @@ builder.Services.AddAuthorization();
 var services = builder.Services;
 var configuration = builder.Configuration;
 var env = builder.Environment;
-
-// services.AddTransient<ValidateMimeMultipartContentFilter>();
 
 configuration.GetConnectionString("DefaultConnection");
 
@@ -69,8 +67,8 @@ services.AddCors(options =>
         });
 });
 
-services.AddSignalR()
-    .AddMessagePackProtocol();
+services.AddSignalR();
+services.AddSingleton<IUserIdProvider, UserIdProvider>();
 services.AddControllersWithViews();
 
 

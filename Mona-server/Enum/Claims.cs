@@ -4,6 +4,7 @@ public static class Claims
 {
     public const string Id = "id";
     public const string Username = "username";
+    public const string Role = "role";
     public const string FirstName = "firstName";
     public const string LastName = "lastName";
 }

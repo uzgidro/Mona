@@ -4,6 +4,7 @@ import {NgIf} from "@angular/common";
 import {RouterLink} from "@angular/router";
 import {ApiService} from "../../services/api.service";
 import {ConverterService} from "../../services/converter.service";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-sign-up',
@@ -17,6 +18,7 @@ import {ConverterService} from "../../services/converter.service";
   styleUrl: './sign-up.component.css'
 })
 export class SignUpComponent {
+  conflictError = false
   profileForm = new FormGroup({
     firstName: new FormControl('', [Validators.required]),
     lastName: new FormControl('', [Validators.required]),
@@ -30,16 +32,18 @@ export class SignUpComponent {
   }
 
   onSubmit() {
+    this.conflictError = false
     if (this.profileForm.valid) {
       let model = this.converter.convertUserFormToModel(this.profileForm.value);
       if (model) {
-        console.log(model)
         this.apiService.signUp(model).subscribe({
           next: value => {
             // TODO(): Add Toast show on success
             console.log(value)
           },
-          error: err => {
+          error: (err: HttpErrorResponse) => {
+            if (err.status == 409)
+              this.conflictError = true
             // TODO(): Add Toast show on error
             console.log('Ошибка, добавь вывод тоста!')
             console.log(err)

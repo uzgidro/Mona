@@ -1,16 +1,17 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 using Mona.Model;
 using Mona.Service.Interface;
 
 namespace Mona.Hub;
 
+[Authorize]
 public class SimpleHub(IMessageService service) : Hub<IHubInterfaces>
 {
     public async Task Send(string message)
     {
         // service.CreateMessage(message);
-
-        await Clients.All.ReceiveMessage(Context.User.Identity.Name);
+        await Clients.User("Abbos").ReceiveMessage(message);
     }
 
     public async Task<IEnumerable<MessageItem>> GetHistory(string group)

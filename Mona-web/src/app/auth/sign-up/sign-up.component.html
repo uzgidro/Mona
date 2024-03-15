@@ -25,4 +25,6 @@
   <input id="password_repeat" type="password" formControlName="passwordRepeat" (input)="onPasswordInput()">
   <small *ngIf="profileForm.hasError(ErrorCode.PASSWORD_IDENTITY)" style="color: red">Пароли не совпадают</small>
   <button type="submit">sign up</button>
+
+  <small *ngIf="conflictError" style="color: red">Пользователь уже существует</small>
 </form>

@@ -13,28 +13,34 @@ public class JwtService(IConfiguration configuration) : IJwtService
     public TokenPair EncodeTokenPair(ApplicationUser applicationUser)
     {
         var credentials = GetCredentials();
-        var access = new JwtSecurityToken(
-            issuer: "Server",
-            audience: "Client",
-            claims: new List<Claim>
+        var accessClaims = new ClaimsIdentity(new List<Claim>
             {
                 new(Claims.Id, applicationUser.Id),
                 new(Claims.Username, applicationUser.UserName),
+                new(Claims.Role, "User"),
                 new(Claims.FirstName, applicationUser.LastName),
                 new(Claims.LastName, applicationUser.LastName),
-            },
+            }, "Token", Claims.Username,
+            Claims.Role);
+        var access = new JwtSecurityToken(
+            issuer: "Server",
+            audience: "Client",
+            claims: accessClaims.Claims,
             expires: DateTime.UtcNow.AddHours(1),
             signingCredentials: credentials
         );
 
-        var refresh = new JwtSecurityToken(
-            issuer: "Server",
-            audience: "Client",
-            claims: new List<Claim>
+        var refreshClaims = new ClaimsIdentity(new List<Claim>
             {
                 new(Claims.Id, applicationUser.Id),
                 new(Claims.Username, applicationUser.UserName),
-            },
+                new(Claims.Role, "User"),
+            }, "Token", Claims.Username,
+            Claims.Role);
+        var refresh = new JwtSecurityToken(
+            issuer: "Server",
+            audience: "Client",
+            claims: refreshClaims.Claims,
             expires: DateTime.UtcNow.AddHours(24),
             signingCredentials: credentials
         );
@@ -49,13 +55,13 @@ public class JwtService(IConfiguration configuration) : IJwtService
     {
         try
         {
-            var idFromAccess = DecodeToken(tokens.AccessToken, false).Claims
-                .FirstOrDefault(claim => claim.Type.Equals(Claims.Id)).Value;
-            var idFromRefresh = DecodeToken(tokens.RefreshToken).Claims
-                .FirstOrDefault(claim => claim.Type.Equals(Claims.Id)).Value;
-            if (idFromAccess == idFromRefresh)
+            var usernameFromAccess = DecodeToken(tokens.AccessToken, false).Claims
+                .FirstOrDefault(claim => claim.Type.Equals(Claims.Username)).Value;
+            var usernameFromRefresh = DecodeToken(tokens.RefreshToken).Claims
+                .FirstOrDefault(claim => claim.Type.Equals(Claims.Username)).Value;
+            if (usernameFromAccess == usernameFromRefresh)
             {
-                return idFromAccess;
+                return usernameFromAccess;
             }
         }
         catch

@@ -11,8 +11,8 @@ export class JwtService {
   }
 
   saveTokens(token: { accessToken: string, refreshToken: string }) {
-    this.cookieService.set('jwt_access', token.accessToken, {})
-    this.cookieService.set('jwt_refresh', token.refreshToken, {})
+    this.cookieService.set('jwt_access', token.accessToken, {expires: new Date(jwtDecode(token.accessToken).exp! * 1000)})
+    this.cookieService.set('jwt_refresh', token.refreshToken, {expires: new Date(jwtDecode(token.refreshToken).exp! * 1000)})
   }
 
   isTokenValid() {
@@ -32,5 +32,9 @@ export class JwtService {
 
   getRefreshToken(): string {
     return this.cookieService.get('jwt_refresh')
+  }
+
+  removeTokens() {
+    this.cookieService.deleteAll()
   }
 }
