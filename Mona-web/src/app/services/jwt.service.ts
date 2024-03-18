@@ -38,4 +38,7 @@ export class JwtService {
   getRefreshToken(): string {
     return this.cookieService.get('jwt_refresh')
   }
+  removeTokens(){
+    this.cookieService.deleteAll()
+  }
 }
