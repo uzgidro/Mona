@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Mona.Enum;
+using Mona.Model;
 using Mona.Model.Dto;
 using Mona.Service.Interface;
 
@@ -21,6 +22,12 @@ public class SimpleHub(IMessageService service, IUserService userService) : Hub<
         var sender = GetSender();
         var userManagerUsers = await userService.GetUsersExceptCaller(sender);
         return userManagerUsers;
+    }
+
+    public async Task<IEnumerable<MessageItem>> GetHistory()
+    {
+        var messages = await service.GetMessages(GetSender());
+        return messages;
     }
 
     public async Task JoinGroup(string group)

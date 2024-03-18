@@ -6,5 +6,5 @@ namespace Mona.Service.Interface;
 public interface IMessageService
 {
     Task<MessageItem> CreateMessage(MessageRequest message);
-    Task<IEnumerable<MessageItem>> GetMessages();
+    Task<IEnumerable<MessageItem>> GetMessages(string caller);
 }

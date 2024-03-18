@@ -25,8 +25,10 @@ public class MessageService(ApplicationContext context) : IMessageService
         return entityEntry.Entity;
     }
 
-    public async Task<IEnumerable<MessageItem>> GetMessages()
+    public async Task<IEnumerable<MessageItem>> GetMessages(string caller)
     {
-        return await context.Messages.AsNoTracking().ToListAsync();
+        return await context.Messages.AsNoTracking()
+            .Where(item => !item.IsDeleted && (item.ReceiverId == caller || item.SenderId == caller))
+            .ToListAsync();
     }
 }
