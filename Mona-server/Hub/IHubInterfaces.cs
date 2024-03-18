@@ -1,6 +1,8 @@
-﻿namespace Mona.Hub;
+﻿using Mona.Model;
+
+namespace Mona.Hub;
 
 public interface IHubInterfaces
 {
-    Task ReceiveMessage(string sender, string message);
+    Task ReceiveMessage(MessageItem message);
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Mona.Model;
+using Mona.Model.Dto;
 
 namespace Mona.Service.Interface;
 

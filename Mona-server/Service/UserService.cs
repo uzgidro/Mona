@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Mona.Model;
+using Mona.Model.Dto;
 using Mona.Service.Interface;
 
 namespace Mona.Service;
@@ -11,7 +12,7 @@ public class UserService(UserManager<ApplicationUser> userManager) : IUserServic
     {
         return await userManager.Users
             .Select(user => new UserDto
-                { Username = user.UserName, FirstName = user.FirstName, LastName = user.LastName })
+                { Id = user.Id, Username = user.UserName, FirstName = user.FirstName, LastName = user.LastName })
             .Where(user => !user.Username.Equals(username)).ToListAsync();
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Mona.Model;
+using Mona.Model.Dto;
 using Mona.Service.Interface;
 
 namespace Mona.Controller;

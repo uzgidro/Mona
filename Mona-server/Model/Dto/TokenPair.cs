@@ -1,4 +1,4 @@
-namespace Mona.Model;
+namespace Mona.Model.Dto;
 
 public struct TokenPair(string accessToken, string refreshToken)
 {

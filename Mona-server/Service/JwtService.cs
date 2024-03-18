@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 using Mona.Enum;
 using Mona.Model;
+using Mona.Model.Dto;
 using Mona.Service.Interface;
 
 namespace Mona.Service;
