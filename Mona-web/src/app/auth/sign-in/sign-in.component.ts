@@ -4,6 +4,7 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {ApiService} from "../../services/api.service";
 import {JwtService} from "../../services/jwt.service";
 import {Tokens} from "../../models/tokens";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -23,7 +24,7 @@ export class SignInComponent {
     password: new FormControl('', [Validators.required]),
   })
 
-  constructor(private apiService: ApiService, private jwtService: JwtService) {
+  constructor(private apiService: ApiService, private jwtService: JwtService, private router: Router) {
   }
 
   onSubmit() {
@@ -31,6 +32,7 @@ export class SignInComponent {
       this.apiService.signIn(this.profileForm.value).subscribe({
         next: (value: Tokens) => {
           this.jwtService.saveTokens(value);
+          this.router.navigate(['/message'])
         }
       })
     }
