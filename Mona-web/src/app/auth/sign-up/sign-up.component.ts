@@ -40,6 +40,7 @@ export class SignUpComponent {
           next: value => {
             // TODO(): Add Toast show on success
             console.log(value)
+
           },
           error: (err: HttpErrorResponse) => {
             if (err.status == 409)
@@ -52,6 +53,9 @@ export class SignUpComponent {
       }
 
     }
+    this.profileForm.reset()
+
+
   }
 
   onPasswordInput() {
