@@ -5,6 +5,7 @@ import {JwtService} from "../services/jwt.service";
 import {FormControl, FormGroup} from "@angular/forms";
 import {UserModel} from "../models/user";
 import { MessageModel, MessageRequest } from '../models/message';
+import { __values } from 'tslib';
 
 @Component({
   selector: 'app-message',
@@ -85,6 +86,10 @@ export class MessageComponent implements OnInit {
       }
     }
 
+  }
+
+  editMessage(message:MessageModel){
+    this.inputGroup.get(message.text)
   }
 }
 
