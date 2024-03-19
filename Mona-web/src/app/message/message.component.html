@@ -2,7 +2,7 @@
 <div class="users">
 
   <ul>
-    <li (click)="selectChat(user)" *ngFor="let user of users">{{ user.username }}</li>
+    <li (click)="selectChat(user)" *ngFor="let user of users">{{ user.firstName }} {{user.lastName}}</li>
   </ul>
 
 </div>
@@ -10,7 +10,7 @@
 <div class="chat">
 
 </div>
- <h2>{{selectedChat?.username}}</h2>
+ <h2>{{ selectedChat?.firstName }} {{selectedChat?.lastName}}</h2>
 <form *ngIf="selectedChat"  (submit)="sendMessage()" [formGroup]="inputGroup">
   <input formControlName="message" type="text">
   <button type="submit">send</button>

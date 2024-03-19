@@ -45,8 +45,8 @@ export class MessageComponent implements OnInit {
       })
       .then(() => {
         if (connection)
-          connection.invoke('getUsers').then((users: UserDto[]) => this.users = users)
-          connection.invoke('getHistory').then((users: any) => console.log(users))
+          connection.invoke('getUsers').then((users: any) => this.users=users)
+          connection.invoke('getHistory').then((messages: any) => console.log(messages))
       })
 
 
