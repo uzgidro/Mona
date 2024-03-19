@@ -6,5 +6,5 @@
   <input formControlName="password" id="password" type="password">
 
   <button [disabled]="!profileForm.valid" type="submit">sign in</button>
-  <small style="color: red">Логин и/или пароль не верны</small>
+  <small *ngIf="!isLoginValid" style="color: red">Логин и/или пароль не верны</small>
 </form>

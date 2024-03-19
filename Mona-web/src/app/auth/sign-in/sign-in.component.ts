@@ -5,6 +5,7 @@ import {ApiService} from "../../services/api.service";
 import {JwtService} from "../../services/jwt.service";
 import {Tokens} from "../../models/tokens";
 import {Router} from "@angular/router";
+import { HttpErrorResponse } from '@angular/common/http';
 
 
 @Component({
@@ -18,6 +19,7 @@ import {Router} from "@angular/router";
   styleUrl: './sign-in.component.css'
 })
 export class SignInComponent {
+  isLoginValid = true
 
   profileForm = new FormGroup({
     username: new FormControl('', [Validators.required]),
@@ -33,6 +35,11 @@ export class SignInComponent {
         next: (value: Tokens) => {
           this.jwtService.saveTokens(value);
           this.router.navigate(['/message'])
+        },
+        error: (err: HttpErrorResponse) => {
+          if(err.status == 400) {
+            this.isLoginValid = false
+          }
         }
       })
     }
