@@ -3,8 +3,8 @@ import * as signalR from '@microsoft/signalr';
 import {HubConnection} from '@microsoft/signalr';
 import {JwtService} from "../services/jwt.service";
 import {FormControl, FormGroup} from "@angular/forms";
-import {UserDto} from "../models/user";
-import { MessageRequest } from '../models/message';
+import {UserModel} from "../models/user";
+import { MessageModel, MessageRequest } from '../models/message';
 
 @Component({
   selector: 'app-message',
@@ -12,14 +12,13 @@ import { MessageRequest } from '../models/message';
   styleUrl: './message.component.css'
 })
 export class MessageComponent implements OnInit {
-  users: UserDto[] = []
-  selectedChat?: UserDto
+  users: UserModel[] = []
+  selectedChat?: UserModel
   inputGroup = new FormGroup({
     message: new FormControl('')
   })
   connection?: HubConnection
-  income: { sender: string, message: string }[] = []
-
+  income: MessageModel[]=[]
 
   constructor(private jwtService: JwtService) {
   }
@@ -35,8 +34,8 @@ export class MessageComponent implements OnInit {
       .build();
     this.connection = connection
 
-    connection.on("ReceiveMessage", (message: any) => {
-      console.log(message)
+    connection.on("ReceiveMessage", (message: MessageModel) => {
+      this.income.push(message)
     });
 
     connection.start()
@@ -45,8 +44,8 @@ export class MessageComponent implements OnInit {
       })
       .then(() => {
         if (connection)
-          connection.invoke('getUsers').then((users: any) => this.users=users)
-          connection.invoke('getHistory').then((messages: any) => console.log(messages))
+          connection.invoke('getUsers').then((users: UserModel[]) => this.users=users)
+          connection.invoke('getHistory').then((messages: MessageModel[]) => this.income=messages)
       })
 
 
@@ -56,7 +55,7 @@ export class MessageComponent implements OnInit {
     // }, 5000)
   }
 
-  selectChat(user: UserDto) {
+  selectChat(user: UserModel) {
     this.selectedChat = user
   }
 

@@ -5,9 +5,22 @@ export interface User {
   password: string
 }
 
-export interface UserDto {
-  id: string
-  username: string
-  firstName: string
-  lastName: string
+export interface UserModel{
+  firstName: string;
+  lastName: string;
+  id: string;
+  userName: string;
+  normalizedUserName: string;
+  email?: any;
+  normalizedEmail?: any;
+  emailConfirmed: boolean;
+  passwordHash: string;
+  securityStamp: string;
+  concurrencyStamp: string;
+  phoneNumber?: any;
+  phoneNumberConfirmed: boolean;
+  twoFactorEnabled: boolean;
+  lockoutEnd?: any;
+  lockoutEnabled: boolean;
+  accessFailedCount: number;
 }
