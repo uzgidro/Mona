@@ -67,6 +67,8 @@ export class MessageComponent implements OnInit {
 
   selectChat(user: UserModel) {
     this.selectedChat = user
+    console.log(this.selectedChat);
+    
   }
 
   sendMessage() {

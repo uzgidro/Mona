@@ -2,20 +2,20 @@
 <div class="users">
 
   <ul>
-    <li (click)="selectChat(user)" *ngFor="let user of users">{{ user.firstName }} {{user.lastName}}</li>
+    <li [ngClass]="{'bg-slate-900 text-white': user === selectedChat} " class="text-black bg-white" (click)="selectChat(user)" *ngFor="let user of users">{{ user.firstName }} {{user.lastName}}</li>
   </ul>
 
 </div>
 
-<div class="chat">
-
+<div class="chat bg-slate-300">
+  <h2 class="text-green-700">{{ selectedChat?.firstName }} {{selectedChat?.lastName}}</h2>
+  <form *ngIf="selectedChat"  (submit)="sendMessage()" [formGroup]="inputGroup">
+    <input formControlName="message" type="text">
+    <button type="submit">send</button>
+    <ul>
+      <li *ngFor="let message of income"> <span [ngClass]="{'bg-blue-700 text-white':message.sender===selectedChat}"   class="w-full bg-green-500 text-white">{{ message.text }}</span> <small>{{message.createdAt |date:'HH:mm'}}</small></li>
+    </ul>
+  </form>
 </div>
- <h2>{{ selectedChat?.firstName }} {{selectedChat?.lastName}}</h2>
-<form *ngIf="selectedChat"  (submit)="sendMessage()" [formGroup]="inputGroup">
-  <input formControlName="message" type="text">
-  <button type="submit">send</button>
-  <ul>
-    <li *ngFor="let message of income"><b>{{ message.sender.lastName }} {{ message.sender.firstName }}: </b>{{ message.text }} <small>{{message.createdAt |date:'HH:mm'}}</small></li>
-  </ul>
-</form>
+
 
