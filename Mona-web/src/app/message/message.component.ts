@@ -15,11 +15,13 @@ import { __values } from 'tslib';
 export class MessageComponent implements OnInit {
   users: UserModel[] = []
   selectedChat?: UserModel
+
   inputGroup = new FormGroup({
     message: new FormControl('')
   })
   connection?: HubConnection
   private _income: MessageModel[]=[]
+  editingMessage?: MessageModel;
   get income(): MessageModel[] {
     return this._income.filter(item => item.receiverId == this.selectedChat?.id || item.senderId == this.selectedChat?.id);
   }
@@ -42,6 +44,14 @@ export class MessageComponent implements OnInit {
       this._income.push(message)
     });
 
+    this.connection.on("ModifyMessage", (modifiedMessage: MessageModel) => {
+      console.log('modified');
+      const index = this._income.findIndex(item => item.id === modifiedMessage.id);
+      if (index !== -1) {
+        this._income[index] = modifiedMessage;
+      }
+    });
+
     connection.start()
       .catch((err) => {
         console.log(err)
@@ -51,7 +61,7 @@ export class MessageComponent implements OnInit {
           connection.invoke('getUsers').then((users: UserModel[]) => this.users=users)
           connection.invoke('getHistory').then((messages: MessageModel[]) => {this._income=messages
           console.log(this._income);
-          
+
           })
 
         }
@@ -63,16 +73,18 @@ export class MessageComponent implements OnInit {
     //   console.log('seent')
     // }, 5000)
 
-    
+
   }
 
   selectChat(user: UserModel) {
     this.selectedChat = user
     console.log(this.selectedChat);
-    
+
   }
 
   sendMessage() {
+
+    if (this.editingMessage){
     let message = this.inputGroup.get('message')?.value
     if (message) {
       const messageRequest:MessageRequest={
@@ -85,17 +97,17 @@ export class MessageComponent implements OnInit {
         this.inputGroup.get('message')?.setValue('')
       }
     }
-
+    }else{
+      console.log(this.editingMessage);
+      this.connection?.invoke("EditMessage", this.editingMessage) 
+    }
   }
 
   editMessage(message:MessageModel){
-    this.inputGroup.get(message.text)
-    this.inputGroup.value.message=message.text
-    console.log( this.inputGroup.value.message);
-    
-  }
+      this.inputGroup.value.message=message.text
+      this.editingMessage = message
 }
 
-
+}
 
 

@@ -10,13 +10,13 @@
 <div class="chat bg-slate-300">
   <h2 class="text-green-700">{{ selectedChat?.firstName }} {{selectedChat?.lastName}}</h2>
   <form *ngIf="selectedChat"  (submit)="sendMessage()" [formGroup]="inputGroup">
-    <input formControlName="message" type="text" [value]="this.inputGroup.value.message">
+    <input formControlName="message" type="text" [value]="this.inputGroup.value.message" >
     <button type="submit">send</button>
     <ul>
       <li *ngFor="let message of income">
-         <span [ngClass]="{'bg-blue-700 text-white':message.receiver.id===selectedChat.id}"  class="w-full bg-green-500 text-white">{{message.sender.firstName}} : {{ message.text }}</span>
+         <span [ngClass]="{'bg-blue-700 text-white':message.receiverId===selectedChat.id}"  class="w-full bg-green-500 text-white">{{message.sender.firstName}} : {{ message.text }}</span>
           <small>{{message.createdAt |date:'HH:mm'}}</small>
-          <button class="bg-yellow-500 pe-1 hover:scale-150 active:scale-75"  (click)="editMessage(message)">edit</button>
+          <button class="bg-yellow-500 pe-1 hover:scale-150 active:scale-75" *ngIf="message.senderId!==selectedChat.id"  (click)="editMessage(message)">edit</button>
         </li>
     </ul>
   </form>
