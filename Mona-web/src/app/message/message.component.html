@@ -10,7 +10,7 @@
 <div class="chat bg-slate-300">
   <h2 class="text-green-700">{{ selectedChat?.firstName }} {{selectedChat?.lastName}}</h2>
   <form *ngIf="selectedChat"  (submit)="sendMessage()" [formGroup]="inputGroup">
-    <input formControlName="message" type="text">
+    <input formControlName="message" type="text" [value]="this.inputGroup.value.message">
     <button type="submit">send</button>
     <ul>
       <li *ngFor="let message of income">

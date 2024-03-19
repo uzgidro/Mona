@@ -90,6 +90,9 @@ export class MessageComponent implements OnInit {
 
   editMessage(message:MessageModel){
     this.inputGroup.get(message.text)
+    this.inputGroup.value.message=message.text
+    console.log( this.inputGroup.value.message);
+    
   }
 }
 
