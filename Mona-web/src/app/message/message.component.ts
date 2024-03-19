@@ -18,7 +18,10 @@ export class MessageComponent implements OnInit {
     message: new FormControl('')
   })
   connection?: HubConnection
-  income: MessageModel[]=[]
+  private _income: MessageModel[]=[]
+  get income(): MessageModel[] {
+    return this._income.filter(item => item.receiverId == this.selectedChat?.id || item.senderId == this.selectedChat?.id);
+  }
 
   constructor(private jwtService: JwtService) {
   }
@@ -35,7 +38,7 @@ export class MessageComponent implements OnInit {
     this.connection = connection
 
     connection.on("ReceiveMessage", (message: MessageModel) => {
-      this.income.push(message)
+      this._income.push(message)
     });
 
     connection.start()
@@ -43,9 +46,14 @@ export class MessageComponent implements OnInit {
         console.log(err)
       })
       .then(() => {
-        if (connection)
+        if (connection) {
           connection.invoke('getUsers').then((users: UserModel[]) => this.users=users)
-          connection.invoke('getHistory').then((messages: MessageModel[]) => this.income=messages)
+          connection.invoke('getHistory').then((messages: MessageModel[]) => {this._income=messages
+          console.log(this._income);
+          
+          })
+
+        }
       })
 
 
@@ -53,6 +61,8 @@ export class MessageComponent implements OnInit {
     //   connection.send("send", "Hello Abboss")
     //   console.log('seent')
     // }, 5000)
+
+    
   }
 
   selectChat(user: UserModel) {

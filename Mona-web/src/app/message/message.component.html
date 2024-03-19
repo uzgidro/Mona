@@ -15,7 +15,7 @@
   <input formControlName="message" type="text">
   <button type="submit">send</button>
   <ul>
-    <li *ngFor="let message of income"><b>{{ message.sender }}: </b>{{ message.message }}</li>
+    <li *ngFor="let message of income"><b>{{ message.sender.lastName }} {{ message.sender.firstName }}: </b>{{ message.text }} <small>{{message.createdAt |date:'HH:mm'}}</small></li>
   </ul>
 </form>
 
