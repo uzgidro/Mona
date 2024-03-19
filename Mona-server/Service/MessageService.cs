@@ -22,12 +22,16 @@ public class MessageService(ApplicationContext context) : IMessageService
         };
         var entityEntry = context.Messages.Add(entity);
         await context.SaveChangesAsync();
+        await context.Entry(entity).Reference(m => m.Sender).LoadAsync();
+        await context.Entry(entity).Reference(m => m.Receiver).LoadAsync();
         return entityEntry.Entity;
     }
 
     public async Task<IEnumerable<MessageItem>> GetMessages(string caller)
     {
         return await context.Messages.AsNoTracking()
+            .Include(m => m.Sender)
+            .Include(m => m.Receiver)
             .Where(item => !item.IsDeleted && (item.ReceiverId == caller || item.SenderId == caller))
             .ToListAsync();
     }

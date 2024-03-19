@@ -14,10 +14,10 @@ public class SimpleHub(IMessageService service, IUserService userService) : Hub<
     {
         message.SenderId = GetSender();
         var messageItem = await service.CreateMessage(message);
-        await Clients.User(message.ReceiverId).ReceiveMessage(messageItem);
+        await Clients.Users(message.ReceiverId, message.SenderId).ReceiveMessage(messageItem);
     }
 
-    public async Task<IEnumerable<UserDto>> GetUsers()
+    public async Task<IEnumerable<ApplicationUser>> GetUsers()
     {
         var sender = GetSender();
         var userManagerUsers = await userService.GetUsersExceptCaller(sender);

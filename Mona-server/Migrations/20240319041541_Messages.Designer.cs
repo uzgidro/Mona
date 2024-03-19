@@ -11,7 +11,7 @@ using Mona.Context;
 namespace Mona.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240318094026_Messages")]
+    [Migration("20240319041541_Messages")]
     partial class Messages
     {
         /// <inheritdoc />
@@ -318,13 +318,13 @@ namespace Mona.Migrations
             modelBuilder.Entity("Mona.Model.MessageItem", b =>
                 {
                     b.HasOne("Mona.Model.ApplicationUser", "Receiver")
-                        .WithMany("ReceivedMessages")
+                        .WithMany()
                         .HasForeignKey("ReceiverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Mona.Model.ApplicationUser", "Sender")
-                        .WithMany("SentMessages")
+                        .WithMany()
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -332,13 +332,6 @@ namespace Mona.Migrations
                     b.Navigation("Receiver");
 
                     b.Navigation("Sender");
-                });
-
-            modelBuilder.Entity("Mona.Model.ApplicationUser", b =>
-                {
-                    b.Navigation("ReceivedMessages");
-
-                    b.Navigation("SentMessages");
                 });
 #pragma warning restore 612, 618
         }

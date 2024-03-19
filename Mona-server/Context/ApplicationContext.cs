@@ -15,13 +15,13 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
 
         builder.Entity<MessageItem>()
             .HasOne(m => m.Receiver)
-            .WithMany(u => u.ReceivedMessages)
+            .WithMany()
             .HasForeignKey(m => m.ReceiverId)
             .IsRequired();
 
         builder.Entity<MessageItem>()
             .HasOne(m => m.Sender)
-            .WithMany(u => u.SentMessages)
+            .WithMany()
             .HasForeignKey(m => m.SenderId)
             .IsRequired();
     }
