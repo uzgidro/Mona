@@ -22,8 +22,28 @@ public class MessageService(ApplicationContext context) : IMessageService
         };
         var entityEntry = context.Messages.Add(entity);
         await context.SaveChangesAsync();
-        await context.Entry(entity).Reference(m => m.Sender).LoadAsync();
-        await context.Entry(entity).Reference(m => m.Receiver).LoadAsync();
+        await AddNavigation(entity);
+        return entityEntry.Entity;
+    }
+
+    public async Task<MessageItem?> EditMessage(MessageItem message)
+    {
+        var entity = await context.Messages.FirstOrDefaultAsync(item => item.Id == message.Id);
+
+        if (entity == null) return null;
+        if (entity.Text == message.Text || string.IsNullOrEmpty(message.Text))
+        {
+            var entry = context.Messages.Entry(entity);
+            await AddNavigation(entity);
+            return entry.Entity;
+        }
+
+        entity.Text = message.Text;
+        entity.IsEdited = true;
+        entity.ModifiedAt = DateTime.Now;
+        var entityEntry = context.Messages.Update(entity);
+        await context.SaveChangesAsync();
+        await AddNavigation(entity);
         return entityEntry.Entity;
     }
 
@@ -34,5 +54,11 @@ public class MessageService(ApplicationContext context) : IMessageService
             .Include(m => m.Receiver)
             .Where(item => !item.IsDeleted && (item.ReceiverId == caller || item.SenderId == caller))
             .ToListAsync();
+    }
+
+    private async Task AddNavigation(MessageItem? entity)
+    {
+        await context.Entry(entity).Reference(m => m.Sender).LoadAsync();
+        await context.Entry(entity).Reference(m => m.Receiver).LoadAsync();
     }
 }
