@@ -14,7 +14,12 @@
     <button type="submit">send</button>
     <ul>
       <li *ngFor="let message of income">
-         <span [ngClass]="{'bg-blue-700 text-white':message.receiverId===selectedChat.id}"  class="w-full bg-green-500 text-white">{{message.sender.firstName}} : {{ message.text }}</span>
+         <span
+          [ngClass]="{'bg-blue-700 text-white':message.receiverId===selectedChat.id}"
+           class="w-full bg-green-500 text-white">
+           {{message.sender.firstName}} : {{ message.text }}
+          </span>
+          <small *ngIf="message.isEdited">edited</small>
           <small>{{message.createdAt |date:'HH:mm'}}</small>
           <button class="bg-yellow-500 pe-1 hover:scale-150 active:scale-75" *ngIf="message.senderId!==selectedChat.id"  (click)="editMessage(message)">edit</button>
         </li>
