@@ -83,8 +83,6 @@ export class MessageComponent implements OnInit {
   }
 
   sendMessage() {
-
-    if (this.editingMessage){
     let message = this.inputGroup.get('message')?.value
     if (message) {
       const messageRequest:MessageRequest={
@@ -97,10 +95,7 @@ export class MessageComponent implements OnInit {
         this.inputGroup.get('message')?.setValue('')
       }
     }
-    }else{
-      console.log(this.editingMessage);
-      this.connection?.invoke("EditMessage", this.editingMessage) 
-    }
+    
   }
 
   editMessage(message:MessageModel){
