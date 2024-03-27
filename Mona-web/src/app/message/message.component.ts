@@ -44,7 +44,8 @@ export class MessageComponent implements OnInit {
       this._income.push(message)
     });
 
-    this.connection.on("ModifyMessage", (modifiedMessage: MessageModel) => {
+
+    connection.on("ModifyMessage", (modifiedMessage: MessageModel) => {
 
 
       const index = this._income.findIndex(item => item.id === modifiedMessage.id);
@@ -99,7 +100,7 @@ export class MessageComponent implements OnInit {
 
       }
     }
-    this.connection?.invoke("EditMessage", this.editingMessage)
+    // this.connection?.invoke("EditMessage", this.editingMessage)
 
     }
   }
@@ -112,6 +113,7 @@ export class MessageComponent implements OnInit {
 }
 
 deleteMessage(message:MessageModel){
+  this._income=this._income.filter(item=>item.id!=message.id)
 }
 
 
