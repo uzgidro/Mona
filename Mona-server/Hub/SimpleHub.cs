@@ -29,6 +29,24 @@ public class SimpleHub(IMessageService service, IUserService userService) : Hub<
         }
     }
 
+    public async Task DeleteMessageForMyself(MessageItem message)
+    {
+        // var edited = await service.DeleteMessageForMyself(message);
+        // if (edited != null)
+        // {
+            await Clients.Caller.DeleteMessage(message);
+        // }
+    }
+
+    public async Task DeleteMessageForEveryone(MessageItem message)
+    {
+        // var edited = await service.DeleteMessageForEveryone(message);
+        // if (edited != null)
+        // {
+            await Clients.Users(message.ReceiverId, message.SenderId).DeleteMessage(message);
+        // }
+    }
+
     public async Task<IEnumerable<ApplicationUser>> GetUsers()
     {
         var sender = GetSender();

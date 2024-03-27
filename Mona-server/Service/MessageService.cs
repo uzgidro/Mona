@@ -47,6 +47,18 @@ public class MessageService(ApplicationContext context) : IMessageService
         return entityEntry.Entity;
     }
 
+    public async Task<MessageItem?> DeleteMessageForMyself(MessageItem message)
+    {
+        // throw new NotImplementedException();
+        return message;
+    }
+
+    public async Task<MessageItem?> DeleteMessageForEveryone(MessageItem message)
+    {
+        // throw new NotImplementedException();
+        return message;
+    }
+
     public async Task<IEnumerable<MessageItem>> GetMessages(string caller)
     {
         return await context.Messages.AsNoTracking()
