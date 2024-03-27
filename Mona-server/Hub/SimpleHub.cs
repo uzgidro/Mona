@@ -19,10 +19,13 @@ public class SimpleHub(IMessageService service, IUserService userService) : Hub<
 
     public async Task EditMessage(MessageItem message)
     {
-        var edited = await service.EditMessage(message);
-        if (edited != null)
+        if (message.SenderId.Equals(GetSender()))
         {
-            await Clients.Users(edited.ReceiverId, edited.SenderId).ModifyMessage(edited);
+            var edited = await service.EditMessage(message);
+            if (edited != null)
+            {
+                await Clients.Users(edited.ReceiverId, edited.SenderId).ModifyMessage(edited);
+            }
         }
     }
 
