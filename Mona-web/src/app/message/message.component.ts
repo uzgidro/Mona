@@ -113,6 +113,7 @@ export class MessageComponent implements OnInit {
 }
 
 deleteMessage(message:MessageModel){
+  console.log(message);
   this._income=this._income.filter(item=>item.id!=message.id)
 }
 
