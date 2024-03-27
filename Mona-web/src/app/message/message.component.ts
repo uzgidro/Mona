@@ -30,6 +30,8 @@ export class MessageComponent implements OnInit {
   }
 
   ngOnInit() {
+
+
     let accessToken = this.jwtService.getAccessToken()
     const connection = new signalR.HubConnectionBuilder()
       .withUrl("http://127.0.0.1:5031/hub", {
@@ -38,21 +40,19 @@ export class MessageComponent implements OnInit {
         }
       })
       .build();
+
+
     this.connection = connection
+
 
     connection.on("ReceiveMessage", (message: MessageModel) => {
       this._income.push(message)
     });
-
-
     connection.on("ModifyMessage", (modifiedMessage: MessageModel) => {
-
-
       const index = this._income.findIndex(item => item.id === modifiedMessage.id);
       if (index !== -1) {
         modifiedMessage.isEdited=true
         this._income[index] = modifiedMessage;
-
       }
     });
 
@@ -100,8 +100,6 @@ export class MessageComponent implements OnInit {
 
       }
     }
-    // this.connection?.invoke("EditMessage", this.editingMessage)
-
     }
   }
 
