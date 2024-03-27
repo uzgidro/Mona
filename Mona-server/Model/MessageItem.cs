@@ -11,7 +11,8 @@ public class MessageItem
     public string? ReplyId { get; set; }
     public bool IsEdited { get; set; }
     public bool IsForwarded { get; set; }
-    public bool IsDeleted { get; set; }
+    public bool IsSenderDeleted { get; set; }
+    public bool IsReceiverDeleted { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime ModifiedAt { get; set; }
 }

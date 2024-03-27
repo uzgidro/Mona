@@ -26,18 +26,18 @@ public class MessageService(ApplicationContext context) : IMessageService
         return entityEntry.Entity;
     }
 
-    public async Task<MessageItem?> EditMessage(MessageItem message)
+    public async Task<MessageItem?> EditMessage(string? caller, MessageItem message)
     {
         var entity = await context.Messages.FirstOrDefaultAsync(item => item.Id == message.Id);
 
-        if (entity == null) return null;
-        if (entity.Text == message.Text || string.IsNullOrEmpty(message.Text))
+        if (entity == null || entity.SenderId.Equals(caller)) return null;
+        if (entity.Text.Equals(message.Text) || string.IsNullOrEmpty(message.Text))
         {
             var entry = context.Messages.Entry(entity);
             await AddNavigation(entity);
             return entry.Entity;
         }
-
+        
         entity.Text = message.Text;
         entity.IsEdited = true;
         entity.ModifiedAt = DateTime.Now;
@@ -47,24 +47,47 @@ public class MessageService(ApplicationContext context) : IMessageService
         return entityEntry.Entity;
     }
 
-    public async Task<MessageItem?> DeleteMessageForMyself(MessageItem message)
+    public async Task<MessageItem?> DeleteMessageForMyself(string? caller, MessageItem message)
     {
-        // throw new NotImplementedException();
-        return message;
+        var entity = await context.Messages.FirstOrDefaultAsync(item => item.Id == message.Id);
+
+        if (entity == null) return null;
+        if (entity.SenderId.Equals(caller))
+        {
+            entity.IsSenderDeleted = true;
+        }
+        else if (entity.ReceiverId.Equals(caller))
+        {
+            entity.IsReceiverDeleted = true;
+        }
+        else return null;
+        entity.ModifiedAt = DateTime.Now;
+        var entityEntry = context.Messages.Update(entity);
+        await context.SaveChangesAsync();
+        await AddNavigation(entity);
+        return entityEntry.Entity;
     }
 
-    public async Task<MessageItem?> DeleteMessageForEveryone(MessageItem message)
+    public async Task<MessageItem?> DeleteMessageForEveryone(string? caller, MessageItem message)
     {
-        // throw new NotImplementedException();
-        return message;
+        var entity = await context.Messages.FirstOrDefaultAsync(item => item.Id == message.Id);
+
+        if (entity == null || entity.ReceiverId.Equals(caller) || entity.SenderId.Equals(caller)) return null;
+        entity.IsReceiverDeleted = true;
+        entity.IsSenderDeleted = true;
+        entity.ModifiedAt = DateTime.Now;
+        var entityEntry = context.Messages.Update(entity);
+        await context.SaveChangesAsync();
+        await AddNavigation(entity);
+        return entityEntry.Entity;
     }
 
-    public async Task<IEnumerable<MessageItem>> GetMessages(string caller)
+    public async Task<IEnumerable<MessageItem>> GetMessages(string? caller)
     {
         return await context.Messages.AsNoTracking()
             .Include(m => m.Sender)
             .Include(m => m.Receiver)
-            .Where(item => !item.IsDeleted && (item.ReceiverId == caller || item.SenderId == caller))
+            .Where(item => item.ReceiverId.Equals(caller) && !item.IsReceiverDeleted || item.SenderId.Equals(caller) && !item.IsSenderDeleted)
             .ToListAsync();
     }
 

@@ -4,5 +4,5 @@ namespace Mona.Service.Interface;
 
 public interface IUserService
 {
-    Task<IEnumerable<ApplicationUser>> GetUsersExceptCaller(string username);
+    Task<IEnumerable<ApplicationUser>> GetUsersExceptCaller(string? username);
 }
