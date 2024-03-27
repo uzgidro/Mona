@@ -123,7 +123,7 @@ public class JwtService(IConfiguration configuration) : IJwtService
 
     private RsaSecurityKey GetPrivateKey()
     {
-        var key = configuration["PrivateKey"]
+        var key = "-----BEGIN PRIVATE KEY-----MIICXQIBAAKBgQCiz9P/tdCfvRATD8CQVDMRoHuTW3WrLibnewj7DKD93GGOBfVQRrkTOz+FDo+Qs7NxNBGnFByrnFgf2xvx4J5Pld/+Wp/t7Y6vwIUmZi+936iPk/7i1sXvuPbJ8/gihNHoLHQo5f+cTHbrprhY+qE8LgI8VNIrLHNQUoUgEijo3wIDAQABAoGBAJYh0Rr+fGegfr8lCmvMyN7bPrjOYL4+K6/PG6PsrFQLsYW2ZtTksmtSeitnFunXW4PrANAx0pJI9FZDxQwRFclOeyMkeqkPi6AMIdH66l9QmfiWJ0cpdRIXwpHx0XII9CaN+UpUxzAluhDaCpwL55GJbNqhx0AmnOabCTE45O8xAkEA7uuGWCaFdwT7xTIEHhbxaaEBa5retYZWKGTOWHHpaGeKlWPnan4S86zwUOTPct9zBohDl6ReqUqcUhxAcqzEiQJBAK5zcoaKJICiRAKRq8G8IPz8cGG4+39yDb2Jr4I2RHQdVqezBbK4qCtFb6UyM23xn0NzMZJu1gGJ2T3LuMPROCcCQQC7JUQDcpEizIWGTopJI4GQUuyw5AvFNufwFh5Hy1qgTFKSeEIB+aVQuEs5ojEY8wy/tibz9m2rv+S4sKaO7OO5AkAhCrLNcsrZJmLVTbwHdNeWs0Wh7MSN7g9WMAbzFc4/Y/MuzkStBjasA3nTA0AkedhdkSr5fk7AediQ0M5NIIqPAkBKQUNDL2EPVaz1y/jR6G3VtVuM5chj+Fzpw36SuVX6aus5H/qb9RiXY1WSPury3NU157fXWX2CLFHe5pXtEaZz-----END PRIVATE KEY-----"
             .Replace("-----BEGIN PRIVATE KEY-----", "")
             .Replace("-----END PRIVATE KEY-----", "")
             .Replace("\n", "")
@@ -139,7 +139,7 @@ public class JwtService(IConfiguration configuration) : IJwtService
 
     private RsaSecurityKey GetPublicKey()
     {
-        var key = configuration["PublicKey"]
+        var key = "-----BEGIN PUBLIC KEY-----MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCiz9P/tdCfvRATD8CQVDMRoHuTW3WrLibnewj7DKD93GGOBfVQRrkTOz+FDo+Qs7NxNBGnFByrnFgf2xvx4J5Pld/+Wp/t7Y6vwIUmZi+936iPk/7i1sXvuPbJ8/gihNHoLHQo5f+cTHbrprhY+qE8LgI8VNIrLHNQUoUgEijo3wIDAQAB-----END PUBLIC KEY-----"
             .Replace("-----BEGIN PUBLIC KEY-----", "")
             .Replace("-----END PUBLIC KEY-----", "")
             .Replace("\n", "")

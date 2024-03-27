@@ -45,13 +45,13 @@ export class MessageComponent implements OnInit {
     });
 
     this.connection.on("ModifyMessage", (modifiedMessage: MessageModel) => {
-   
-      
+
+
       const index = this._income.findIndex(item => item.id === modifiedMessage.id);
       if (index !== -1) {
         modifiedMessage.isEdited=true
-        this._income[index] = modifiedMessage;  
-        
+        this._income[index] = modifiedMessage;
+
       }
     });
 
@@ -90,17 +90,17 @@ export class MessageComponent implements OnInit {
         this.inputGroup.get('message')?.setValue('')
       }
     }
-      
+
     } else {
     if (this.editingMessage) {
       const inputValue = this.inputGroup.get('message')?.value;
       if (inputValue !== null && inputValue !== undefined) {
         this.editingMessage.text = inputValue
-        
+
       }
     }
     this.connection?.invoke("EditMessage", this.editingMessage)
-    
+
     }
   }
 
@@ -108,9 +108,14 @@ export class MessageComponent implements OnInit {
 
   editMessage(message:MessageModel){
     this.inputGroup.get('message')?.setValue(message.text)
-    this.editingMessage = message    
-    
+    this.editingMessage = message
 }
+
+deleteMessage(message:MessageModel){
+}
+
+
+
 }
 
 

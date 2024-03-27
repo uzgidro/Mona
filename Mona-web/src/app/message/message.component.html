@@ -22,6 +22,7 @@
           <small *ngIf="message.isEdited||editingMessage?.isEdited">edited</small>
           <small>{{message.createdAt |date:'HH:mm'}}</small>
           <button class="bg-yellow-500 pe-1 hover:scale-150 active:scale-75" *ngIf="message.senderId!==selectedChat.id"  (click)="editMessage(message)">edit</button>
+          <button class="bg-yellow-500 pe-1 hover:scale-150 active:scale-75" *ngIf="message.senderId!==selectedChat.id"  (click)="deleteMessage(message)">delete</button>
         </li>
     </ul>
   </form>
