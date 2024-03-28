@@ -115,14 +115,15 @@ export class MessageComponent implements OnInit {
     this.editingMessage = message
   }
 
-  deleteMessage(message: MessageModel) {
-    if (this.selectedChat?.id === message.receiver.id) {
+  deleteMessageForMyself(message: MessageModel) {
       this.connection?.send("deleteMessageForMyself", message)
-    } else {
-      console.log(message.id);
-      this.connection?.send("deleteMessageForEveryone", message)
-    }
+
   }
+  deleteMessageForEveryone(message: MessageModel) {
+    this.connection?.send("deleteMessageForEveryone", message)
+
+}
+
 
 }
 
