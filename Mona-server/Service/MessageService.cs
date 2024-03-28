@@ -30,7 +30,7 @@ public class MessageService(ApplicationContext context) : IMessageService
     {
         var entity = await context.Messages.FirstOrDefaultAsync(item => item.Id == message.Id);
 
-        if (entity == null || entity.SenderId.Equals(caller)) return null;
+        if (entity == null || !entity.SenderId.Equals(caller)) return null;
         if (entity.Text.Equals(message.Text) || string.IsNullOrEmpty(message.Text))
         {
             var entry = context.Messages.Entry(entity);
@@ -72,7 +72,7 @@ public class MessageService(ApplicationContext context) : IMessageService
     {
         var entity = await context.Messages.FirstOrDefaultAsync(item => item.Id == message.Id);
 
-        if (entity == null || entity.ReceiverId.Equals(caller) || entity.SenderId.Equals(caller)) return null;
+        if (entity == null || (!entity.ReceiverId.Equals(caller) && !entity.SenderId.Equals(caller))) return null;
         entity.IsReceiverDeleted = true;
         entity.IsSenderDeleted = true;
         entity.ModifiedAt = DateTime.Now;

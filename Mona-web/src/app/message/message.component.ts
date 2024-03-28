@@ -4,8 +4,7 @@ import {HubConnection} from '@microsoft/signalr';
 import {JwtService} from "../services/jwt.service";
 import {FormControl, FormGroup} from "@angular/forms";
 import {UserModel} from "../models/user";
-import { MessageModel, MessageRequest } from '../models/message';
-import { __values } from 'tslib';
+import {MessageModel, MessageRequest} from '../models/message';
 
 @Component({
   selector: 'app-message',
@@ -20,8 +19,9 @@ export class MessageComponent implements OnInit {
     message: new FormControl('')
   })
   connection?: HubConnection
-  private _income: MessageModel[]=[]
+  private _income: MessageModel[] = []
   editingMessage?: MessageModel;
+
   get income(): MessageModel[] {
     return this._income.filter(item => item.receiverId == this.selectedChat?.id || item.senderId == this.selectedChat?.id);
   }
@@ -51,7 +51,7 @@ export class MessageComponent implements OnInit {
     connection.on("ModifyMessage", (modifiedMessage: MessageModel) => {
       const index = this._income.findIndex(item => item.id === modifiedMessage.id);
       if (index !== -1) {
-        modifiedMessage.isEdited=true
+        modifiedMessage.isEdited = true
         this._income[index] = modifiedMessage;
       }
     });
@@ -67,9 +67,10 @@ export class MessageComponent implements OnInit {
       })
       .then(() => {
         if (connection) {
-          connection.invoke('getUsers').then((users: UserModel[]) => this.users=users)
-          connection.invoke('getHistory').then((messages: MessageModel[]) => {this._income=messages
-          console.log(this._income);
+          connection.invoke('getUsers').then((users: UserModel[]) => this.users = users)
+          connection.invoke('getHistory').then((messages: MessageModel[]) => {
+            this._income = messages
+            console.log(this._income);
 
           })
 
@@ -83,50 +84,45 @@ export class MessageComponent implements OnInit {
   }
 
   sendMessage() {
-    if (this.inputGroup.get('message')?.value!==''&&this.editingMessage===undefined) {
+    if (this.inputGroup.get('message')?.value !== '' && this.editingMessage === undefined) {
       let message = this.inputGroup.get('message')?.value
-    if (message) {
-      const messageRequest:MessageRequest={
-        text: message,
-        receiverId: this.selectedChat?.id,
-        createdAt: new Date()
+      if (message) {
+        const messageRequest: MessageRequest = {
+          text: message,
+          receiverId: this.selectedChat?.id,
+          createdAt: new Date()
+        }
+        if (message.trim().length > 0) {
+          this.connection?.send("sendDirectMessage", messageRequest)
+          this.inputGroup.get('message')?.setValue('')
+        }
       }
-      if (message.trim().length > 0) {
-        this.connection?.send("sendDirectMessage", messageRequest)
-        this.inputGroup.get('message')?.setValue('')
-      }
-    }
 
     } else {
-    if (this.editingMessage) {
-      const inputValue = this.inputGroup.get('message')?.value;
-      if (inputValue !== null && inputValue !== undefined) {
-        this.editingMessage.text = inputValue
-
+      if (this.editingMessage) {
+        const inputValue = this.inputGroup.get('message')?.value;
+        if (inputValue !== null && inputValue !== undefined) {
+          this.editingMessage.text = inputValue
+          this.connection?.send("editMessage", this.editingMessage)
+        }
       }
     }
-    }
   }
 
 
-
-  editMessage(message:MessageModel){
+  editMessage(message: MessageModel) {
     this.inputGroup.get('message')?.setValue(message.text)
     this.editingMessage = message
-}
-
-deleteMessage(message:MessageModel){
-  if (this.selectedChat?.id===message.receiver.id) {
-    console.log(message.text);
-    this.connection?.invoke("DeleteMessageForMyself", message)
-        .catch(err => console.error(err));
-  } else {
-    console.log(message.id);
-    this.connection?.invoke("DeleteMessageForEveryone", message)
-        .catch(err => console.error(err));
   }
 
-}
+  deleteMessage(message: MessageModel) {
+    if (this.selectedChat?.id === message.receiver.id) {
+      this.connection?.send("deleteMessageForMyself", message)
+    } else {
+      console.log(message.id);
+      this.connection?.send("deleteMessageForEveryone", message)
+    }
+  }
 
 }
 
