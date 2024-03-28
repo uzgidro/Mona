@@ -115,21 +115,10 @@ export class MessageComponent implements OnInit {
 }
 
 deleteMessage(message:MessageModel){
-  if (this.selectedChat?.id==message.sender.id){
     console.log(message.text);
     this.connection?.invoke("DeleteMessageForMyself", message)
         .catch(err => console.error(err));
-  }else{
-    console.log(message.id);
-    this.connection?.invoke("DeleteMessageForEveryone", message)
-        .catch(err => console.error(err));
-
-  }
-
-
 }
-
-
 
 }
 
