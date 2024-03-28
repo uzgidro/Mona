@@ -55,6 +55,10 @@ export class MessageComponent implements OnInit {
         this._income[index] = modifiedMessage;
       }
     });
+    connection.on("DeleteMessage", (deletedMessage: MessageModel) => {
+      this._income = this._income.filter(item => item.id !== deletedMessage.id);
+    });
+
 
     connection.start()
       .catch((err) => {
@@ -111,7 +115,18 @@ export class MessageComponent implements OnInit {
 }
 
 deleteMessage(message:MessageModel){
-  this._income=this._income.filter(item=>item.id!=message.id)
+  if (this.selectedChat?.id==message.sender.id){
+    console.log(message.text);
+    this.connection?.invoke("DeleteMessageForMyself", message)
+        .catch(err => console.error(err));
+  }else{
+    console.log(message.id);
+    this.connection?.invoke("DeleteMessageForEveryone", message)
+        .catch(err => console.error(err));
+
+  }
+
+
 }
 
 
