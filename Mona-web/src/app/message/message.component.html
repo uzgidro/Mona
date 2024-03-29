@@ -18,7 +18,8 @@
             <app-message-item
             [message]="message"
             [selectedChat]="selectedChat"
-            [editingMessage]="editingMessage">
+            [editingMessage]="editingMessage"
+            >
           </app-message-item >
           <button class=" hover:scale-110 active:scale-95" *ngIf="message.senderId!==selectedChat.id"  (click)="editMessage(message)">📝</button>
           <button class="hover:scale-110 active:scale-95" (click)="deleteMessageForMyself(message)">❌</button>
