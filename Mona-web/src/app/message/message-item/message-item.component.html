@@ -1,0 +1,7 @@
+       <span
+          [ngClass]="{'bg-blue-700 text-white':message?.receiverId===selectedChat?.id}"
+           class="w-full bg-green-500 text-white">
+           {{message?.sender?.firstName}} : {{ message?.text }}
+          </span>
+          <small *ngIf="message?.isEdited||editingMessage?.isEdited">edited</small>
+          <small>{{message?.createdAt |date:'HH:mm'}}</small>

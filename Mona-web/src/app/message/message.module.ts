@@ -4,11 +4,13 @@ import {CommonModule} from '@angular/common';
 import {MessageRoutingModule} from './message-routing.module';
 import {MessageComponent} from './message.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { MessageItemComponent } from './message-item/message-item.component';
 
 
 @NgModule({
   declarations: [
-    MessageComponent
+    MessageComponent,
+    MessageItemComponent
   ],
   imports: [
     CommonModule,

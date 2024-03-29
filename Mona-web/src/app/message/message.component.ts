@@ -121,7 +121,6 @@ export class MessageComponent implements OnInit {
   }
   deleteMessageForEveryone(message: MessageModel) {
     this.connection?.send("deleteMessageForEveryone", message)
-
 }
 
 

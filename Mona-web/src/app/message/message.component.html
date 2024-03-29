@@ -11,16 +11,22 @@
   <h2 class="text-green-700">{{ selectedChat?.firstName }} {{selectedChat?.lastName}}</h2>
   <form *ngIf="selectedChat"  (submit)="sendMessage()" [formGroup]="inputGroup">
     <input formControlName="message" type="text" [value]="this.inputGroup.value.message" >
-    <button type="submit">send</button>
+    <button *ngIf="!this.editingMessage" type="submit">send</button>
+    <button *ngIf="this.editingMessage" type="submit">edit</button>
     <ul>
       <li *ngFor="let message of income">
-         <span
+            <app-message-item
+            [message]="message"
+            [selectedChat]="selectedChat"
+            editingMessage]="editingMessage">
+          </app-message-item >
+         <!-- <span
           [ngClass]="{'bg-blue-700 text-white':message.receiverId===selectedChat.id}"
            class="w-full bg-green-500 text-white">
            {{message.sender.firstName}} : {{ message.text }}
-          </span>
-          <small *ngIf="message.isEdited||editingMessage?.isEdited">edited</small>
-          <small>{{message.createdAt |date:'HH:mm'}}</small>
+          </span> -->
+          <!-- <small *ngIf="message.isEdited||editingMessage?.isEdited">edited</small>
+          <small>{{message.createdAt |date:'HH:mm'}}</small> -->
           <button class=" hover:scale-110 active:scale-95" *ngIf="message.senderId!==selectedChat.id"  (click)="editMessage(message)">📝</button>
           <button class="hover:scale-110 active:scale-95" (click)="deleteMessageForMyself(message)">❌</button>
           <button class="hover:scale-110 active:scale-95" (click)="deleteMessageForEveryone(message)">❎</button>
