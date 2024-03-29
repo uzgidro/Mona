@@ -11,4 +11,5 @@ export class MessageItemComponent {
  @Input() message?:MessageModel
  @Input() selectedChat?:UserModel
  @Input()  editingMessage?: MessageModel
+ 
 }
