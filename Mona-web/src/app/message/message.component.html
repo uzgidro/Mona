@@ -18,14 +18,14 @@
             <app-message-item
             [message]="message"
             [selectedChat]="selectedChat"
-            editingMessage]="editingMessage">
+            [editingMessage]="editingMessage">
           </app-message-item >
          <!-- <span
           [ngClass]="{'bg-blue-700 text-white':message.receiverId===selectedChat.id}"
            class="w-full bg-green-500 text-white">
            {{message.sender.firstName}} : {{ message.text }}
-          </span> -->
-          <!-- <small *ngIf="message.isEdited||editingMessage?.isEdited">edited</small>
+          </span>
+          <small *ngIf="message.isEdited||editingMessage?.isEdited">edited</small>
           <small>{{message.createdAt |date:'HH:mm'}}</small> -->
           <button class=" hover:scale-110 active:scale-95" *ngIf="message.senderId!==selectedChat.id"  (click)="editMessage(message)">📝</button>
           <button class="hover:scale-110 active:scale-95" (click)="deleteMessageForMyself(message)">❌</button>
