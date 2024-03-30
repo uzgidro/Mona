@@ -21,10 +21,16 @@ export class ApiService {
     return this.http.post(BASE_URL + AUTH + SIGN_IN, user);
   }
 
-  refreshTokens() {
+  async refreshTokens() {
     const oldToken: Tokens = {accessToken: this.jwt.getAccessToken(), refreshToken: this.jwt.getRefreshToken()}
-    this.http.post<Tokens>(BASE_URL + AUTH + REFRESH, oldToken)
-      .forEach((value: Tokens) => this.jwt.saveTokens(value)).catch((err) => console.log(err))
+    try {
+      return await this.http.post<Tokens>(BASE_URL + AUTH + REFRESH, oldToken)
+        .forEach((value: Tokens) => {
+          this.jwt.saveTokens(value)
+        });
+    } catch (err) {
+      return console.log(err);
+    }
   }
 
   authCheck(){

@@ -9,7 +9,7 @@ using Mona.Service.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+builder.Services.AddIdentityApiEndpoints<UserModel>()
     .AddEntityFrameworkStores<ApplicationContext>();
 builder.WebHost.ConfigureKestrel(serverOptions => { serverOptions.AddServerHeader = false; });
 builder.Services.AddControllers();
@@ -85,7 +85,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapIdentityApi<ApplicationUser>();
+app.MapIdentityApi<UserModel>();
 app.MapHub<SimpleHub>("/hub");
 app.MapControllers();
 app.Run();

@@ -12,12 +12,12 @@ namespace Mona.Controller;
 public class AuthController(
     ICryptoService cryptoService,
     IJwtService jwtService,
-    UserManager<ApplicationUser> userManager) : ControllerBase
+    UserManager<UserModel> userManager) : ControllerBase
 {
     [HttpPost("sign-up")]
     public async Task<IResult> SignUp(CustomRegisterRequest customRegisterRequest)
     {
-        var user = new ApplicationUser
+        var user = new UserModel
         {
             UserName = customRegisterRequest.Username,
             FirstName = customRegisterRequest.FirstName,

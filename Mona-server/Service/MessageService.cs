@@ -8,10 +8,10 @@ namespace Mona.Service;
 
 public class MessageService(ApplicationContext context) : IMessageService
 {
-    public async Task<MessageItem> CreateMessage(MessageRequest message)
+    public async Task<MessageModel> CreateMessage(MessageRequest message)
     {
-        if (string.IsNullOrEmpty(message.Text)) return new MessageItem();
-        var entity = new MessageItem
+        if (string.IsNullOrEmpty(message.Text)) return new MessageModel();
+        var entity = new MessageModel
         {
             Text = message.Text,
             SenderId = message.SenderId!,
@@ -26,7 +26,7 @@ public class MessageService(ApplicationContext context) : IMessageService
         return entityEntry.Entity;
     }
 
-    public async Task<MessageItem?> EditMessage(string? caller, MessageItem message)
+    public async Task<MessageModel?> EditMessage(string? caller, MessageModel message)
     {
         var entity = await context.Messages.FirstOrDefaultAsync(item => item.Id == message.Id);
 
@@ -47,7 +47,7 @@ public class MessageService(ApplicationContext context) : IMessageService
         return entityEntry.Entity;
     }
 
-    public async Task<MessageItem?> DeleteMessageForMyself(string? caller, MessageItem message)
+    public async Task<MessageModel?> DeleteMessageForMyself(string? caller, MessageModel message)
     {
         var entity = await context.Messages.FirstOrDefaultAsync(item => item.Id == message.Id);
 
@@ -68,7 +68,7 @@ public class MessageService(ApplicationContext context) : IMessageService
         return entityEntry.Entity;
     }
 
-    public async Task<MessageItem?> DeleteMessageForEveryone(string? caller, MessageItem message)
+    public async Task<MessageModel?> DeleteMessageForEveryone(string? caller, MessageModel message)
     {
         var entity = await context.Messages.FirstOrDefaultAsync(item => item.Id == message.Id);
 
@@ -82,7 +82,7 @@ public class MessageService(ApplicationContext context) : IMessageService
         return entityEntry.Entity;
     }
 
-    public async Task<IEnumerable<MessageItem>> GetMessages(string? caller)
+    public async Task<IEnumerable<MessageModel>> GetMessages(string? caller)
     {
         return await context.Messages.AsNoTracking()
             .Include(m => m.Sender)
@@ -91,7 +91,7 @@ public class MessageService(ApplicationContext context) : IMessageService
             .ToListAsync();
     }
 
-    private async Task AddNavigation(MessageItem? entity)
+    private async Task AddNavigation(MessageModel? entity)
     {
         await context.Entry(entity).Reference(m => m.Sender).LoadAsync();
         await context.Entry(entity).Reference(m => m.Receiver).LoadAsync();

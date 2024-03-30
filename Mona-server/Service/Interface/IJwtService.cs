@@ -6,7 +6,7 @@ namespace Mona.Service.Interface;
 
 public interface IJwtService
 {
-    TokenPair EncodeTokenPair(ApplicationUser applicationUser);
+    TokenPair EncodeTokenPair(UserModel userModel);
     string RefreshTokens(TokenPair tokens);
     TokenValidationParameters GetValidationParameters(bool validateLifetime = true);
 }

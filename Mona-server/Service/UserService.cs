@@ -5,9 +5,9 @@ using Mona.Service.Interface;
 
 namespace Mona.Service;
 
-public class UserService(UserManager<ApplicationUser> userManager) : IUserService
+public class UserService(UserManager<UserModel> userManager) : IUserService
 {
-    public async Task<IEnumerable<ApplicationUser>> GetUsersExceptCaller(string? username)
+    public async Task<IEnumerable<UserModel>> GetUsersExceptCaller(string? username)
     {
         return await userManager.Users
             .Where(user => !user.Id.Equals(username)).ToListAsync();

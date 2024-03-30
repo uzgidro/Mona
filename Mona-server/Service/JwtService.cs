@@ -11,30 +11,30 @@ namespace Mona.Service;
 
 public class JwtService(IConfiguration configuration) : IJwtService
 {
-    public TokenPair EncodeTokenPair(ApplicationUser applicationUser)
+    public TokenPair EncodeTokenPair(UserModel userModel)
     {
         var credentials = GetCredentials();
         var accessClaims = new ClaimsIdentity(new List<Claim>
             {
-                new(Claims.Id, applicationUser.Id),
-                new(Claims.Username, applicationUser.UserName),
+                new(Claims.Id, userModel.Id),
+                new(Claims.Username, userModel.UserName),
                 new(Claims.Role, "User"),
-                new(Claims.FirstName, applicationUser.LastName),
-                new(Claims.LastName, applicationUser.LastName),
+                new(Claims.FirstName, userModel.LastName),
+                new(Claims.LastName, userModel.LastName),
             }, "Token", Claims.Username,
             Claims.Role);
         var access = new JwtSecurityToken(
             issuer: "Server",
             audience: "Client",
             claims: accessClaims.Claims,
-            expires: DateTime.UtcNow.AddHours(1),
+            expires: DateTime.UtcNow.AddDays(1),
             signingCredentials: credentials
         );
 
         var refreshClaims = new ClaimsIdentity(new List<Claim>
             {
-                new(Claims.Id, applicationUser.Id),
-                new(Claims.Username, applicationUser.UserName),
+                new(Claims.Id, userModel.Id),
+                new(Claims.Username, userModel.UserName),
                 new(Claims.Role, "User"),
             }, "Token", Claims.Username,
             Claims.Role);
@@ -42,7 +42,7 @@ public class JwtService(IConfiguration configuration) : IJwtService
             issuer: "Server",
             audience: "Client",
             claims: refreshClaims.Claims,
-            expires: DateTime.UtcNow.AddHours(24),
+            expires: DateTime.UtcNow.AddMonths(1),
             signingCredentials: credentials
         );
 

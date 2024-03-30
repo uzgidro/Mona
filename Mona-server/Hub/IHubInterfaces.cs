@@ -4,7 +4,7 @@ namespace Mona.Hub;
 
 public interface IHubInterfaces
 {
-    Task ReceiveMessage(MessageItem message);
-    Task ModifyMessage(MessageItem message);
-    Task DeleteMessage(MessageItem message);
+    Task ReceiveMessage(MessageModel message);
+    Task ModifyMessage(MessageModel message);
+    Task DeleteMessage(MessageModel message);
 }

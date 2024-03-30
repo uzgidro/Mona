@@ -5,6 +5,7 @@ import {JwtService} from "../services/jwt.service";
 import {FormControl, FormGroup} from "@angular/forms";
 import {UserModel} from "../models/user";
 import {MessageModel, MessageRequest} from '../models/message';
+import {ApiService} from "../services/api.service";
 
 @Component({
   selector: 'app-message',
@@ -26,56 +27,13 @@ export class MessageComponent implements OnInit {
     return this._income.filter(item => item.receiverId == this.selectedChat?.id || item.senderId == this.selectedChat?.id);
   }
 
-  constructor(private jwtService: JwtService) {
+  constructor(private jwtService: JwtService, private apiService: ApiService) {
   }
 
-  ngOnInit() {
-
-
-    let accessToken = this.jwtService.getAccessToken()
-    const connection = new signalR.HubConnectionBuilder()
-      .withUrl("http://127.0.0.1:5031/hub", {
-        accessTokenFactory(): string | Promise<string> {
-          return accessToken
-        }
-      })
-      .build();
-
-
-    this.connection = connection
-
-
-    connection.on("ReceiveMessage", (message: MessageModel) => {
-      this._income.push(message)
-    });
-    connection.on("ModifyMessage", (modifiedMessage: MessageModel) => {
-      const index = this._income.findIndex(item => item.id === modifiedMessage.id);
-      if (index !== -1) {
-        modifiedMessage.isEdited = true
-        this._income[index] = modifiedMessage;
-      }
-    });
-    connection.on("DeleteMessage", (deletedMessage: MessageModel) => {
-      console.log('invoked');
-      this._income = this._income.filter(item => item.id !== deletedMessage.id);
-    });
-
-
-    connection.start()
-      .catch((err) => {
-        console.log(err)
-      })
-      .then(() => {
-        if (connection) {
-          connection.invoke('getUsers').then((users: UserModel[]) => this.users = users)
-          connection.invoke('getHistory').then((messages: MessageModel[]) => {
-            this._income = messages
-            console.log(this._income);
-
-          })
-
-        }
-      })
+  async ngOnInit() {
+    this.setupConnection()
+    this.openConnection()
+    await this.startConnection()
   }
 
   selectChat(user: UserModel) {
@@ -116,15 +74,64 @@ export class MessageComponent implements OnInit {
   }
 
   deleteMessageForMyself(message: MessageModel) {
-      this.connection?.send("deleteMessageForMyself", message)
+    this.connection?.send("deleteMessageForMyself", message)
 
   }
+
   deleteMessageForEveryone(message: MessageModel) {
     this.connection?.send("deleteMessageForEveryone", message)
 
+  }
+
+  private setupConnection() {
+    let accessToken = this.jwtService.getAccessToken()
+    this.connection = new signalR.HubConnectionBuilder()
+      .withUrl("http://127.0.0.1:5031/hub", {
+        accessTokenFactory(): string | Promise<string> {
+          return accessToken
+        }
+      })
+      .build()
+  }
+
+  private openConnection() {
+    this.connection?.on("ReceiveMessage", (message: MessageModel) => {
+      this._income.push(message);
+    });
+    this.connection?.on("ModifyMessage", (modifiedMessage: MessageModel) => {
+      const index = this._income.findIndex(item => item.id === modifiedMessage.id);
+      if (index !== -1) {
+        modifiedMessage.isEdited = true
+        this._income[index] = modifiedMessage;
+      }
+    });
+    this.connection?.on("DeleteMessage", (deletedMessage: MessageModel) => {
+      this._income = this._income.filter(item => item.id !== deletedMessage.id);
+    });
+  }
+
+  private async startConnection() {
+    try {
+      if (this.connection) {
+        await this.connection.start()
+        this.connection.invoke('getUsers').then((users: UserModel[]) => this.users = users)
+        this.connection.invoke('getHistory').then((messages: MessageModel[]) => {
+          this._income = messages
+        })
+      }
+    } catch (err: any) {
+      if (err.toString().includes('401')) {
+        await this.restartConnection()
+      } else {
+        console.log(err)
+      }
+    }
+  }
+
+  private async restartConnection() {
+    await this.connection?.stop()
+    await this.apiService.refreshTokens()
+    this.setupConnection()
+    await this.startConnection()
+  }
 }
-
-
-}
-
-

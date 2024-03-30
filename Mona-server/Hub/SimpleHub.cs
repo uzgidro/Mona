@@ -17,7 +17,7 @@ public class SimpleHub(IMessageService service, IUserService userService) : Hub<
         await Clients.Users(messageItem.ReceiverId, messageItem.SenderId).ReceiveMessage(messageItem);
     }
 
-    public async Task EditMessage(MessageItem message)
+    public async Task EditMessage(MessageModel message)
     {
         var edited = await service.EditMessage(GetSender(), message);
         if (edited != null)
@@ -26,7 +26,7 @@ public class SimpleHub(IMessageService service, IUserService userService) : Hub<
         }
     }
 
-    public async Task DeleteMessageForMyself(MessageItem message)
+    public async Task DeleteMessageForMyself(MessageModel message)
     {
         var edited = await service.DeleteMessageForMyself(GetSender(), message);
         if (edited != null)
@@ -35,7 +35,7 @@ public class SimpleHub(IMessageService service, IUserService userService) : Hub<
         }
     }
 
-    public async Task DeleteMessageForEveryone(MessageItem message)
+    public async Task DeleteMessageForEveryone(MessageModel message)
     {
         var edited = await service.DeleteMessageForEveryone(GetSender(), message);
         if (edited != null)
@@ -44,14 +44,14 @@ public class SimpleHub(IMessageService service, IUserService userService) : Hub<
         }
     }
 
-    public async Task<IEnumerable<ApplicationUser>> GetUsers()
+    public async Task<IEnumerable<UserModel>> GetUsers()
     {
         var sender = GetSender();
         var userManagerUsers = await userService.GetUsersExceptCaller(sender);
         return userManagerUsers;
     }
 
-    public async Task<IEnumerable<MessageItem>> GetHistory()
+    public async Task<IEnumerable<MessageModel>> GetHistory()
     {
         var messages = await service.GetMessages(GetSender());
         return messages;
