@@ -19,11 +19,11 @@
             [message]="message"
             [selectedChat]="selectedChat"
             [editingMessage]="editingMessage"
+            (editMessageEvent)="editMessage($event)"
+            (deleteMessageForMyselfEvent)="deleteMessageForMyself($event)"
+            (deleteMessageForEveryoneEvent)="deleteMessageForEveryone($event)"
             >
           </app-message-item >
-          <button class=" hover:scale-110 active:scale-95" *ngIf="message.senderId!==selectedChat.id"  (click)="editMessage(message)">📝</button>
-          <button class="hover:scale-110 active:scale-95" (click)="deleteMessageForMyself(message)">❌</button>
-          <button class="hover:scale-110 active:scale-95" (click)="deleteMessageForEveryone(message)">❎</button>
         </li>
     </ul>
   </form>

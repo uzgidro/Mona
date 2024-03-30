@@ -5,4 +5,7 @@
           </span>
           <small *ngIf="message?.isEdited||editingMessage?.isEdited">edited</small>
           <small>{{message?.createdAt |date:'HH:mm'}}</small>
+          <button *ngIf="selectedChat?.id!==message?.senderId" (click)="editMessage()">📝</button>
+          <button class="hover:scale-110 active:scale-95" (click)="deleteMessageForMyself()">🚫</button>
+          <button class="hover:scale-110 active:scale-95" (click)="deleteMessageForEveryone()">❎</button>
 
