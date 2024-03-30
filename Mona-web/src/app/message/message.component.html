@@ -11,8 +11,8 @@
   <h2 class="text-green-700">{{ selectedChat?.firstName }} {{selectedChat?.lastName}}</h2>
   <form *ngIf="selectedChat"  (submit)="sendMessage()" [formGroup]="inputGroup">
     <input formControlName="message" type="text" [value]="this.inputGroup.value.message" >
-    <button *ngIf="!this.editingMessage" type="submit">send</button>
-    <button *ngIf="this.editingMessage" type="submit">edit</button>
+    <button *ngIf="!this.editingMessage">send</button>
+    <button *ngIf="this.editingMessage" >edit</button>
     <ul>
       <li *ngFor="let message of income">
             <app-message-item
@@ -22,6 +22,7 @@
             (editMessageEvent)="editMessage($event)"
             (deleteMessageForMyselfEvent)="deleteMessageForMyself($event)"
             (deleteMessageForEveryoneEvent)="deleteMessageForEveryone($event)"
+            (resetFormEvent)="resetForm()"
             >
           </app-message-item >
         </li>
