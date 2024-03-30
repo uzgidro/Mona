@@ -115,12 +115,12 @@ export class MessageComponent implements OnInit {
     this.editingMessage = message
   }
 
-  deleteMessageForMyself(message: MessageModel) {
-      this.connection?.send("deleteMessageForMyself", message)
+  deleteMessageForMyself(eventMessage: MessageModel) {
+      this.connection?.send("deleteMessageForMyself", eventMessage)
 
   }
-  deleteMessageForEveryone(message: MessageModel) {
-    this.connection?.send("deleteMessageForEveryone", message)
+  deleteMessageForEveryone(eventMessage: MessageModel) {
+    this.connection?.send("deleteMessageForEveryone", eventMessage)
 }
 
 
