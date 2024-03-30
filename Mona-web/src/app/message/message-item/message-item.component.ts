@@ -18,13 +18,13 @@ export class MessageItemComponent {
  @Output() deleteMessageForEveryoneEvent=new EventEmitter<MessageModel>()
 
 
- deleteMessageForMyself(){
+ deleteMessageForMyselfEventEmitter(){
   this.deleteMessageForMyselfEvent.emit(this.message)
  }
- deleteMessageForEveryone(){
+ deleteMessageForEveryoneEventEmitter(){
   this.deleteMessageForEveryoneEvent.emit(this.message)
  }
- editMessage(){
+ editMessageEventEmitter(){
   this.editMessageEvent.emit(this.message)
  }
 
