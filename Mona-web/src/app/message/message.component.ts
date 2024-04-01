@@ -91,6 +91,7 @@ export class MessageComponent implements OnInit {
         if (message.trim().length > 0) {
           this.connection?.send("sendDirectMessage", messageRequest)
           this.inputGroup.get('message')?.setValue('')
+          this.repliedMessage=undefined
         }
       }
 
