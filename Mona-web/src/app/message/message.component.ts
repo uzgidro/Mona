@@ -122,8 +122,6 @@ export class MessageComponent implements OnInit {
     this.connection?.send("deleteMessageForEveryone", eventMessage)
   }
 
-  formReset(message:MessageModel){
-  }
 
 
 }
