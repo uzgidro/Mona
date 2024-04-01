@@ -3,7 +3,7 @@
        <span
           [ngClass]="{'bg-blue-700 text-white':message?.receiverId===selectedChat?.id  }"
            class="w-full bg-green-500 text-white">
-           <p class="text-amber-800" *ngIf="editingMessage&&editingMessage.id==message?.id">{{message?.text}}</p>
+           <!-- <p class="text-amber-800" *ngIf="editingMessage&&editingMessage.id==message?.id">{{message?.text}}</p> -->
            {{message?.sender?.firstName}} : <span [ngClass]="{'text-yellow-500 bg-green-300 italic':message?.isEdited&&message?.receiverId==selectedChat?.id}"> {{ message?.text }}</span>
           </span>
           <small *ngIf="message?.isEdited">edited</small>
