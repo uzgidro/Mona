@@ -128,7 +128,6 @@ export class MessageComponent implements OnInit {
   replyMessage(eventMessage:MessageModel){
     this.repliedMessage=eventMessage
     console.log(eventMessage);
-
   }
 
 
