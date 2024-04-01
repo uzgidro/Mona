@@ -2,10 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import {HubConnection} from '@microsoft/signalr';
 import {JwtService} from "../services/jwt.service";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import { FormControl, FormGroup, Validators} from "@angular/forms";
 import {UserModel} from "../models/user";
 import {MessageModel, MessageRequest} from '../models/message';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-message',
@@ -27,16 +26,10 @@ export class MessageComponent implements OnInit {
     return this._income.filter(item => item.receiverId == this.selectedChat?.id || item.senderId == this.selectedChat?.id);
   }
 
-  constructor(private jwtService: JwtService, private formBuilder:FormBuilder) {
+  constructor(private jwtService: JwtService) {
   }
 
   ngOnInit() {
-
-    this.inputGroup = this.formBuilder.group({
-      message: ['', Validators.required] // Define form control and its validators
-    });
-
-
     let accessToken = this.jwtService.getAccessToken()
     const connection = new signalR.HubConnectionBuilder()
       .withUrl("http://127.0.0.1:5031/hub", {
@@ -56,10 +49,7 @@ export class MessageComponent implements OnInit {
     connection.on("ModifyMessage", (modifiedMessage: MessageModel) => {
       const index = this._income.findIndex(item => item.id === modifiedMessage.id);
       if (index !== -1) {
-        // modifiedMessage.isEdited = true
         this._income[index] = modifiedMessage;
-        console.log(modifiedMessage.isEdited);
-
       }
     });
     connection.on("DeleteMessage", (deletedMessage: MessageModel) => {
@@ -122,20 +112,19 @@ export class MessageComponent implements OnInit {
     this.editingMessage = message
   }
 
+
+  
   deleteMessageForMyself(eventMessage: MessageModel) {
       this.connection?.send("deleteMessageForMyself", eventMessage)
 
   }
+
+
+
   deleteMessageForEveryone(eventMessage: MessageModel) {
     this.connection?.send("deleteMessageForEveryone", eventMessage)
-}
-resetForm(){
-if(this.editingMessage?.isEdited){
-  this.inputGroup.get('message')?.setValue('')
+  }
 
-}
-
-}
 
 
 }
