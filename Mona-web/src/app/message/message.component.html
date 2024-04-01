@@ -10,6 +10,8 @@
 <div class="chat bg-slate-300">
   <h2 class="text-green-700">{{ selectedChat?.firstName }} {{selectedChat?.lastName}}</h2>
   <form *ngIf="selectedChat"   [formGroup]="inputGroup">
+    <p *ngIf="repliedMessage">{{repliedMessage.text}}</p>
+    <p *ngIf="editingMessage">{{editingMessage.text}}</p>
     <input  formControlName="message" type="text" [value]="this.inputGroup.value.message" >
     <button (click)="sendMessage()" *ngIf="!this.editingMessage">send</button>
     <button (click)="sendMessage()" *ngIf="this.editingMessage" >edit</button>
@@ -22,6 +24,7 @@
               (editMessageEvent)="editMessage($event)"
               (deleteMessageForMyselfEvent)="deleteMessageForMyself($event)"
               (deleteMessageForEveryoneEvent)="deleteMessageForEveryone($event)"
+              (replyMessageEvent)="replyMessage($event)"
             >
             </app-message-item >
         </li>

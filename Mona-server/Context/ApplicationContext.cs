@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Mona.Model;
+using System.Reflection.Emit;
+using System;
 
 namespace Mona.Context;
 
@@ -24,5 +26,11 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
             .WithMany()
             .HasForeignKey(m => m.SenderId)
             .IsRequired();
+
+        builder.Entity<MessageItem>()
+            .HasOne(e => e.RepliedMessage)
+            .WithOne()
+            .HasForeignKey<MessageItem>(e => e.ReplyId)
+            .IsRequired(false);
     }
 }

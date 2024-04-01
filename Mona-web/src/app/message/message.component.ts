@@ -20,7 +20,8 @@ export class MessageComponent implements OnInit {
   })
   connection?: HubConnection
   private _income: MessageModel[] = []
-  editingMessage?: MessageModel;
+  editingMessage?: MessageModel
+  repliedMessage?:MessageModel
 
   get income(): MessageModel[] {
     return this._income.filter(item => item.receiverId == this.selectedChat?.id || item.senderId == this.selectedChat?.id);
@@ -78,7 +79,7 @@ export class MessageComponent implements OnInit {
 
   }
 
-  sendMessage() {
+  sendMessage(){
     if (!this.editingMessage&&this.inputGroup.get('message')?.value) {
       let message = this.inputGroup.get('message')?.value
       if (message) {
@@ -121,6 +122,17 @@ export class MessageComponent implements OnInit {
   deleteMessageForEveryone(eventMessage: MessageModel) {
     this.connection?.send("deleteMessageForEveryone", eventMessage)
   }
+
+
+  replyMessage(eventMessage:MessageModel){
+    this.repliedMessage=eventMessage
+    console.log(eventMessage);
+
+  }
+
+
+
+
 
 
 

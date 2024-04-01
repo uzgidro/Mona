@@ -11,4 +11,5 @@
           <button *ngIf="selectedChat?.id!==message?.senderId" (click)="editMessageEventEmitter()">📝</button>
           <button class="hover:scale-110 active:scale-95" (click)="deleteMessageForMyselfEventEmitter()">🚫</button>
           <button class="hover:scale-110 active:scale-95" (click)="deleteMessageForEveryoneEventEmitter()">❎</button>
+          <button (click)="replyMessageEventEmitter()">↩️</button>
 

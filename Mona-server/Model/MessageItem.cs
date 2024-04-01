@@ -9,6 +9,7 @@ public class MessageItem
     public string ReceiverId { get; set; }
     public ApplicationUser Receiver { get; set; }
     public string? ReplyId { get; set; }
+    public MessageItem? RepliedMessage { get; set; }
     public bool IsEdited { get; set; }
     public bool IsForwarded { get; set; }
     public bool IsSenderDeleted { get; set; }

@@ -16,6 +16,7 @@ export class MessageItemComponent {
  @Output() editMessageEvent=new EventEmitter<MessageModel>()
  @Output() deleteMessageForMyselfEvent=new EventEmitter<MessageModel>()
  @Output() deleteMessageForEveryoneEvent=new EventEmitter<MessageModel>()
+ @Output() replyMessageEvent=new EventEmitter<MessageModel>()
 
 
 
@@ -31,8 +32,12 @@ export class MessageItemComponent {
   this.editMessageEvent.emit(this.message)
  }
 
+ replyMessageEventEmitter(){
+  this.replyMessageEvent.emit(this.message)
+ }
 
- 
+
+
 
 
 }
