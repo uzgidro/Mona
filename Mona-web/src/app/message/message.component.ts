@@ -107,13 +107,13 @@ export class MessageComponent implements OnInit {
   }
 
 
-  editMessage(message: MessageModel) {
-    this.inputGroup.get('message')?.setValue(message.text)
-    this.editingMessage = message
+  editMessage(eventMessage: MessageModel) {
+    this.inputGroup.get('message')?.setValue(eventMessage.text)
+    this.editingMessage =eventMessage
   }
 
 
-  
+
   deleteMessageForMyself(eventMessage: MessageModel) {
       this.connection?.send("deleteMessageForMyself", eventMessage)
 
