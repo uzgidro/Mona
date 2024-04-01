@@ -18,6 +18,9 @@ export class MessageItemComponent {
  @Output() deleteMessageForEveryoneEvent=new EventEmitter<MessageModel>()
 
 
+ @Output() resetFormEvent=new EventEmitter<MessageModel>()
+
+
 
  deleteMessageForMyselfEventEmitter(){
   this.deleteMessageForMyselfEvent.emit(this.message)
@@ -27,10 +30,8 @@ export class MessageItemComponent {
  }
  editMessageEventEmitter(){
   this.editMessageEvent.emit(this.message)
-  if(this.editingMessage){
-    this.editingMessage.isEdited=true
-
-  }
+  this.resetFormEvent.emit(this.message)
  }
+
 
 }

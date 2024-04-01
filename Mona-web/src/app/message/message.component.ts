@@ -48,12 +48,11 @@ export class MessageComponent implements OnInit {
     });
     connection.on("ModifyMessage", (modifiedMessage: MessageModel) => {
       const index = this._income.findIndex(item => item.id === modifiedMessage.id);
-      if (index !== -1) {
-        this._income[index] = modifiedMessage;
-      }
+      console.log(index);
+      this._income[index] = modifiedMessage;
+
     });
     connection.on("DeleteMessage", (deletedMessage: MessageModel) => {
-      console.log('invoked');
       this._income = this._income.filter(item => item.id !== deletedMessage.id);
     });
 
@@ -81,7 +80,7 @@ export class MessageComponent implements OnInit {
   }
 
   sendMessage() {
-    if (this.inputGroup.get('message')?.value !== '' && this.editingMessage === undefined) {
+    if (!this.editingMessage&&this.inputGroup.get('message')?.value) {
       let message = this.inputGroup.get('message')?.value
       if (message) {
         const messageRequest: MessageRequest = {
@@ -95,14 +94,13 @@ export class MessageComponent implements OnInit {
         }
       }
 
-    } else {
-      if (this.editingMessage) {
-        const inputValue = this.inputGroup.get('message')?.value;
-        if (inputValue !== null && inputValue !== undefined) {
+    } else if(this.editingMessage) {
+      const inputValue = this.inputGroup.get('message')?.value;
+      if (inputValue){
           this.editingMessage.text = inputValue
           this.connection?.send("editMessage", this.editingMessage)
+
         }
-      }
     }
   }
 
@@ -116,7 +114,6 @@ export class MessageComponent implements OnInit {
 
   deleteMessageForMyself(eventMessage: MessageModel) {
       this.connection?.send("deleteMessageForMyself", eventMessage)
-
   }
 
 
@@ -125,6 +122,8 @@ export class MessageComponent implements OnInit {
     this.connection?.send("deleteMessageForEveryone", eventMessage)
   }
 
+  formReset(message:MessageModel){
+  }
 
 
 }
