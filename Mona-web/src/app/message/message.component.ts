@@ -48,7 +48,6 @@ export class MessageComponent implements OnInit {
     });
     connection.on("ModifyMessage", (modifiedMessage: MessageModel) => {
       const index = this._income.findIndex(item => item.id === modifiedMessage.id);
-      console.log(index);
       this._income[index] = modifiedMessage;
 
     });
@@ -99,7 +98,8 @@ export class MessageComponent implements OnInit {
       if (inputValue){
           this.editingMessage.text = inputValue
           this.connection?.send("editMessage", this.editingMessage)
-
+          this.inputGroup.get('message')?.setValue('')
+          this.editingMessage=undefined
         }
     }
   }
