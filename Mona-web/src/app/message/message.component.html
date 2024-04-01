@@ -16,14 +16,14 @@
     <ul>
       <li *ngFor="let message of income">
             <app-message-item
-            [message]="message"
-            [selectedChat]="selectedChat"
-            [editingMessage]="editingMessage"
-            (editMessageEvent)="editMessage($event)"
-            (deleteMessageForMyselfEvent)="deleteMessageForMyself($event)"
-            (deleteMessageForEveryoneEvent)="deleteMessageForEveryone($event)"
+              [message]="message"
+              [selectedChat]="selectedChat"
+              [editingMessage]="editingMessage"
+              (editMessageEvent)="editMessage($event)"
+              (deleteMessageForMyselfEvent)="deleteMessageForMyself($event)"
+              (deleteMessageForEveryoneEvent)="deleteMessageForEveryone($event)"
             >
-          </app-message-item >
+            </app-message-item >
         </li>
     </ul>
   </form>
