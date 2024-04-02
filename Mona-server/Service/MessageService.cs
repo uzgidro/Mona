@@ -62,6 +62,7 @@ public class MessageService(ApplicationContext context) : IMessageService
         }
         else return null;
         entity.ModifiedAt = DateTime.Now;
+
         var entityEntry = context.Messages.Update(entity);
         await context.SaveChangesAsync();
         await AddNavigation(entity);
@@ -87,6 +88,7 @@ public class MessageService(ApplicationContext context) : IMessageService
         return await context.Messages.AsNoTracking()
             .Include(m => m.Sender)
             .Include(m => m.Receiver)
+            .Include(m => m.RepliedMessage)
             .Where(item => item.ReceiverId.Equals(caller) && !item.IsReceiverDeleted || item.SenderId.Equals(caller) && !item.IsSenderDeleted)
             .ToListAsync();
     }
@@ -95,5 +97,6 @@ public class MessageService(ApplicationContext context) : IMessageService
     {
         await context.Entry(entity).Reference(m => m.Sender).LoadAsync();
         await context.Entry(entity).Reference(m => m.Receiver).LoadAsync();
+        await context.Entry(entity).Reference(m => m.RepliedMessage).LoadAsync();
     }
 }

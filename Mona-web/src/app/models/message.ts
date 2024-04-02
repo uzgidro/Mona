@@ -4,6 +4,7 @@ export interface MessageRequest{
   text:string
   senderId?:string
   receiverId:string|number|undefined
+  replyId?: string
   createdAt:Date
 }
 
@@ -16,6 +17,7 @@ export interface MessageModel{
   receiverId: string;
   receiver: UserModel;
   replyId?: any;
+  repliedMessage?: MessageModel
   isEdited: boolean;
   isForwarded: boolean;
   isDeleted: boolean;

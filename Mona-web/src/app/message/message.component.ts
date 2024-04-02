@@ -46,6 +46,8 @@ export class MessageComponent implements OnInit {
 
     connection.on("ReceiveMessage", (message: MessageModel) => {
       this._income.push(message)
+
+
     });
     connection.on("ModifyMessage", (modifiedMessage: MessageModel) => {
       const index = this._income.findIndex(item => item.id === modifiedMessage.id);
@@ -82,11 +84,16 @@ export class MessageComponent implements OnInit {
   sendMessage(){
     if (!this.editingMessage&&this.inputGroup.get('message')?.value) {
       let message = this.inputGroup.get('message')?.value
+      let replyId
+      if (this.repliedMessage) {
+        replyId = this.repliedMessage.id
+      }
       if (message) {
         const messageRequest: MessageRequest = {
           text: message,
           receiverId: this.selectedChat?.id,
-          createdAt: new Date()
+          createdAt: new Date(),
+          replyId: replyId
         }
         if (message.trim().length > 0) {
           this.connection?.send("sendDirectMessage", messageRequest)
@@ -127,14 +134,7 @@ export class MessageComponent implements OnInit {
 
   replyMessage(eventMessage:MessageModel){
     this.repliedMessage=eventMessage
-    console.log(this.repliedMessage);
   }
-
-
-
-
-
-
 
 }
 

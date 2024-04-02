@@ -11,6 +11,7 @@ export class MessageItemComponent {
  @Input() message?:MessageModel
  @Input() selectedChat?:UserModel
  @Input()  editingMessage?: MessageModel
+ @Input() repliedMessage?:MessageModel
 
 
  @Output() editMessageEvent=new EventEmitter<MessageModel>()
