@@ -23,8 +23,19 @@ export class MessageComponent implements OnInit {
   editingMessage?: MessageModel
   repliedMessage?:MessageModel
 
+  // get income(): MessageModel[] {
+  //   return this._income.filter(item => item.receiverId == this.selectedChat?.id || item.senderId == this.selectedChat?.id);
+  // }
   get income(): MessageModel[] {
-    return this._income.filter(item => item.receiverId == this.selectedChat?.id || item.senderId == this.selectedChat?.id);
+    // Modify the sorting logic based on your actual message model
+    // For example, if your MessageModel has a 'createdAt' property, you can sort based on that
+    return this._income.filter(item => item.receiverId == this.selectedChat?.id || item.senderId == this.selectedChat?.id)
+      .sort((a, b) => {
+        // Assuming MessageModel has a 'createdAt' property
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        return dateA - dateB;
+      });
   }
 
   constructor(private jwtService: JwtService) {
@@ -134,6 +145,10 @@ export class MessageComponent implements OnInit {
 
   replyMessage(eventMessage:MessageModel){
     this.repliedMessage=eventMessage
+  }
+  getMessageCount(user: UserModel): number {
+    const userId = user.id;
+    return this._income.filter(message => (message.senderId == userId || message.receiverId == userId)).length;
   }
 
 }
