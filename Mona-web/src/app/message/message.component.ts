@@ -146,9 +146,13 @@ export class MessageComponent implements OnInit {
   replyMessage(eventMessage:MessageModel){
     this.repliedMessage=eventMessage
   }
-  getMessageCount(user: UserModel): number {
+  getIncomingMessagesCount(user: UserModel): number {
     const userId = user.id;
-    return this._income.filter(message => (message.senderId == userId || message.receiverId == userId)).length;
+    return this._income.filter(message => (message.senderId == userId )).length;
+  }
+  getSentMessagesCount(user: UserModel): number {
+    const userId = user.id;
+    return this._income.filter(message => (message.receiverId == userId )).length;
   }
 
 }
