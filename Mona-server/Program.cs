@@ -18,6 +18,7 @@ builder.Services
     .AddScoped<IMessageService, MessageService>()
     .AddScoped<ICryptoService, CryptoService>()
     .AddScoped<IJwtService, JwtService>()
+    .AddScoped<IFileService, FileService>()
     .AddScoped<IUserService, UserService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
