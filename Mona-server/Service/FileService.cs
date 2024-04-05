@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
 using Mona.Service.Interface;
@@ -27,6 +28,11 @@ public class FileService : IFileService
                 totalSizeInBytes += await SaveFileAsync(fileSection, filePaths, notUploadedFiles);
                 fileCount++;
             }
+            else if (section.Headers.ContainsValue("form-data; name=\"messageId\""))
+            {
+                using var reader = new StreamReader(section.Body, Encoding.UTF8);
+                Console.WriteLine(await reader.ReadToEndAsync());
+            }
 
             section = await multipartReader.ReadNextSectionAsync();
         }
@@ -46,8 +52,19 @@ public class FileService : IFileService
         var extension = Path.GetExtension(fileSection.FileName);
 
         Directory.CreateDirectory(UploadsSubDirectory);
+        var fileName = fileSection.FileName;
+        var uniqueFileName = fileName;
+        var index = 0;
 
-        var filePath = Path.Combine(UploadsSubDirectory, fileSection.FileName);
+        while (File.Exists(Path.Combine(UploadsSubDirectory, uniqueFileName)))
+        {
+            index++;
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+            var indexedFileName = $"{fileNameWithoutExtension} ({index}){extension}";
+            uniqueFileName = indexedFileName;
+        }
+
+        var filePath = Path.Combine(UploadsSubDirectory, uniqueFileName);
 
         await using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 1024);
         await fileSection.FileStream?.CopyToAsync(stream);
@@ -94,5 +111,17 @@ public class FileService : IFileService
         }
 
         return boundary;
+    }
+
+    private static string EncodeFileName(string fileName)
+    {
+        var plainTextBytes = Encoding.UTF8.GetBytes(fileName);
+        return Convert.ToBase64String(plainTextBytes);
+    }
+
+    private static string DecodeFileName(string encodedFileName)
+    {
+        var base64EncodedBytes = Convert.FromBase64String(encodedFileName);
+        return Encoding.UTF8.GetString(base64EncodedBytes);
     }
 }
