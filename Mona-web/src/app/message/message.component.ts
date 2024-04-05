@@ -19,7 +19,6 @@ import { ButtonModule } from 'primeng/button';
 export class MessageComponent implements OnInit {
   users: UserModel[] = []
   selectedChat?: UserModel
-
   inputGroup = new FormGroup({
     message: new FormControl('')
   })
@@ -27,7 +26,6 @@ export class MessageComponent implements OnInit {
   private _income: MessageModel[] = []
   editingMessage?: MessageModel
   repliedMessage?:MessageModel
-
   // get income(): MessageModel[] {
   //   return this._income.filter(item => item.receiverId == this.selectedChat?.id || item.senderId == this.selectedChat?.id);
   // }
@@ -39,7 +37,6 @@ export class MessageComponent implements OnInit {
         return dateA - dateB;
       });
   }
-
   constructor(private jwtService: JwtService) {
   }
 
@@ -52,26 +49,17 @@ export class MessageComponent implements OnInit {
         }
       })
       .build();
-
-
     this.connection = connection
-
-
     connection.on("ReceiveMessage", (message: MessageModel) => {
       this._income.push(message)
-
-
     });
     connection.on("ModifyMessage", (modifiedMessage: MessageModel) => {
       const index = this._income.findIndex(item => item.id === modifiedMessage.id);
       this._income[index] = modifiedMessage;
-
     });
     connection.on("DeleteMessage", (deletedMessage: MessageModel) => {
       this._income = this._income.filter(item => item.id !== deletedMessage.id);
     });
-
-
     connection.start()
       .catch((err) => {
         console.log(err)
@@ -82,9 +70,7 @@ export class MessageComponent implements OnInit {
           connection.invoke('getHistory').then((messages: MessageModel[]) => {
             this._income = messages
             console.log(this._income);
-
           })
-
         }
       })
   }
@@ -118,7 +104,6 @@ export class MessageComponent implements OnInit {
           };
           this.connection?.send("sendDirectMessage", messageRequest);
         });
-
         this.inputGroup.get('message')?.setValue('');
         this.repliedMessage = undefined;
       }
@@ -138,8 +123,6 @@ export class MessageComponent implements OnInit {
     this.editingMessage =eventMessage
   }
 
-
-
   deleteMessageForMyself(eventMessage: MessageModel) {
       this.connection?.send("deleteMessageForMyself", eventMessage)
   }
@@ -147,7 +130,6 @@ export class MessageComponent implements OnInit {
   deleteMessageForEveryone(eventMessage: MessageModel) {
     this.connection?.send("deleteMessageForEveryone", eventMessage)
   }
-
 
   replyMessage(eventMessage:MessageModel){
     this.repliedMessage=eventMessage
