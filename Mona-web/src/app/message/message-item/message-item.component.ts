@@ -21,8 +21,6 @@ export class MessageItemComponent {
 
 
 
-
-
  deleteMessageForMyselfEventEmitter(){
   this.deleteMessageForMyselfEvent.emit(this.message)
  }
@@ -32,7 +30,6 @@ export class MessageItemComponent {
  editMessageEventEmitter(){
   this.editMessageEvent.emit(this.message)
  }
-
  replyMessageEventEmitter(){
   this.replyMessageEvent.emit(this.message)
  }

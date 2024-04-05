@@ -6,11 +6,6 @@ import { FormControl, FormGroup} from "@angular/forms";
 import {UserModel} from "../models/user";
 import {MessageModel, MessageRequest} from '../models/message';
 
-import { ButtonModule } from 'primeng/button';
-
-
-
-
 @Component({
   selector: 'app-message',
   templateUrl: './message.component.html',
@@ -142,7 +137,6 @@ export class MessageComponent implements OnInit {
     const userId = user.id;
     return this._income.filter(message => (message.receiverId == userId )).length;
   }
-
 }
 
 
