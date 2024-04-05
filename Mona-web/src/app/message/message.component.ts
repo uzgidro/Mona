@@ -2,9 +2,14 @@ import {Component, OnInit} from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import {HubConnection} from '@microsoft/signalr';
 import {JwtService} from "../services/jwt.service";
-import { FormControl, FormGroup, Validators} from "@angular/forms";
+import { FormControl, FormGroup} from "@angular/forms";
 import {UserModel} from "../models/user";
 import {MessageModel, MessageRequest} from '../models/message';
+
+import { ButtonModule } from 'primeng/button';
+
+
+
 
 @Component({
   selector: 'app-message',
@@ -87,43 +92,55 @@ export class MessageComponent implements OnInit {
       })
   }
 
+
+
   selectChat(user: UserModel) {
     this.selectedChat = user
 
   }
 
-  sendMessage(){
-    if (!this.editingMessage&&this.inputGroup.get('message')?.value) {
-      let message = this.inputGroup.get('message')?.value
-      let replyId
+
+  sendMessage() {
+    if (!this.editingMessage && this.inputGroup.get('message')?.value) {
+      let message = this.inputGroup.get('message')?.value;
+      let replyId: string;
       if (this.repliedMessage) {
-        replyId = this.repliedMessage.id
+        replyId = this.repliedMessage.id;
       }
       if (message) {
-        const messageRequest: MessageRequest = {
-          text: message,
-          receiverId: this.selectedChat?.id,
-          createdAt: new Date(),
-          replyId: replyId
+        const messagesToSend: string[] = [];
+        let remainingMessage = message;
+        while (remainingMessage.length > 20) {
+          messagesToSend.push(remainingMessage.substring(0, 20));
+          remainingMessage = remainingMessage.substring(20);
         }
-        if (message.trim().length > 0) {
-          this.connection?.send("sendDirectMessage", messageRequest)
-          this.inputGroup.get('message')?.setValue('')
-          this.repliedMessage=undefined
-        }
-      }
 
-    } else if(this.editingMessage) {
-      const inputValue = this.inputGroup.get('message')?.value;
-      if (inputValue){
-          this.editingMessage.text = inputValue
-          this.connection?.send("editMessage", this.editingMessage)
-          this.inputGroup.get('message')?.setValue('')
-          this.editingMessage=undefined
+        if (remainingMessage.length > 0) {
+          messagesToSend.push(remainingMessage);
         }
+        messagesToSend.forEach(chunk => {
+          const messageRequest: MessageRequest = {
+            text: chunk,
+            receiverId: this.selectedChat?.id,
+            createdAt: new Date(),
+            replyId: replyId
+          };
+          this.connection?.send("sendDirectMessage", messageRequest);
+        });
+
+        this.inputGroup.get('message')?.setValue('');
+        this.repliedMessage = undefined;
+      }
+    } else if (this.editingMessage) {
+      const inputValue = this.inputGroup.get('message')?.value;
+      if (inputValue) {
+        this.editingMessage.text = inputValue;
+        this.connection?.send("editMessage", this.editingMessage);
+        this.inputGroup.get('message')?.setValue('');
+        this.editingMessage = undefined;
+      }
     }
   }
-
 
   editMessage(eventMessage: MessageModel) {
     this.inputGroup.get('message')?.setValue(eventMessage.text)
