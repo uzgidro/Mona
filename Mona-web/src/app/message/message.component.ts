@@ -21,9 +21,6 @@ export class MessageComponent implements OnInit {
   private _income: MessageModel[] = []
   editingMessage?: MessageModel
   repliedMessage?:MessageModel
-  // get income(): MessageModel[] {
-  //   return this._income.filter(item => item.receiverId == this.selectedChat?.id || item.senderId == this.selectedChat?.id);
-  // }
   get income(): MessageModel[] {
     return this._income.filter(item => item.receiverId == this.selectedChat?.id || item.senderId == this.selectedChat?.id)
       .sort((a, b) => {
