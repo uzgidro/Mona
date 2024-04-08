@@ -77,7 +77,6 @@ export class MessageComponent implements OnInit {
   }
   sendMessage() {
     if (this.files) {
-
      console.log(this.files);
      const messageReq:MessageRequest={
       text: this.files[0].name,
