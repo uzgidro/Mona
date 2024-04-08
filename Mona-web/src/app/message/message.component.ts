@@ -12,6 +12,8 @@ import {MessageModel, MessageRequest} from '../models/message';
   styleUrl: './message.component.css'
 })
 export class MessageComponent implements OnInit {
+
+  files:any[]=[]
   users: UserModel[] = []
   selectedChat?: UserModel
   inputGroup = new FormGroup({
@@ -19,6 +21,7 @@ export class MessageComponent implements OnInit {
     file: new FormControl('')
 
   })
+
   connection?: HubConnection
   private _income: MessageModel[] = []
   editingMessage?: MessageModel
@@ -73,8 +76,19 @@ export class MessageComponent implements OnInit {
     this.selectedChat = user
   }
   sendMessage() {
-    const file=this.inputGroup.get('file')?.value
-    console.log(file);
+    if (this.files) {
+
+     console.log(this.files);
+     const messageReq:MessageRequest={
+      text: this.files[0].name,
+      receiverId: this.selectedChat?.id,
+      createdAt: new Date(),
+     }
+     this.connection?.send("sendDirectMessage", messageReq);
+    }
+
+
+
     if (!this.editingMessage && this.inputGroup.get('message')?.value) {
       let message = this.inputGroup.get('message')?.value;
       let replyId: string;
@@ -141,14 +155,10 @@ export class MessageComponent implements OnInit {
 
 
   onFileSelected(event: any) {
+    this.files=event.target.files
     console.log(event);
-    const file = event.target.files[0];
-    console.log(file);
-
 
   }
-
-
 
 
 }
