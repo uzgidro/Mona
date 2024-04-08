@@ -13,14 +13,16 @@ import {MessageModel, MessageRequest} from '../models/message';
 })
 export class MessageComponent implements OnInit {
 
-  files:any[]=[]
   users: UserModel[] = []
   selectedChat?: UserModel
   inputGroup = new FormGroup({
     message: new FormControl(''),
-    file: new FormControl('')
 
   })
+
+
+  selectedFile!: File;
+
 
   connection?: HubConnection
   private _income: MessageModel[] = []
@@ -76,19 +78,7 @@ export class MessageComponent implements OnInit {
     this.selectedChat = user
   }
   sendMessage() {
-    if (this.files) {
-     console.log(this.files);
-     const messageReq:MessageRequest={
-      text: this.files[0].name,
-      receiverId: this.selectedChat?.id,
-      createdAt: new Date(),
-     }
-     this.connection?.send("sendDirectMessage", messageReq);
-    }
-
-
-
-    if (!this.editingMessage && this.inputGroup.get('message')?.value) {
+    if (!this.editingMessage||this.selectedFile) {
       let message = this.inputGroup.get('message')?.value;
       let replyId: string;
       if (this.repliedMessage) {
@@ -111,7 +101,17 @@ export class MessageComponent implements OnInit {
             createdAt: new Date(),
             replyId: replyId
           };
-          this.connection?.send("sendDirectMessage", messageRequest);
+          if(this.selectedFile){
+           console.log(this.selectedFile);
+            const formData=new FormData()
+            formData.append("file", this.selectedFile);
+            formData.append('message',JSON.stringify(messageRequest))
+            this.connection?.send("sendDirectMessage",formData);
+            console.log(formData);
+
+          }else{
+            this.connection?.send('sendDirectMessage',messageRequest)
+          }
         });
         this.inputGroup.get('message')?.setValue('');
         this.repliedMessage = undefined;
@@ -126,6 +126,7 @@ export class MessageComponent implements OnInit {
       }
     }
   }
+
 
   editMessage(eventMessage: MessageModel) {
     this.inputGroup.get('message')?.setValue(eventMessage.text)
@@ -152,13 +153,12 @@ export class MessageComponent implements OnInit {
     return this._income.filter(message => (message.receiverId == userId )).length;
   }
 
-
   onFileSelected(event: any) {
-    this.files=event.target.files
-    console.log(event);
-
+    const files: FileList = event.target.files;
+    this.selectedFile=event.target.files[0]
+    console.log(files);
+    console.log(this.selectedFile);
   }
-
 
 }
 
