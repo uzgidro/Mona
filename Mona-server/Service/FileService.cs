@@ -27,7 +27,10 @@ public class FileService(ApplicationContext context) : IFileService
             {
                 var file = await SaveFileAsync(fileSection, filePaths, notUploadedFiles);
                 await context.Files.AddAsync(new FileModel
-                    { Name = file.Name, Path = file.Path, Size = file.Size, MessageId = messageId });
+                {
+                    Name = file.Name, Path = file.Path, Size = file.Size, MessageId = messageId,
+                    CreatedAt = DateTime.Now
+                });
                 await context.SaveChangesAsync();
                 fileCount++;
                 totalSizeInBytes += file.Size;
@@ -51,12 +54,13 @@ public class FileService(ApplicationContext context) : IFileService
     {
         var extension = Path.GetExtension(fileSection.FileName);
 
-        Directory.CreateDirectory(UploadsSubDirectory);
+        var root = Path.Combine(UploadsSubDirectory, DateTime.Now.ToString("dd.MM.yyyy"));
+        Directory.CreateDirectory(root);
         var fileName = fileSection.FileName;
         var uniqueFileName = fileName;
         var index = 0;
 
-        while (File.Exists(Path.Combine(UploadsSubDirectory, uniqueFileName)))
+        while (File.Exists(Path.Combine(root, uniqueFileName)))
         {
             index++;
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
@@ -64,7 +68,7 @@ public class FileService(ApplicationContext context) : IFileService
             uniqueFileName = indexedFileName;
         }
 
-        var filePath = Path.Combine(UploadsSubDirectory, uniqueFileName);
+        var filePath = Path.Combine(root, uniqueFileName);
 
         await using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 1024);
         await fileSection.FileStream?.CopyToAsync(stream);

@@ -150,6 +150,12 @@ namespace Mona.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("MessageId")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -181,9 +187,6 @@ namespace Mona.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsEdited")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsFileOnly")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsForwarded")
@@ -218,6 +221,9 @@ namespace Mona.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ReceiverId");
+
+                    b.HasIndex("ReplyId")
+                        .IsUnique();
 
                     b.HasIndex("SenderId");
 
@@ -364,6 +370,10 @@ namespace Mona.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Mona.Model.MessageModel", "RepliedMessage")
+                        .WithOne()
+                        .HasForeignKey("Mona.Model.MessageModel", "ReplyId");
+
                     b.HasOne("Mona.Model.UserModel", "Sender")
                         .WithMany()
                         .HasForeignKey("SenderId")
@@ -371,6 +381,8 @@ namespace Mona.Migrations
                         .IsRequired();
 
                     b.Navigation("Receiver");
+
+                    b.Navigation("RepliedMessage");
 
                     b.Navigation("Sender");
                 });

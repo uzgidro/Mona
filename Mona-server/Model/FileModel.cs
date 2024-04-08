@@ -7,4 +7,6 @@ public class FileModel
     public string Path { get; set; }
     public long Size { get; set; }
     public string MessageId { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime CreatedAt { get; set; }
 }

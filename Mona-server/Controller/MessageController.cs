@@ -38,7 +38,7 @@ public class MessageController(
             await fileService.UploadFileAsync(multipartReader, messageModel.Id);
 
         var activeMessage = await messageService.ActiveMessage(messageModel);
-        hubContext.Clients.Users(activeMessage.ReceiverId, activeMessage.SenderId).ReceiveMessage(activeMessage);
+        await hubContext.Clients.Users(activeMessage.ReceiverId, activeMessage.SenderId).ReceiveMessage(activeMessage);
         return Results.Created(nameof(Post), fileUploadSummary);
     }
 

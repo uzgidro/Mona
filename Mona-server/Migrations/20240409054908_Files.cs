@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -23,7 +24,7 @@ namespace Mona.Migrations
                 table: "Messages",
                 type: "INTEGER",
                 nullable: false,
-                defaultValue: true);
+                defaultValue: false);
 
             migrationBuilder.CreateTable(
                 name: "Files",
@@ -33,7 +34,9 @@ namespace Mona.Migrations
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Path = table.Column<string>(type: "TEXT", nullable: false),
                     Size = table.Column<long>(type: "INTEGER", nullable: false),
-                    MessageId = table.Column<string>(type: "TEXT", nullable: false)
+                    MessageId = table.Column<string>(type: "TEXT", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "INTEGER", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -47,16 +50,37 @@ namespace Mona.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Messages_ReplyId",
+                table: "Messages",
+                column: "ReplyId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Files_MessageId",
                 table: "Files",
                 column: "MessageId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Messages_Messages_ReplyId",
+                table: "Messages",
+                column: "ReplyId",
+                principalTable: "Messages",
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Messages_Messages_ReplyId",
+                table: "Messages");
+
             migrationBuilder.DropTable(
                 name: "Files");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Messages_ReplyId",
+                table: "Messages");
 
             migrationBuilder.DropColumn(
                 name: "IsSent",
