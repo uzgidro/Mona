@@ -2,10 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import {HubConnection} from '@microsoft/signalr';
 import {JwtService} from "../services/jwt.service";
-import {FormControl, FormGroup} from "@angular/forms";
+import { FormControl, FormGroup} from "@angular/forms";
 import {UserModel} from "../models/user";
 import {MessageModel, MessageRequest} from '../models/message';
-import {ApiService} from "../services/api.service";
 
 @Component({
   selector: 'app-message',
@@ -13,126 +12,154 @@ import {ApiService} from "../services/api.service";
   styleUrl: './message.component.css'
 })
 export class MessageComponent implements OnInit {
+
+  files:any[]=[]
   users: UserModel[] = []
   selectedChat?: UserModel
-
   inputGroup = new FormGroup({
-    message: new FormControl('')
+    message: new FormControl(''),
+    file: new FormControl('')
+
   })
+
   connection?: HubConnection
   private _income: MessageModel[] = []
-  editingMessage?: MessageModel;
-
+  editingMessage?: MessageModel
+  repliedMessage?:MessageModel
   get income(): MessageModel[] {
-    return this._income.filter(item => item.receiverId == this.selectedChat?.id || item.senderId == this.selectedChat?.id);
+    return this._income.filter(item => item.receiverId == this.selectedChat?.id || item.senderId == this.selectedChat?.id)
+      .sort((a, b) => {
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        return dateA - dateB;
+      });
+  }
+  constructor(private jwtService: JwtService) {
   }
 
-  constructor(private jwtService: JwtService, private apiService: ApiService) {
-  }
-
-  async ngOnInit() {
-    this.setupConnection()
-    this.openConnection()
-    await this.startConnection()
-    console.log(new Date())
-  }
-
-  selectChat(user: UserModel) {
-    this.selectedChat = user
-
-  }
-
-  sendMessage() {
-    if (this.inputGroup.get('message')?.value !== '' && this.editingMessage === undefined) {
-      let message = this.inputGroup.get('message')?.value
-      if (message) {
-        const messageRequest: MessageRequest = {
-          text: message,
-          receiverId: this.selectedChat?.id,
-          createdAt: new Date()
-        }
-        if (message.trim().length > 0) {
-          this.connection?.send("sendDirectMessage", messageRequest)
-          this.inputGroup.get('message')?.setValue('')
-        }
-      }
-
-    } else {
-      if (this.editingMessage) {
-        const inputValue = this.inputGroup.get('message')?.value;
-        if (inputValue !== null && inputValue !== undefined) {
-          this.editingMessage.text = inputValue
-          this.connection?.send("editMessage", this.editingMessage)
-        }
-      }
-    }
-  }
-
-
-  editMessage(message: MessageModel) {
-    this.inputGroup.get('message')?.setValue(message.text)
-    this.editingMessage = message
-  }
-
-  deleteMessageForMyself(message: MessageModel) {
-    this.connection?.send("deleteMessageForMyself", message)
-
-  }
-
-  deleteMessageForEveryone(message: MessageModel) {
-    this.connection?.send("deleteMessageForEveryone", message)
-
-  }
-
-  private setupConnection() {
+  ngOnInit() {
     let accessToken = this.jwtService.getAccessToken()
-    this.connection = new signalR.HubConnectionBuilder()
+    const connection = new signalR.HubConnectionBuilder()
       .withUrl("http://127.0.0.1:5031/hub", {
         accessTokenFactory(): string | Promise<string> {
           return accessToken
         }
       })
-      .build()
-  }
-
-  private openConnection() {
-    this.connection?.on("ReceiveMessage", (message: MessageModel) => {
-      this._income.push(message);
+      .build();
+    this.connection = connection
+    connection.on("ReceiveMessage", (message: MessageModel) => {
+      this._income.push(message)
     });
-    this.connection?.on("ModifyMessage", (modifiedMessage: MessageModel) => {
+    connection.on("ModifyMessage", (modifiedMessage: MessageModel) => {
       const index = this._income.findIndex(item => item.id === modifiedMessage.id);
-      if (index !== -1) {
-        modifiedMessage.isEdited = true
-        this._income[index] = modifiedMessage;
-      }
+      this._income[index] = modifiedMessage;
     });
-    this.connection?.on("DeleteMessage", (deletedMessage: MessageModel) => {
+    connection.on("DeleteMessage", (deletedMessage: MessageModel) => {
       this._income = this._income.filter(item => item.id !== deletedMessage.id);
     });
+    connection.start()
+      .catch((err) => {
+        console.log(err)
+      })
+      .then(() => {
+        if (connection) {
+          connection.invoke('getUsers').then((users: UserModel[]) => this.users = users)
+          connection.invoke('getHistory').then((messages: MessageModel[]) => {
+            this._income = messages
+            console.log(this._income);
+          })
+        }
+      })
   }
 
-  private async startConnection() {
-    try {
-      if (this.connection) {
-        await this.connection.start()
-        this.connection.invoke('getUsers').then((users: UserModel[]) => this.users = users)
-        this.connection.invoke('getHistory').then((messages: MessageModel[]) => {
-          this._income = messages
-        })
+  selectChat(user: UserModel) {
+    this.selectedChat = user
+  }
+  sendMessage() {
+    if (this.files) {
+     console.log(this.files);
+     const messageReq:MessageRequest={
+      text: this.files[0].name,
+      receiverId: this.selectedChat?.id,
+      createdAt: new Date(),
+     }
+     this.connection?.send("sendDirectMessage", messageReq);
+    }
+
+
+
+    if (!this.editingMessage && this.inputGroup.get('message')?.value) {
+      let message = this.inputGroup.get('message')?.value;
+      let replyId: string;
+      if (this.repliedMessage) {
+        replyId = this.repliedMessage.id;
       }
-    } catch (err: any) {
-      if (err.toString().includes('401')) {
-        await this.restartConnection()
-      } else {
-        console.log(err)
+      if (message) {
+        const messagesToSend: string[] = [];
+        let remainingMessage = message;
+        while (remainingMessage.length > 20) {
+          messagesToSend.push(remainingMessage.substring(0, 20));
+          remainingMessage = remainingMessage.substring(20);
+        }
+        if (remainingMessage.length > 0) {
+          messagesToSend.push(remainingMessage);
+        }
+        messagesToSend.forEach(chunk => {
+          const messageRequest: MessageRequest = {
+            text: chunk,
+            receiverId: this.selectedChat?.id,
+            createdAt: new Date(),
+            replyId: replyId
+          };
+          this.connection?.send("sendDirectMessage", messageRequest);
+        });
+        this.inputGroup.get('message')?.setValue('');
+        this.repliedMessage = undefined;
+      }
+    } else if (this.editingMessage) {
+      const inputValue = this.inputGroup.get('message')?.value;
+      if (inputValue) {
+        this.editingMessage.text = inputValue;
+        this.connection?.send("editMessage", this.editingMessage);
+        this.inputGroup.get('message')?.setValue('');
+        this.editingMessage = undefined;
       }
     }
   }
 
-  private async restartConnection() {
-    await this.connection?.stop()
-    await this.apiService.refreshTokens()
-    this.setupConnection()
-    await this.startConnection()
+  editMessage(eventMessage: MessageModel) {
+    this.inputGroup.get('message')?.setValue(eventMessage.text)
+    this.editingMessage =eventMessage
   }
+
+  deleteMessageForMyself(eventMessage: MessageModel) {
+      this.connection?.send("deleteMessageForMyself", eventMessage)
+  }
+
+  deleteMessageForEveryone(eventMessage: MessageModel) {
+    this.connection?.send("deleteMessageForEveryone", eventMessage)
+  }
+
+  replyMessage(eventMessage:MessageModel){
+    this.repliedMessage=eventMessage
+  }
+  getIncomingMessagesCount(user: UserModel): number {
+    const userId = user.id;
+    return this._income.filter(message => (message.senderId == userId )).length;
+  }
+  getSentMessagesCount(user: UserModel): number {
+    const userId = user.id;
+    return this._income.filter(message => (message.receiverId == userId )).length;
+  }
+
+
+  onFileSelected(event: any) {
+    this.files=event.target.files
+    console.log(event);
+
+  }
+
+
 }
+
+

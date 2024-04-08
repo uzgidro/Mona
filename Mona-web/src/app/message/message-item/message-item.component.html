@@ -1,0 +1,13 @@
+        <p *ngIf="message?.repliedMessage">Replied to <span [ngClass]="{'text-red-500':message?.receiverId===selectedChat?.id}">{{message?.repliedMessage?.text}}</span>👇</p>
+       <span
+          [ngClass]="{'bg-blue-700 text-white':message?.receiverId===selectedChat?.id}"
+           class="w-full bg-green-500 text-white">
+           {{message?.sender?.firstName}} : <span [ngClass]="{'text-yellow-500 bg-green-300 italic':message?.isEdited&&message?.receiverId==selectedChat?.id}"> {{ message?.text }}</span>
+          </span>
+          <small *ngIf="message?.isEdited">edited</small>
+          <small>{{message?.createdAt |date:'HH:mm'}}</small>
+          <button *ngIf="selectedChat?.id!==message?.senderId" (click)="editMessageEventEmitter()">📝</button>
+          <button class="hover:scale-110 active:scale-95" (click)="deleteMessageForMyselfEventEmitter()">🚫</button>
+          <button class="hover:scale-110 active:scale-95" (click)="deleteMessageForEveryoneEventEmitter()">❎</button>
+          <button (click)="replyMessageEventEmitter()">↩️</button>
+

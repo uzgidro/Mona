@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Mona.Model;
 
+
 namespace Mona.Context;
 
 public class ApplicationContext(DbContextOptions<ApplicationContext> options)
@@ -31,5 +32,11 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
             .WithMany(e => e.Files)
             .HasForeignKey(e => e.MessageId)
             .IsRequired();
+
+        builder.Entity<MessageModel>()
+            .HasOne(e => e.RepliedMessage)
+            .WithOne()
+            .HasForeignKey<MessageModel>(e => e.ReplyId)
+            .IsRequired(false);
     }
 }

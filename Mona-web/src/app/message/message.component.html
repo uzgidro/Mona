@@ -2,31 +2,43 @@
 <div class="users">
 
   <ul>
-    <li [ngClass]="{'bg-slate-900 text-white': user === selectedChat} " class="text-black bg-white" (click)="selectChat(user)" *ngFor="let user of users">{{ user.firstName }} {{user.lastName}}</li>
+    <li
+     [ngClass]="{'bg-slate-900 text-white': user === selectedChat} "
+      class="text-black bg-white" (click)="selectChat(user)"
+       *ngFor="let user of users">
+       {{ user.firstName }} {{user.lastName}}
+       <span >{{getIncomingMessagesCount(user) }}⬇️</span>
+       <span>⬆️{{getSentMessagesCount(user)}}</span>
+      </li>
   </ul>
 
 </div>
 
 <div class="chat bg-slate-300">
   <h2 class="text-green-700">{{ selectedChat?.firstName }} {{selectedChat?.lastName}}</h2>
-  <form *ngIf="selectedChat"  (submit)="sendMessage()" [formGroup]="inputGroup">
-    <input formControlName="message" type="text" [value]="this.inputGroup.value.message" >
-    <button type="submit">send</button>
+  <form *ngIf="selectedChat"   [formGroup]="inputGroup">
+    <p *ngIf="repliedMessage">{{repliedMessage.text}}</p>
+    <p *ngIf="editingMessage">{{editingMessage.text}}</p>
+    <input  formControlName="message" type="text" [value]="this.inputGroup.value.message" >
+    <input type="file" class="file-input"   [value]="this.inputGroup.value.file" (change)=" onFileSelected($event)" >
+    <button (click)="sendMessage()" *ngIf="!this.editingMessage">send</button>
+    <button (click)="sendMessage()" *ngIf="this.editingMessage" >edit</button>
     <ul>
       <li *ngFor="let message of income">
-         <span
-          [ngClass]="{'bg-blue-700 text-white':message.receiverId===selectedChat.id}"
-           class="w-full bg-green-500 text-white">
-           {{message.sender.firstName}} : {{ message.text }}
-          </span>
-          <small *ngIf="message.isEdited||editingMessage?.isEdited">edited</small>
-          <small>{{message.createdAt |date:'HH:mm'}}</small>
-          <button class=" hover:scale-110 active:scale-95" *ngIf="message.senderId!==selectedChat.id"  (click)="editMessage(message)">📝</button>
-          <button class="hover:scale-110 active:scale-95" (click)="deleteMessageForMyself(message)">❌</button>
-          <button class="hover:scale-110 active:scale-95" (click)="deleteMessageForEveryone(message)">❎</button>
+            <app-message-item
+              [message]="message"
+              [selectedChat]="selectedChat"
+              [editingMessage]="editingMessage"
+              (editMessageEvent)="editMessage($event)"
+              (deleteMessageForMyselfEvent)="deleteMessageForMyself($event)"
+              (deleteMessageForEveryoneEvent)="deleteMessageForEveryone($event)"
+              (replyMessageEvent)="replyMessage($event)"
+            >
+            </app-message-item >
         </li>
     </ul>
   </form>
 </div>
+
 
 

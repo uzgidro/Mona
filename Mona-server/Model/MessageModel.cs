@@ -12,6 +12,7 @@ public class MessageModel
     public ICollection<FileModel> Files { get; set; } = new List<FileModel>();
     public bool IsSent { get; set; }
     public bool IsFileOnly { get; set; }
+    public MessageModel? RepliedMessage { get; set; }
     public bool IsEdited { get; set; }
     public bool IsForwarded { get; set; }
     public bool IsSenderDeleted { get; set; }
