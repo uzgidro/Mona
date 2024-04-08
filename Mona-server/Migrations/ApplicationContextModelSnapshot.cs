@@ -162,11 +162,14 @@ namespace Mona.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<long>("Size")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("MessageId");
 
-                    b.ToTable("FileModel");
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("Mona.Model.MessageModel", b =>
@@ -190,6 +193,9 @@ namespace Mona.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsSenderDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsSent")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("ModifiedAt")

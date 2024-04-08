@@ -34,6 +34,7 @@ export class MessageComponent implements OnInit {
     this.setupConnection()
     this.openConnection()
     await this.startConnection()
+    console.log(new Date())
   }
 
   selectChat(user: UserModel) {

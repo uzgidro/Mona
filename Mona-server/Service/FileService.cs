@@ -1,21 +1,21 @@
-using System.Text;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
+using Mona.Context;
+using Mona.Model;
+using Mona.Model.Dto;
 using Mona.Service.Interface;
 using Mona.Utilities;
 
 namespace Mona.Service;
 
-public class FileService : IFileService
+public class FileService(ApplicationContext context) : IFileService
 {
     private const string UploadsSubDirectory = "FilesUploaded";
 
-    public async Task<FileUploadSummary> UploadFileAsync(Stream fileStream, string contentType)
+    public async Task<FileUploadSummary> UploadFileAsync(MultipartReader multipartReader, string messageId)
     {
         var fileCount = 0;
         long totalSizeInBytes = 0;
-        var boundary = GetBoundary(MediaTypeHeaderValue.Parse(contentType));
-        var multipartReader = new MultipartReader(boundary, fileStream);
         var section = await multipartReader.ReadNextSectionAsync();
         var filePaths = new List<string>();
         var notUploadedFiles = new List<string>();
@@ -25,13 +25,12 @@ public class FileService : IFileService
             var fileSection = section.AsFileSection();
             if (fileSection != null)
             {
-                totalSizeInBytes += await SaveFileAsync(fileSection, filePaths, notUploadedFiles);
+                var file = await SaveFileAsync(fileSection, filePaths, notUploadedFiles);
+                await context.Files.AddAsync(new FileModel
+                    { Name = file.Name, Path = file.Path, Size = file.Size, MessageId = messageId });
+                await context.SaveChangesAsync();
                 fileCount++;
-            }
-            else if (section.Headers.ContainsValue("form-data; name=\"messageId\""))
-            {
-                using var reader = new StreamReader(section.Body, Encoding.UTF8);
-                Console.WriteLine(await reader.ReadToEndAsync());
+                totalSizeInBytes += file.Size;
             }
 
             section = await multipartReader.ReadNextSectionAsync();
@@ -39,6 +38,7 @@ public class FileService : IFileService
 
         return new FileUploadSummary
         {
+            MessageId = messageId,
             TotalFilesUploaded = fileCount,
             TotalSizeUploaded = ConvertSizeToString(totalSizeInBytes),
             FilePaths = filePaths,
@@ -46,7 +46,7 @@ public class FileService : IFileService
         };
     }
 
-    private static async Task<long> SaveFileAsync(FileMultipartSection fileSection, List<string> filePaths,
+    private static async Task<FileDto> SaveFileAsync(FileMultipartSection fileSection, List<string> filePaths,
         List<string> notUploadedFiles)
     {
         var extension = Path.GetExtension(fileSection.FileName);
@@ -71,7 +71,7 @@ public class FileService : IFileService
 
         filePaths.Add(GetFullFilePath(fileSection));
 
-        return fileSection.FileStream.Length;
+        return new FileDto { Name = fileName, Path = filePath, Size = fileSection.FileStream.Length };
     }
 
     private static string GetFullFilePath(FileMultipartSection fileSection)
@@ -111,17 +111,5 @@ public class FileService : IFileService
         }
 
         return boundary;
-    }
-
-    private static string EncodeFileName(string fileName)
-    {
-        var plainTextBytes = Encoding.UTF8.GetBytes(fileName);
-        return Convert.ToBase64String(plainTextBytes);
-    }
-
-    private static string DecodeFileName(string encodedFileName)
-    {
-        var base64EncodedBytes = Convert.FromBase64String(encodedFileName);
-        return Encoding.UTF8.GetString(base64EncodedBytes);
     }
 }

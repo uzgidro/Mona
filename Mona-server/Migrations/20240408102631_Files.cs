@@ -25,20 +25,28 @@ namespace Mona.Migrations
                 nullable: false,
                 defaultValue: false);
 
+            migrationBuilder.AddColumn<bool>(
+                name: "IsSent",
+                table: "Messages",
+                type: "INTEGER",
+                nullable: false,
+                defaultValue: true);
+
             migrationBuilder.CreateTable(
-                name: "FileModel",
+                name: "Files",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Path = table.Column<string>(type: "TEXT", nullable: false),
+                    Size = table.Column<long>(type: "INTEGER", nullable: false),
                     MessageId = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FileModel", x => x.Id);
+                    table.PrimaryKey("PK_Files", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FileModel_Messages_MessageId",
+                        name: "FK_Files_Messages_MessageId",
                         column: x => x.MessageId,
                         principalTable: "Messages",
                         principalColumn: "Id",
@@ -46,8 +54,8 @@ namespace Mona.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_FileModel_MessageId",
-                table: "FileModel",
+                name: "IX_Files_MessageId",
+                table: "Files",
                 column: "MessageId");
         }
 
@@ -55,10 +63,14 @@ namespace Mona.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "FileModel");
+                name: "Files");
 
             migrationBuilder.DropColumn(
                 name: "IsFileOnly",
+                table: "Messages");
+
+            migrationBuilder.DropColumn(
+                name: "IsSent",
                 table: "Messages");
 
             migrationBuilder.AlterColumn<string>(

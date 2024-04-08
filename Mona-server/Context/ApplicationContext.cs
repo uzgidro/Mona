@@ -8,6 +8,7 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
     : IdentityDbContext<UserModel>(options)
 {
     public DbSet<MessageModel> Messages => Set<MessageModel>();
+    public DbSet<FileModel> Files => Set<FileModel>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -24,7 +25,7 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
             .WithMany()
             .HasForeignKey(m => m.SenderId)
             .IsRequired();
-        
+
         builder.Entity<FileModel>()
             .HasOne<MessageModel>()
             .WithMany(e => e.Files)
