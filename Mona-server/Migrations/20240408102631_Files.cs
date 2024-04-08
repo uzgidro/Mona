@@ -19,13 +19,6 @@ namespace Mona.Migrations
                 oldType: "TEXT");
 
             migrationBuilder.AddColumn<bool>(
-                name: "IsFileOnly",
-                table: "Messages",
-                type: "INTEGER",
-                nullable: false,
-                defaultValue: false);
-
-            migrationBuilder.AddColumn<bool>(
                 name: "IsSent",
                 table: "Messages",
                 type: "INTEGER",
@@ -64,10 +57,6 @@ namespace Mona.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Files");
-
-            migrationBuilder.DropColumn(
-                name: "IsFileOnly",
-                table: "Messages");
 
             migrationBuilder.DropColumn(
                 name: "IsSent",

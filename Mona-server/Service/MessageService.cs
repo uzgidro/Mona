@@ -11,8 +11,7 @@ namespace Mona.Service;
 
 public class MessageService(ApplicationContext context) : IMessageService
 {
-    private static readonly JsonSerializerOptions? Options = new JsonSerializerOptions
-        { PropertyNameCaseInsensitive = true };
+    private static readonly JsonSerializerOptions? Options = new() { PropertyNameCaseInsensitive = true };
 
     public async Task<MessageModel> CreateMessage(MessageRequest message)
     {
@@ -151,6 +150,7 @@ public class MessageService(ApplicationContext context) : IMessageService
     {
         await context.Entry(entity).Reference(m => m.Sender).LoadAsync();
         await context.Entry(entity).Reference(m => m.Receiver).LoadAsync();
+        await context.Entry(entity).Reference(m => m.RepliedMessage).LoadAsync();
         await context.Entry(entity).Collection(m => m.Files).LoadAsync();
     }
 }
