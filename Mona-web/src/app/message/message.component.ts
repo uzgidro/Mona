@@ -15,7 +15,9 @@ export class MessageComponent implements OnInit {
   users: UserModel[] = []
   selectedChat?: UserModel
   inputGroup = new FormGroup({
-    message: new FormControl('')
+    message: new FormControl(''),
+    file: new FormControl('')
+
   })
   connection?: HubConnection
   private _income: MessageModel[] = []
@@ -71,6 +73,8 @@ export class MessageComponent implements OnInit {
     this.selectedChat = user
   }
   sendMessage() {
+    const file=this.inputGroup.get('file')?.value
+    console.log(file);
     if (!this.editingMessage && this.inputGroup.get('message')?.value) {
       let message = this.inputGroup.get('message')?.value;
       let replyId: string;
@@ -134,6 +138,19 @@ export class MessageComponent implements OnInit {
     const userId = user.id;
     return this._income.filter(message => (message.receiverId == userId )).length;
   }
+
+
+  onFileSelected(event: any) {
+    console.log(event);
+    const file = event.target.files[0];
+    console.log(file);
+
+
+  }
+
+
+
+
 }
 
 
