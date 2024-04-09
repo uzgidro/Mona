@@ -87,7 +87,7 @@ export class MessageComponent implements OnInit {
         replyId = this.repliedMessage.id;
       }
 
-      if(this.selectedFile&&message){
+        if(this.selectedFile&&message){
         const messagesToSend: string[] = [];
         let remainingMessage = message;
         while (remainingMessage.length > 20) {
@@ -108,11 +108,11 @@ export class MessageComponent implements OnInit {
             formData.append('message',JSON.stringify(messageRequest))
         });
         this.inputGroup.get('message')?.setValue('')
-      }
-      if(this.selectedFile){
-        formData.append("file", this.selectedFile);
-      }
-     if(message){
+           }
+        if(this.selectedFile){
+          formData.append("file", this.selectedFile);
+           }
+        if(message){
           const messagesToSend: string[] = [];
         let remainingMessage = message;
         while (remainingMessage.length > 20) {
@@ -132,7 +132,7 @@ export class MessageComponent implements OnInit {
             formData.append('message',JSON.stringify(messageRequest))
         });
             this.inputGroup.get('message')?.setValue('')
-        }
+           }
       this.apiService.sendMessage(formData)
     } else if (this.editingMessage) {
       const inputValue = this.inputGroup.get('message')?.value;
