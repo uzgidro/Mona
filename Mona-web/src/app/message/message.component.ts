@@ -18,13 +18,9 @@ export class MessageComponent implements OnInit {
   selectedChat?: UserModel
   inputGroup = new FormGroup({
     message: new FormControl(''),
-
   })
 
-
   selectedFile?: any;
-
-
   connection?: HubConnection
   private _income: MessageModel[] = []
   editingMessage?: MessageModel
