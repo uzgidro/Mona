@@ -5,6 +5,7 @@ import {JwtService} from "../services/jwt.service";
 import { FormControl, FormGroup} from "@angular/forms";
 import {UserModel} from "../models/user";
 import {MessageModel, MessageRequest} from '../models/message';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-message',
@@ -21,7 +22,7 @@ export class MessageComponent implements OnInit {
   })
 
 
-  selectedFile!: File;
+  selectedFile?: any;
 
 
   connection?: HubConnection
@@ -36,7 +37,7 @@ export class MessageComponent implements OnInit {
         return dateA - dateB;
       });
   }
-  constructor(private jwtService: JwtService) {
+  constructor(private jwtService: JwtService, private apiService:ApiService) {
   }
 
   ngOnInit() {
@@ -78,13 +79,15 @@ export class MessageComponent implements OnInit {
     this.selectedChat = user
   }
   sendMessage() {
-    if (!this.editingMessage||this.selectedFile) {
+    let formData=new FormData()
+    if (!this.editingMessage) {
       let message = this.inputGroup.get('message')?.value;
       let replyId: string;
       if (this.repliedMessage) {
         replyId = this.repliedMessage.id;
       }
-      if (message) {
+
+      if(this.selectedFile&&message){
         const messagesToSend: string[] = [];
         let remainingMessage = message;
         while (remainingMessage.length > 20) {
@@ -101,24 +104,45 @@ export class MessageComponent implements OnInit {
             createdAt: new Date(),
             replyId: replyId
           };
-          if(this.selectedFile){
-           console.log(this.selectedFile);
-            const formData=new FormData()
-            formData.append("file", this.selectedFile);
+            formData.append("file", this.selectedFile, this.selectedFile.name);
             formData.append('message',JSON.stringify(messageRequest))
-            this.connection?.send("sendDirectMessage",formData);
-            console.log(formData);
-
-          }else{
-            this.connection?.send('sendDirectMessage',messageRequest)
-          }
         });
-        this.inputGroup.get('message')?.setValue('');
-        this.repliedMessage = undefined;
+        this.inputGroup.get('message')?.setValue('')
       }
+      if(this.selectedFile){
+        const messageRequest: MessageRequest = {
+          text:'',
+          receiverId: this.selectedChat?.id,
+          createdAt: new Date(),
+          replyId: ''
+        };
+        formData.append("file", this.selectedFile);
+        formData.append('message',JSON.stringify(messageRequest))
+      }else if(message){
+          const messagesToSend: string[] = [];
+        let remainingMessage = message;
+        while (remainingMessage.length > 20) {
+          messagesToSend.push(remainingMessage.substring(0, 20));
+          remainingMessage = remainingMessage.substring(20);
+        }
+        if (remainingMessage.length > 0) {
+          messagesToSend.push(remainingMessage);
+        }
+        messagesToSend.forEach(chunk => {
+          const messageRequest: MessageRequest = {
+            text: chunk,
+            receiverId: this.selectedChat?.id,
+            createdAt: new Date(),
+            replyId: replyId
+          };
+            formData.append('message',JSON.stringify(messageRequest))
+        });
+            this.inputGroup.get('message')?.setValue('')
+      }
+      this.apiService.sendMessage(formData)
     } else if (this.editingMessage) {
       const inputValue = this.inputGroup.get('message')?.value;
-      if (inputValue) {
+      if (inputValue){
         this.editingMessage.text = inputValue;
         this.connection?.send("editMessage", this.editingMessage);
         this.inputGroup.get('message')?.setValue('');
@@ -153,11 +177,8 @@ export class MessageComponent implements OnInit {
     return this._income.filter(message => (message.receiverId == userId )).length;
   }
 
-  onFileSelected(event: any) {
-    const files: FileList = event.target.files;
+  onFileSelected(event:any) {
     this.selectedFile=event.target.files[0]
-    console.log(files);
-    console.log(this.selectedFile);
   }
 
 }

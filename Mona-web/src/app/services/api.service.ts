@@ -38,6 +38,14 @@ export class ApiService {
   }
 
 
+  sendMessage(formData:any){
+    console.log(formData.get('file'));
+    return this.http.post(BASE_URL+MESSAGE+SEND,formData).subscribe({
+      next:values=>console.log(values),
+      error:err=>console.log(err)
+    })
+  }
+
 
 }
 
@@ -49,6 +57,8 @@ const SIGN_IN = '/sign-in'
 const REFRESH = '/refresh'
 const USERS='/users'
 const LIST='/list'
+const MESSAGE='/message'
+const SEND='/send'
 
 
 
