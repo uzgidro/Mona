@@ -110,15 +110,9 @@ export class MessageComponent implements OnInit {
         this.inputGroup.get('message')?.setValue('')
       }
       if(this.selectedFile){
-        const messageRequest: MessageRequest = {
-          text:'',
-          receiverId: this.selectedChat?.id,
-          createdAt: new Date(),
-          replyId: ''
-        };
         formData.append("file", this.selectedFile);
-        formData.append('message',JSON.stringify(messageRequest))
-      }else if(message){
+      }
+     if(message){
           const messagesToSend: string[] = [];
         let remainingMessage = message;
         while (remainingMessage.length > 20) {
@@ -138,7 +132,7 @@ export class MessageComponent implements OnInit {
             formData.append('message',JSON.stringify(messageRequest))
         });
             this.inputGroup.get('message')?.setValue('')
-      }
+        }
       this.apiService.sendMessage(formData)
     } else if (this.editingMessage) {
       const inputValue = this.inputGroup.get('message')?.value;
@@ -150,6 +144,7 @@ export class MessageComponent implements OnInit {
       }
     }
   }
+
 
 
   editMessage(eventMessage: MessageModel) {
