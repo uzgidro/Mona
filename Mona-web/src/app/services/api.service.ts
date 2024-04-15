@@ -50,6 +50,22 @@ export class ApiService {
   }
 
 
+  fileDownload(id:string){
+    return this.http.get(BASE_URL+FILES+DOWNLOAD+'/'+id).subscribe({
+      next:value=>{
+        console.log(value);
+
+      },
+      error:err=>{
+        console.log(err);
+
+      },
+      complete:()=>{
+        console.log('completed');
+      }
+    })
+  }
+
 }
 
 
@@ -62,6 +78,8 @@ const USERS='/users'
 const LIST='/list'
 const MESSAGE='/message'
 const SEND='/send'
+const DOWNLOAD='/download'
+const FILES='/files'
 
 
 

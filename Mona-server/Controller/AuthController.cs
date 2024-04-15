@@ -7,7 +7,7 @@ using Mona.Service.Interface;
 
 namespace Mona.Controller;
 
-[Route("/auth")]
+[Route("[controller]")]
 [ApiController]
 public class AuthController(
     ICryptoService cryptoService,

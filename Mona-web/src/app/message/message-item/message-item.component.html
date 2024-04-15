@@ -5,7 +5,7 @@
            {{message?.sender?.firstName}} : <span [ngClass]="{'text-yellow-500 bg-green-300 italic':message?.isEdited&&message?.receiverId==selectedChat?.id}"> {{ message?.text }}</span>
           </span>
           <span *ngIf="message?.files?.length">
-            <small *ngFor="let file of message?.files">{{file.name}}</small>
+            <small *ngFor="let file of message?.files"  (click)="downloadFileEventEmitter(file)"    class=" cursor-pointer hover:text-red-900 hover:outline-red-900  hover:outline-2 hover:border-b-2 hover:border-b-slate-950 ">{{file.name}}</small>
           </span>
           <small *ngIf="message?.isEdited">edited</small>
           <small>{{message?.createdAt |date:'HH:mm'}}</small>

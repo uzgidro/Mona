@@ -1,3 +1,4 @@
+import { File } from './../models/message';
 import {Component, OnInit} from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import {HubConnection} from '@microsoft/signalr';
@@ -150,6 +151,14 @@ export class MessageComponent implements OnInit {
        }
      }
   }
+
+
+  downloadFile(file:File){
+    console.log(file.id);
+    this.apiService.fileDownload(file.id)
+  }
+
+
 
   editMessage(eventMessage: MessageModel) {
     this.inputGroup.get('message')?.setValue(eventMessage.text)
