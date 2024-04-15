@@ -140,6 +140,7 @@ public class MessageService(ApplicationContext context) : IMessageService
         return await context.Messages.AsNoTracking()
             .Include(m => m.Sender)
             .Include(m => m.Receiver)
+            .Include(m => m.Files)
             .Where(item => (item.ReceiverId.Equals(caller) && !item.IsReceiverDeleted) ||
                            (item.SenderId.Equals(caller) && !item.IsSenderDeleted))
             .Where(item => item.IsSent)
