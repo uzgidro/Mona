@@ -80,52 +80,39 @@ export class MessageComponent implements OnInit {
       let message = this.inputGroup.get('message')?.value;
       let replyId: string|undefined=this.repliedMessage?this.repliedMessage.id:undefined;
           if(this.selectedFile&&message){
-           const messagesToSend: string[] = [];
-           let remainingMessage = message;
-           while (remainingMessage.length > 20) {
-            messagesToSend.push(remainingMessage.substring(0, 20));
-            remainingMessage = remainingMessage.substring(20);
-           }
-           if (remainingMessage.length > 0) {
-            messagesToSend.push(remainingMessage);
-            }
-            messagesToSend.forEach(chunk => {
             const messageRequest: MessageRequest = {
-            text: chunk,
+            text: message,
             receiverId: this.selectedChat?.id,
             createdAt: new Date(),
             replyId: replyId
             };
-             formData.append("file", this.selectedFile, this.selectedFile.name);
              formData.append('message',JSON.stringify(messageRequest))
-           });
-           this.inputGroup.get('message')?.setValue('')
-           }
-          if(this.selectedFile){
-           formData.append("file", this.selectedFile);
-           }
-          if(!this.selectedFile&&message){
-           const messagesToSend: string[] = [];
-            let remainingMessage = message;
-           while (remainingMessage.length > 20) {
-            messagesToSend.push(remainingMessage.substring(0, 20));
-            remainingMessage = remainingMessage.substring(20);
-           }
-           if (remainingMessage.length > 0) {
-           messagesToSend.push(remainingMessage);
-           }
-        messagesToSend.forEach(chunk => {
-          const messageRequest: MessageRequest = {
-            text: chunk,
-            receiverId: this.selectedChat?.id,
-            createdAt: new Date(),
-            replyId: replyId
-          };
-            formData.append('message',JSON.stringify(messageRequest))
-        });
-            this.inputGroup.get('message')?.setValue('')
-           }
-         this.apiService.sendMessage(formData)
+             formData.append("file", this.selectedFile, this.selectedFile.name);
+             this.apiService.sendMessage(formData)
+            }
+            if(this.selectedFile&&message==''){
+              const messageRequest: MessageRequest = {
+                text:'',
+                receiverId: this.selectedChat?.id,
+                createdAt: new Date(),
+                replyId: replyId
+                };
+                formData.append('message',JSON.stringify(messageRequest))
+                formData.append("file", this.selectedFile, this.selectedFile.name);
+                this.apiService.sendMessage(formData)
+
+            }
+            if(!this.selectedFile&&message){
+              const messageRequest: MessageRequest = {
+                text: message,
+                receiverId: this.selectedChat?.id,
+                createdAt: new Date(),
+                replyId: replyId
+               };
+                formData.append('message',JSON.stringify(messageRequest))
+                this.apiService.sendMessage(formData)
+                }
+               this.inputGroup.get('message')?.setValue('')
        } else if (this.editingMessage) {
         const inputValue = this.inputGroup.get('message')?.value;
         if (inputValue){
