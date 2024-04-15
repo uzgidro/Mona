@@ -38,7 +38,7 @@ export class ApiService {
   }
 
 
-  sendMessage(formData:any){
+  sendMessage(formData:FormData){
     console.log(formData.get('file'));
     return this.http.post(BASE_URL+MESSAGE+SEND,formData).subscribe({
       next:values=>console.log(values),
