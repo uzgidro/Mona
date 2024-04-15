@@ -75,8 +75,7 @@ export class MessageComponent implements OnInit {
     this.selectedChat = user
   }
   sendMessage() {
-    let formData=new FormData()
-    if (!this.editingMessage) {
+    if (!this.editingMessage){
       let message = this.inputGroup.get('message')?.value;
       let replyId: string|undefined=this.repliedMessage?this.repliedMessage.id:undefined;
           if(this.selectedFile&&message){
@@ -86,6 +85,7 @@ export class MessageComponent implements OnInit {
             createdAt: new Date(),
             replyId: replyId
             };
+            const formData = new FormData();
              formData.append('message',JSON.stringify(messageRequest))
              formData.append("file", this.selectedFile, this.selectedFile.name);
              this.apiService.sendMessage(formData)
@@ -97,29 +97,54 @@ export class MessageComponent implements OnInit {
                 createdAt: new Date(),
                 replyId: replyId
                 };
+                const formData = new FormData();
                 formData.append('message',JSON.stringify(messageRequest))
                 formData.append("file", this.selectedFile, this.selectedFile.name);
                 this.apiService.sendMessage(formData)
-
             }
             if(!this.selectedFile&&message){
-              const messageRequest: MessageRequest = {
-                text: message,
-                receiverId: this.selectedChat?.id,
-                createdAt: new Date(),
-                replyId: replyId
-               };
-                formData.append('message',JSON.stringify(messageRequest))
-                this.apiService.sendMessage(formData)
+              // DIVIDING CHARACTER'S NUMBER AND SPLIT THEM INTO A SINGLE MESSAGE IF THEY ARE BIGGER THAN 20
+                  const messagesToSend: string[] = [];
+                  let remainingMessage = message;
+                  while (remainingMessage.length > 20) {
+                messagesToSend.push(remainingMessage.substring(0, 20));
+                remainingMessage = remainingMessage.substring(20);
+                  }
+                  if (remainingMessage.length > 0) {
+               messagesToSend.push(remainingMessage);
+                  }
+                  messagesToSend.forEach((text)=>{
+                  const messageReq:MessageRequest={
+                    text: text,
+                    receiverId: this.selectedChat?.id,
+                    createdAt: new Date(),
+                    replyId: replyId
+                  }
+                  const formData = new FormData();
+                  formData.append('message', JSON.stringify(messageReq));
+                  this.apiService.sendMessage(formData);
+                  })
                 }
+               //WITHOUT DIVIDING CHARACTER'S NUMBER AND SPLITING THEM INTO A SINGLE MESSAGE  EVEN IF THEY ARE BIGGER THAN 20
+              // const messageRequest: MessageRequest = {
+              //   text: message,
+              //   receiverId: this.selectedChat?.id,
+              //   createdAt: new Date(),
+              //   replyId: replyId
+              //  };
+              //  console.log(messageRequest);
+              //   formData.append('message',JSON.stringify(messageRequest))
+              //   this.apiService.sendMessage(formData)
+              //   }
+
                this.inputGroup.get('message')?.setValue('')
-       } else if (this.editingMessage) {
-        const inputValue = this.inputGroup.get('message')?.value;
-        if (inputValue){
-        this.editingMessage.text = inputValue;
-        this.connection?.send("editMessage", this.editingMessage);
-        this.inputGroup.get('message')?.setValue('');
-        this.editingMessage = undefined;
+              } else if (this.editingMessage) {
+               const inputValue = this.inputGroup.get('message')?.value;
+               if (inputValue){
+              this.editingMessage.text = inputValue;
+              this.connection?.send("editMessage", this.editingMessage);
+              this.inputGroup.get('message')?.setValue('');
+              this.editingMessage = undefined;
        }
      }
   }
