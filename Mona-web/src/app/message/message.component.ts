@@ -79,41 +79,41 @@ export class MessageComponent implements OnInit {
     if (!this.editingMessage) {
       let message = this.inputGroup.get('message')?.value;
       let replyId: string|undefined=this.repliedMessage?this.repliedMessage.id:undefined;
-        if(this.selectedFile&&message){
-        const messagesToSend: string[] = [];
-        let remainingMessage = message;
-        while (remainingMessage.length > 20) {
-          messagesToSend.push(remainingMessage.substring(0, 20));
-          remainingMessage = remainingMessage.substring(20);
-        }
-        if (remainingMessage.length > 0) {
-          messagesToSend.push(remainingMessage);
-        }
-        messagesToSend.forEach(chunk => {
-          const messageRequest: MessageRequest = {
+          if(this.selectedFile&&message){
+           const messagesToSend: string[] = [];
+           let remainingMessage = message;
+           while (remainingMessage.length > 20) {
+            messagesToSend.push(remainingMessage.substring(0, 20));
+            remainingMessage = remainingMessage.substring(20);
+           }
+           if (remainingMessage.length > 0) {
+            messagesToSend.push(remainingMessage);
+            }
+            messagesToSend.forEach(chunk => {
+            const messageRequest: MessageRequest = {
             text: chunk,
             receiverId: this.selectedChat?.id,
             createdAt: new Date(),
             replyId: replyId
-          };
-            formData.append("file", this.selectedFile, this.selectedFile.name);
-            formData.append('message',JSON.stringify(messageRequest))
-        });
-        this.inputGroup.get('message')?.setValue('')
+            };
+             formData.append("file", this.selectedFile, this.selectedFile.name);
+             formData.append('message',JSON.stringify(messageRequest))
+           });
+           this.inputGroup.get('message')?.setValue('')
            }
-        if(this.selectedFile){
-          formData.append("file", this.selectedFile);
+          if(this.selectedFile){
+           formData.append("file", this.selectedFile);
            }
-        if(message){
-          const messagesToSend: string[] = [];
-        let remainingMessage = message;
-        while (remainingMessage.length > 20) {
-          messagesToSend.push(remainingMessage.substring(0, 20));
-          remainingMessage = remainingMessage.substring(20);
-        }
-        if (remainingMessage.length > 0) {
-          messagesToSend.push(remainingMessage);
-        }
+          if(!this.selectedFile&&message){
+           const messagesToSend: string[] = [];
+            let remainingMessage = message;
+           while (remainingMessage.length > 20) {
+            messagesToSend.push(remainingMessage.substring(0, 20));
+            remainingMessage = remainingMessage.substring(20);
+           }
+           if (remainingMessage.length > 0) {
+           messagesToSend.push(remainingMessage);
+           }
         messagesToSend.forEach(chunk => {
           const messageRequest: MessageRequest = {
             text: chunk,
@@ -125,19 +125,17 @@ export class MessageComponent implements OnInit {
         });
             this.inputGroup.get('message')?.setValue('')
            }
-      this.apiService.sendMessage(formData)
-    } else if (this.editingMessage) {
-      const inputValue = this.inputGroup.get('message')?.value;
-      if (inputValue){
+         this.apiService.sendMessage(formData)
+       } else if (this.editingMessage) {
+        const inputValue = this.inputGroup.get('message')?.value;
+        if (inputValue){
         this.editingMessage.text = inputValue;
         this.connection?.send("editMessage", this.editingMessage);
         this.inputGroup.get('message')?.setValue('');
         this.editingMessage = undefined;
-      }
-    }
+       }
+     }
   }
-
-
 
   editMessage(eventMessage: MessageModel) {
     this.inputGroup.get('message')?.setValue(eventMessage.text)
