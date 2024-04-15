@@ -78,11 +78,7 @@ export class MessageComponent implements OnInit {
     let formData=new FormData()
     if (!this.editingMessage) {
       let message = this.inputGroup.get('message')?.value;
-      let replyId: string;
-      if (this.repliedMessage) {
-        replyId = this.repliedMessage.id;
-      }
-
+      let replyId: string|undefined=this.repliedMessage?this.repliedMessage.id:undefined;
         if(this.selectedFile&&message){
         const messagesToSend: string[] = [];
         let remainingMessage = message;
