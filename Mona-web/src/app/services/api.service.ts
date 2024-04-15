@@ -45,7 +45,6 @@ export class ApiService {
       error:err=>console.log(err),
       complete:()=>{
         console.log('Completed');
-
       }
     })
   }

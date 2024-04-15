@@ -9,6 +9,16 @@ export interface MessageRequest{
 }
 
 
+export interface File {
+  id: string;
+  name: string;
+  path: string;
+  size: number;
+  messageId: string;
+  isDeleted: boolean;
+  createdAt: string;
+}
+
 export interface MessageModel{
   id: string;
   text: string;
@@ -23,4 +33,5 @@ export interface MessageModel{
   isDeleted: boolean;
   createdAt: string;
   modifiedAt: string;
+  files:File[]
 }

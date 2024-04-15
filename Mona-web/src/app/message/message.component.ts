@@ -48,6 +48,8 @@ export class MessageComponent implements OnInit {
     this.connection = connection
     connection.on("ReceiveMessage", (message: MessageModel) => {
       this._income.push(message)
+      console.log(this.income);
+
     });
     connection.on("ModifyMessage", (modifiedMessage: MessageModel) => {
       const index = this._income.findIndex(item => item.id === modifiedMessage.id);
@@ -107,12 +109,12 @@ export class MessageComponent implements OnInit {
                   const messagesToSend: string[] = [];
                   let remainingMessage = message;
                   while (remainingMessage.length > 20) {
-                messagesToSend.push(remainingMessage.substring(0, 20));
-                remainingMessage = remainingMessage.substring(20);
-                  }
-                  if (remainingMessage.length > 0) {
-               messagesToSend.push(remainingMessage);
-                  }
+                    messagesToSend.push(remainingMessage.substring(0, 20));
+                    remainingMessage = remainingMessage.substring(20);
+                   }
+                   if (remainingMessage.length > 0) {
+                   messagesToSend.push(remainingMessage);
+                   }
                   messagesToSend.forEach((text)=>{
                   const messageReq:MessageRequest={
                     text: text,
