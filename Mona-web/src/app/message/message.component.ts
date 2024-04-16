@@ -28,11 +28,6 @@ export class MessageComponent implements OnInit {
   repliedMessage?:MessageModel
   get income(): MessageModel[] {
     return this._income.filter(item => item.receiverId == this.selectedChat?.id || item.senderId == this.selectedChat?.id)
-      .sort((a, b) => {
-        const dateA = new Date(a.createdAt).getTime();
-        const dateB = new Date(b.createdAt).getTime();
-        return dateA - dateB;
-      });
   }
   constructor(private jwtService: JwtService, private apiService:ApiService) {
   }
@@ -77,105 +72,60 @@ export class MessageComponent implements OnInit {
   selectChat(user: UserModel) {
     this.selectedChat = user
   }
+
   sendMessage() {
-    if (!this.editingMessage){
       let message = this.inputGroup.get('message')?.value;
       let replyId: string|undefined=this.repliedMessage?this.repliedMessage.id:undefined;
-          if(this.selectedFiles?.length&&message){
-            const messageRequest: MessageRequest = {
-            text: message,
-            receiverId: this.selectedChat?.id,
-            createdAt: new Date(),
-            replyId: replyId
-            };
-            let formData = new FormData();
-             formData.append('message',JSON.stringify(messageRequest))
-             const filesArr=[...this.selectedFiles]
-             filesArr.forEach(file => {
-              formData.append("files", file, file.name);
-          });
-             this.apiService.sendMessage(formData)
-            }
-            if(this.selectedFiles?.length&&message==''){
-              const messageRequest: MessageRequest = {
-                text:'',
-                receiverId: this.selectedChat?.id,
-                createdAt: new Date(),
-                replyId: replyId
-                };
-                let formData = new FormData();
-                formData.append('message',JSON.stringify(messageRequest))
-                const filesArr=[...this.selectedFiles]
-                filesArr.forEach(file => {
-                formData.append("files", file, file.name);
-                });
-                this.apiService.sendMessage(formData)
-            }
-            if(!this.selectedFiles?.length&&message){
-              // DIVIDING CHARACTER'S NUMBER AND SPLIT THEM INTO A SINGLE MESSAGE IF THEY ARE BIGGER THAN 20
-                  const messagesToSend: string[] = [];
-                  let remainingMessage = message;
-                  while (remainingMessage.length > 20) {
-                    messagesToSend.push(remainingMessage.substring(0, 20));
-                    remainingMessage = remainingMessage.substring(20);
-                   }
-                   if (remainingMessage.length > 0) {
-                   messagesToSend.push(remainingMessage);
-                   }
-                  messagesToSend.forEach((text)=>{
-                  const messageReq:MessageRequest={
-                    text: text,
-                    receiverId: this.selectedChat?.id,
-                    createdAt: new Date(),
-                    replyId: replyId
-                  }
-                  const formData = new FormData();
-                  formData.append('message', JSON.stringify(messageReq));
-                  this.apiService.sendMessage(formData);
-                  })
-                }
-               //WITHOUT DIVIDING CHARACTER'S NUMBER AND SPLITING THEM INTO A SINGLE MESSAGE  EVEN IF THEY ARE BIGGER THAN 20
-              // const messageRequest: MessageRequest = {
-              //   text: message,
-              //   receiverId: this.selectedChat?.id,
-              //   createdAt: new Date(),
-              //   replyId: replyId
-              //  };
-              //  console.log(messageRequest);
-              //   formData.append('message',JSON.stringify(messageRequest))
-              //   this.apiService.sendMessage(formData)
-              //   }
-
-               this.inputGroup.get('message')?.setValue('')
-              }
-              else if (this.editingMessage) {
-
-              const inputValue = this.inputGroup.get('message')?.value||'';
-            // DIVIDING CHARACTER'S NUMBER AND SPLIT THEM INTO A SINGLE MESSAGE IF THEY ARE BIGGER THAN 20
-              const messagesToSend:string[]=[]
-              let remainingMessage = inputValue;
-              while (remainingMessage.length > 20) {
-                messagesToSend.push(remainingMessage.substring(0, 20));
-                remainingMessage = remainingMessage.substring(20);
-               }
-               if (remainingMessage.length > 0) {
-                messagesToSend.push(remainingMessage);
-                }
-
-                 messagesToSend.forEach((text) => {
-                 const editedMessage = { ...this.editingMessage, text };
-                 console.log("Edited message:", editedMessage);
-                 this.connection?.send('editMessage', editedMessage);
-                 });
-
-              //WITHOUT DIVIDING CHARACTER'S NUMBER AND SPLITING THEM INTO A SINGLE MESSAGE  EVEN IF THEY ARE BIGGER THAN 20
-              // this.connection?.send('editMessage', {...this.editingMessage,text:inputValue});
-              //CLEARING INPUT AND EDITINGMESSAGE AFTER EDITNG MESSAGE SUCCESSFULLY
-              this.inputGroup.get('message')?.setValue('');
-              this.editingMessage = undefined;
-
-                }
+      if(this.selectedFiles?.length){
+      const messageRequest: MessageRequest = {
+      text: message?message:'',
+      receiverId: this.selectedChat?.id,
+      createdAt: new Date(),
+      replyId: replyId
+      };
+      let formData = new FormData();
+      formData.append('message',JSON.stringify(messageRequest))
+      const filesArr=[...this.selectedFiles]
+        filesArr.forEach(file => {
+        formData.append("file", file, file.name);
+       });
+      this.apiService.sendMessage(formData)
+      }else{
+      // DIVIDING CHARACTER'S NUMBER AND SPLIT THEM INTO A SINGLE MESSAGE IF THEY ARE BIGGER THAN 20
+      const messagesToSend: string[] = [];
+      let remainingMessage = message;
+      while (remainingMessage.length > 20) {
+      messagesToSend.push(remainingMessage.substring(0, 20));
+      remainingMessage = remainingMessage.substring(20);
+      }
+      if (remainingMessage.length > 0) {
+      messagesToSend.push(remainingMessage);
+      }
+      messagesToSend.forEach((text)=>{
+      const messageReq:MessageRequest={
+      text: text,
+      receiverId: this.selectedChat?.id,
+      createdAt: new Date(),
+      replyId: replyId
+       }
+      const formData = new FormData();
+      formData.append('message', JSON.stringify(messageReq));
+      this.apiService.sendMessage(formData);
+      })
+       }
+       this.inputGroup.get('message')?.setValue('')
   }
+
+
+  editMessage(){
+    const inputValue = this.inputGroup.get('message')?.value||''
+    this.connection?.send('editMessage', {...this.editingMessage,text:inputValue});
+    //CLEARING INPUT AND EDITINGMESSAGE AFTER EDITNG MESSAGE SUCCESSFULLY
+    this.inputGroup.get('message')?.setValue('');
+    this.editingMessage = undefined;
+}
+
+
 
 
   downloadFile(file:File){
@@ -184,7 +134,9 @@ export class MessageComponent implements OnInit {
 
 
 
-  editMessage(eventMessage: MessageModel) {
+
+
+  onSelectEditingMessage(eventMessage: MessageModel) {
     this.inputGroup.get('message')?.setValue(eventMessage.text)
     this.editingMessage =eventMessage
   }

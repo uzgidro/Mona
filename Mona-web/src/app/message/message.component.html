@@ -22,14 +22,14 @@
     <input  formControlName="message" type="text" [value]="this.inputGroup.value.message" >
     <input type="file" class="file-input"    (change)="onFileSelected($event)" multiple>
     <button (click)="sendMessage()" *ngIf="!this.editingMessage">send</button>
-    <button (click)="sendMessage()" *ngIf="this.editingMessage" >edit</button>
+    <button (click)="editMessage()" *ngIf="this.editingMessage" >edit</button>
     <ul>
       <li *ngFor="let message of income">
             <app-message-item
               [message]="message"
               [selectedChat]="selectedChat"
               [editingMessage]="editingMessage"
-              (editMessageEvent)="editMessage($event)"
+              (editMessageEvent)="onSelectEditingMessage($event)"
               (deleteMessageForMyselfEvent)="deleteMessageForMyself($event)"
               (deleteMessageForEveryoneEvent)="deleteMessageForEveryone($event)"
               (replyMessageEvent)="replyMessage($event)"
