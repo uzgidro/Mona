@@ -140,9 +140,6 @@ export class MessageComponent implements OnInit {
 
 
   onSelectEditingMessage(eventMessage: MessageModel) {
-
-
-  onSelectEditingMessage(eventMessage: MessageModel) {
     this.inputGroup.get('message')?.setValue(eventMessage.text)
     this.editingMessage =eventMessage
   }
