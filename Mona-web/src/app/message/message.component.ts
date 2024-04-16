@@ -173,7 +173,7 @@ export class MessageComponent implements OnInit {
 
 
   downloadFile(file:File){
-    this.apiService.fileDownload(file.id)
+    this.apiService.downloadFile(file)
   }
 
 

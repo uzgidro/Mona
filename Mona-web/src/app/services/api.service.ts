@@ -1,5 +1,6 @@
+import { File } from './../models/message';
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {User} from "../models/user";
 import {Observable, catchError, map, throwError} from "rxjs";
 import {JwtService} from "./jwt.service";
@@ -50,17 +51,35 @@ export class ApiService {
   }
 
 
-  fileDownload(id: string): Observable<Blob> {
-    const url:string = BASE_URL+FILES+DOWNLOAD+id;
-    return this.http.get(url, { responseType: 'blob' }).pipe(
-      map((response)=>{
-        return response
-      }),
-      catchError((error: any) => {
-        console.error('File download error:', error);
-        return throwError(error);
-      }))
+  fileDownload(id: string){
+    const url:string = BASE_URL+FILES+DOWNLOAD+'/'+id;
+    return this.http.get(url, { responseType: 'blob' }).subscribe({
+      next:value=>{
+        console.log(value);
+
+      }
+    })
     }
+
+  downloadFile( file: File) {
+    const url=BASE_URL+FILES+DOWNLOAD+'/'+file.id;
+    const headers = new HttpHeaders();
+    headers.set('Accept', 'application/octet-stream'); 
+    this.http.get(url, { headers: headers, responseType: 'blob' }).subscribe((response: Blob) => {
+      this.handleResponse(response, file.name);
+    });
+  }
+
+  private handleResponse(blob: Blob, filename: string) {
+    const downloadLink = document.createElement('a');
+    const url = window.URL.createObjectURL(blob);
+    downloadLink.href = url;
+    downloadLink.download = filename;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(downloadLink);
+  }
 }
 
 
@@ -75,6 +94,7 @@ const MESSAGE='/message'
 const SEND='/send'
 const DOWNLOAD='/download'
 const FILES='/files'
+
 
 
 
