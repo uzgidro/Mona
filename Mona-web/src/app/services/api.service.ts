@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {User} from "../models/user";
-import {Observable} from "rxjs";
+import {Observable, catchError, map, throwError} from "rxjs";
 import {JwtService} from "./jwt.service";
 import {Tokens} from "../models/tokens";
 
@@ -50,22 +50,17 @@ export class ApiService {
   }
 
 
-  fileDownload(id:string){
-    return this.http.get(BASE_URL+FILES+DOWNLOAD+'/'+id).subscribe({
-      next:value=>{
-        console.log(value);
-
-      },
-      error:err=>{
-        console.log(err);
-
-      },
-      complete:()=>{
-        console.log('completed');
-      }
-    })
-  }
-
+  fileDownload(id: string): Observable<Blob> {
+    const url:string = BASE_URL+FILES+DOWNLOAD+id;
+    return this.http.get(url, { responseType: 'blob' }).pipe(
+      map((response)=>{
+        return response
+      }),
+      catchError((error: any) => {
+        console.error('File download error:', error);
+        return throwError(error);
+      }))
+    }
 }
 
 

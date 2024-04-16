@@ -25,7 +25,6 @@ export class MessageItemComponent {
 
  downloadFileEventEmitter(file:File){
   this.downloadFileEvent.emit(file)
-   console.log('download is emitted');
  }
 
  deleteMessageForMyselfEventEmitter(){

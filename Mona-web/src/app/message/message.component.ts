@@ -1,5 +1,5 @@
 import { File } from './../models/message';
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, input} from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import {HubConnection} from '@microsoft/signalr';
 import {JwtService} from "../services/jwt.service";
@@ -141,20 +141,38 @@ export class MessageComponent implements OnInit {
               //   }
 
                this.inputGroup.get('message')?.setValue('')
-              } else if (this.editingMessage) {
-               const inputValue = this.inputGroup.get('message')?.value;
-               if (inputValue){
-              this.editingMessage.text = inputValue;
-              this.connection?.send("editMessage", this.editingMessage);
+              }
+              else if (this.editingMessage) {
+
+              const inputValue = this.inputGroup.get('message')?.value||'';
+            // DIVIDING CHARACTER'S NUMBER AND SPLIT THEM INTO A SINGLE MESSAGE IF THEY ARE BIGGER THAN 20
+              const messagesToSend:string[]=[]
+              let remainingMessage = inputValue;
+              while (remainingMessage.length > 20) {
+                messagesToSend.push(remainingMessage.substring(0, 20));
+                remainingMessage = remainingMessage.substring(20);
+               }
+               if (remainingMessage.length > 0) {
+                messagesToSend.push(remainingMessage);
+                }
+
+                 messagesToSend.forEach((text) => {
+                 const editedMessage = { ...this.editingMessage, text };
+                 console.log("Edited message:", editedMessage);
+                //  this.connection?.send('editMessage', editedMessage);
+                 });
+
+              //WITHOUT DIVIDING CHARACTER'S NUMBER AND SPLITING THEM INTO A SINGLE MESSAGE  EVEN IF THEY ARE BIGGER THAN 20
+              this.connection?.send('editMessage', {...this.editingMessage,text:inputValue});
+              //CLEARING INPUT AND EDITINGMESSAGE AFTER EDITNG MESSAGE SUCCESSFULLY
               this.inputGroup.get('message')?.setValue('');
               this.editingMessage = undefined;
-       }
-     }
+
+                }
   }
 
 
   downloadFile(file:File){
-    console.log(file.id);
     this.apiService.fileDownload(file.id)
   }
 
