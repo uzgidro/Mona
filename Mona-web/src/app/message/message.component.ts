@@ -126,32 +126,21 @@ export class MessageComponent implements OnInit {
     this.editingMessage = undefined;
 }
 
-
-
-
+onSelectEditingMessage(eventMessage: MessageModel) {
+  this.inputGroup.get('message')?.setValue(eventMessage.text)
+  this.editingMessage =eventMessage
+}
 
 
   downloadFile(file:File){
     this.apiService.downloadFile(file)
   }
-
-
-
-
-
-  onSelectEditingMessage(eventMessage: MessageModel) {
-    this.inputGroup.get('message')?.setValue(eventMessage.text)
-    this.editingMessage =eventMessage
-  }
-
   deleteMessageForMyself(eventMessage: MessageModel) {
       this.connection?.send("deleteMessageForMyself", eventMessage)
   }
-
   deleteMessageForEveryone(eventMessage: MessageModel) {
     this.connection?.send("deleteMessageForEveryone", eventMessage)
   }
-
   replyMessage(eventMessage:MessageModel){
     this.repliedMessage=eventMessage
   }
@@ -167,9 +156,7 @@ export class MessageComponent implements OnInit {
   onFileSelected(event:any) {
     this.selectedFiles=event.target.files
     console.log(this.selectedFiles);
-
   }
-
 }
 
 
