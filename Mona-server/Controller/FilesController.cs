@@ -18,8 +18,7 @@ public class FilesController(ApplicationContext context) : ControllerBase
             .Where(item => item.Id.Equals(id) && !item.IsDeleted)
             .FirstOrDefaultAsync();
         if (fileInfo == null || !System.IO.File.Exists(fileInfo.Path)) return NotFound();
-        await using var fileStream = new FileStream(fileInfo.Path, FileMode.Open, FileAccess.Read);
-
+        var fileStream = new FileStream(fileInfo.Path, FileMode.Open, FileAccess.Read);
         return File(fileStream, "application/octet-stream", fileInfo.Name);
     }
 }
