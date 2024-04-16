@@ -21,7 +21,7 @@ export class MessageComponent implements OnInit {
     message: new FormControl(''),
   })
 
-  selectedFile?: any;
+  selectedFiles?: any[];
   connection?: HubConnection
   private _income: MessageModel[] = []
   editingMessage?: MessageModel
@@ -81,31 +81,37 @@ export class MessageComponent implements OnInit {
     if (!this.editingMessage){
       let message = this.inputGroup.get('message')?.value;
       let replyId: string|undefined=this.repliedMessage?this.repliedMessage.id:undefined;
-          if(this.selectedFile&&message){
+          if(this.selectedFiles?.length&&message){
             const messageRequest: MessageRequest = {
             text: message,
             receiverId: this.selectedChat?.id,
             createdAt: new Date(),
             replyId: replyId
             };
-            const formData = new FormData();
+            let formData = new FormData();
              formData.append('message',JSON.stringify(messageRequest))
-             formData.append("file", this.selectedFile, this.selectedFile.name);
+             const filesArr=[...this.selectedFiles]
+             filesArr.forEach(file => {
+              formData.append("files", file, file.name);
+          });
              this.apiService.sendMessage(formData)
             }
-            if(this.selectedFile&&message==''){
+            if(this.selectedFiles?.length&&message==''){
               const messageRequest: MessageRequest = {
                 text:'',
                 receiverId: this.selectedChat?.id,
                 createdAt: new Date(),
                 replyId: replyId
                 };
-                const formData = new FormData();
+                let formData = new FormData();
                 formData.append('message',JSON.stringify(messageRequest))
-                formData.append("file", this.selectedFile, this.selectedFile.name);
+                const filesArr=[...this.selectedFiles]
+                filesArr.forEach(file => {
+                formData.append("files", file, file.name);
+                });
                 this.apiService.sendMessage(formData)
             }
-            if(!this.selectedFile&&message){
+            if(!this.selectedFiles?.length&&message){
               // DIVIDING CHARACTER'S NUMBER AND SPLIT THEM INTO A SINGLE MESSAGE IF THEY ARE BIGGER THAN 20
                   const messagesToSend: string[] = [];
                   let remainingMessage = message;
@@ -159,11 +165,11 @@ export class MessageComponent implements OnInit {
                  messagesToSend.forEach((text) => {
                  const editedMessage = { ...this.editingMessage, text };
                  console.log("Edited message:", editedMessage);
-                //  this.connection?.send('editMessage', editedMessage);
+                 this.connection?.send('editMessage', editedMessage);
                  });
 
               //WITHOUT DIVIDING CHARACTER'S NUMBER AND SPLITING THEM INTO A SINGLE MESSAGE  EVEN IF THEY ARE BIGGER THAN 20
-              this.connection?.send('editMessage', {...this.editingMessage,text:inputValue});
+              // this.connection?.send('editMessage', {...this.editingMessage,text:inputValue});
               //CLEARING INPUT AND EDITINGMESSAGE AFTER EDITNG MESSAGE SUCCESSFULLY
               this.inputGroup.get('message')?.setValue('');
               this.editingMessage = undefined;
@@ -204,7 +210,9 @@ export class MessageComponent implements OnInit {
   }
 
   onFileSelected(event:any) {
-    this.selectedFile=event.target.files[0]
+    this.selectedFiles=event.target.files
+    console.log(this.selectedFiles);
+
   }
 
 }

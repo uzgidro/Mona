@@ -54,7 +54,7 @@ public class MessageService(ApplicationContext context) : IMessageService
                     IsSent = false
                 };
                 var entityEntry = context.Messages.Add(entity);
-                await context.SaveChangesAsync();
+                 await context.SaveChangesAsync();
                 return entityEntry.Entity;
             }
 

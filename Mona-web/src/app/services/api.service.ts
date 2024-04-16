@@ -50,21 +50,10 @@ export class ApiService {
     })
   }
 
-
-  fileDownload(id: string){
-    const url:string = BASE_URL+FILES+DOWNLOAD+'/'+id;
-    return this.http.get(url, { responseType: 'blob' }).subscribe({
-      next:value=>{
-        console.log(value);
-
-      }
-    })
-    }
-
   downloadFile( file: File) {
     const url=BASE_URL+FILES+DOWNLOAD+'/'+file.id;
     const headers = new HttpHeaders();
-    headers.set('Accept', 'application/octet-stream'); 
+    headers.set('Accept', 'application/octet-stream');
     this.http.get(url, { headers: headers, responseType: 'blob' }).subscribe((response: Blob) => {
       this.handleResponse(response, file.name);
     });
