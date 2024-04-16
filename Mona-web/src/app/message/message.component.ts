@@ -73,6 +73,7 @@ export class MessageComponent implements OnInit {
     this.selectedChat = user
   }
 
+
   sendMessage() {
       let message = this.inputGroup.get('message')?.value;
       let replyId: string|undefined=this.repliedMessage?this.repliedMessage.id:undefined;
@@ -128,12 +129,17 @@ export class MessageComponent implements OnInit {
 
 
 
+
+
   downloadFile(file:File){
     this.apiService.downloadFile(file)
   }
 
 
 
+
+
+  onSelectEditingMessage(eventMessage: MessageModel) {
 
 
   onSelectEditingMessage(eventMessage: MessageModel) {
