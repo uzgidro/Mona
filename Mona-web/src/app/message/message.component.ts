@@ -92,6 +92,7 @@ export class MessageComponent implements OnInit {
        });
       this.apiService.sendMessage(formData)
       }else{
+      //IF THERE IS NO FILE SELECTED AND ONLY MESSAGE SHOULD BE SEND
       // DIVIDING CHARACTER'S NUMBER AND SPLIT THEM INTO A SINGLE MESSAGE IF THEY ARE BIGGER THAN 20
       const messagesToSend: string[] = [];
       let remainingMessage = message;
