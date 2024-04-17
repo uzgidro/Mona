@@ -128,15 +128,6 @@ export class MessageComponent implements OnInit {
   console.log(eventMessage);
 
   }
-
-
-
-
-
-
-
-
-
   editMessage() {
     const inputValue = this.inputGroup.get('message')?.value || ''
     this.connection?.send('editMessage', {...this.editingMessage, text: inputValue});
