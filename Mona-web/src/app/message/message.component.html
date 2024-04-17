@@ -20,7 +20,7 @@
     <p *ngIf="repliedMessage">{{repliedMessage.text}}</p>
     <p *ngIf="editingMessage">{{editingMessage.text}}</p>
     <input  formControlName="message" type="text" [value]="this.inputGroup.value.message" >
-    <input formControlName="file"  type="file"  (change)="onFileSelected($event)" multiple title="choose file" >
+    <input formControlName="file"  type="file"  (change)="onFileSelected($event)" multiple>
     <button (click)="sendMessage()" *ngIf="!this.editingMessage">send</button>
     <button (click)="editMessage()" *ngIf="this.editingMessage" >edit</button>
     <ul>
