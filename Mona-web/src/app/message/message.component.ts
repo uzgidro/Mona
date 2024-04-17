@@ -94,6 +94,7 @@ export class MessageComponent implements OnInit {
         formData.append("file", file, file.name);
       });
       this.apiService.sendMessage(formData)
+      //CLEARING INPUT AND EDITINGMESSAGE AFTER SENDING FORMDATA TO SERVER SUCCESSFULLY
       this.inputGroup.get('file')?.setValue('')
     } else {
       //IF THERE IS NO FILE SELECTED AND ONLY MESSAGE SHOULD BE SEND
