@@ -19,6 +19,7 @@ export class MessageComponent implements OnInit {
   selectedChat?: UserModel
   inputGroup = new FormGroup({
     message: new FormControl(''),
+    file:new FormControl('')
   })
 
   selectedFiles?: any[];
@@ -93,6 +94,8 @@ export class MessageComponent implements OnInit {
         formData.append("file", file, file.name);
       });
       this.apiService.sendMessage(formData)
+      //CLEARING INPUT AND EDITINGMESSAGE AFTER SENDING FORMDATA TO SERVER SUCCESSFULLY
+      this.inputGroup.get('file')?.setValue('')
     } else {
       //IF THERE IS NO FILE SELECTED AND ONLY MESSAGE SHOULD BE SEND
       // DIVIDING CHARACTER'S NUMBER AND SPLIT THEM INTO A SINGLE MESSAGE IF THEY ARE BIGGER THAN 20
@@ -121,6 +124,10 @@ export class MessageComponent implements OnInit {
   }
 
 
+  forwardMessage(eventMessage: MessageModel) {
+  console.log(eventMessage);
+
+  }
   editMessage() {
     const inputValue = this.inputGroup.get('message')?.value || ''
     this.connection?.send('editMessage', {...this.editingMessage, text: inputValue});

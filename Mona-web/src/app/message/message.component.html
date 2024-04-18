@@ -20,7 +20,7 @@
     <p *ngIf="repliedMessage">{{repliedMessage.text}}</p>
     <p *ngIf="editingMessage">{{editingMessage.text}}</p>
     <input  formControlName="message" type="text" [value]="this.inputGroup.value.message" >
-    <input type="file" class="file-input"    (change)="onFileSelected($event)" multiple>
+    <input formControlName="file"  type="file"  (change)="onFileSelected($event)" multiple>
     <button (click)="sendMessage()" *ngIf="!this.editingMessage">send</button>
     <button (click)="editMessage()" *ngIf="this.editingMessage" >edit</button>
     <ul>
@@ -33,6 +33,7 @@
               (deleteMessageForMyselfEvent)="deleteMessageForMyself($event)"
               (deleteMessageForEveryoneEvent)="deleteMessageForEveryone($event)"
               (replyMessageEvent)="replyMessage($event)"
+              (forwardMessageEvent)="forwardMessage($event)"
               (downloadFileEvent)="downloadFile($event)"
             >
             </app-message-item >

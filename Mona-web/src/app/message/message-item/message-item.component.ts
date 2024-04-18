@@ -19,9 +19,14 @@ export class MessageItemComponent {
  @Output() deleteMessageForMyselfEvent=new EventEmitter<MessageModel>()
  @Output() deleteMessageForEveryoneEvent=new EventEmitter<MessageModel>()
  @Output() replyMessageEvent=new EventEmitter<MessageModel>()
+ @Output() forwardMessageEvent=new EventEmitter<MessageModel>()
  @Output() downloadFileEvent=new EventEmitter<any>()
 
 
+
+ forwardMessageEventEmitter(){
+  this.forwardMessageEvent.emit(this.message)
+ }
 
  downloadFileEventEmitter(file:File){
   this.downloadFileEvent.emit(file)
