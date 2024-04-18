@@ -5,6 +5,7 @@ export interface MessageRequest{
   senderId?:string
   receiverId:string|number|undefined
   replyId?: string
+  forwardId?: string
   createdAt:Date
 }
 
@@ -29,7 +30,7 @@ export interface MessageModel{
   replyId?: any;
   repliedMessage?: MessageModel
   isEdited: boolean;
-  isForwarded: boolean;
+  ForwardedMessage?: MessageModel;
   isDeleted: boolean;
   createdAt: string;
   modifiedAt: string;

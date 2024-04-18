@@ -125,7 +125,7 @@ export class MessageComponent implements OnInit {
 
 
   forwardMessage(eventMessage: MessageModel) {
-  console.log(eventMessage);
+     console.log(eventMessage);
 
   }
   editMessage() {
