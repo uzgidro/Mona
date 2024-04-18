@@ -6,5 +6,6 @@ public struct MessageRequest
     public string? SenderId { get; set; }
     public string ReceiverId { get; set; }
     public string? ReplyId { get; set; }
+    public string? ForwardId { get; set; }
     public DateTime CreatedAt { get; set; }
 }

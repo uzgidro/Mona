@@ -9,11 +9,12 @@ public class MessageModel
     public string ReceiverId { get; set; }
     public UserModel Receiver { get; set; }
     public string? ReplyId { get; set; }
+    public string? ForwardId { get; set; }
     public ICollection<FileModel> Files { get; set; } = new List<FileModel>();
     public bool IsSent { get; set; }
     public MessageModel? RepliedMessage { get; set; }
+    public MessageModel? ForwardedMessage { get; set; }
     public bool IsEdited { get; set; }
-    public bool IsForwarded { get; set; }
     public bool IsSenderDeleted { get; set; }
     public bool IsReceiverDeleted { get; set; }
     public DateTime CreatedAt { get; set; }

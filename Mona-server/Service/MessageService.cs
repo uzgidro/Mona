@@ -13,23 +13,23 @@ public class MessageService(ApplicationContext context) : IMessageService
 {
     private static readonly JsonSerializerOptions? Options = new() { PropertyNameCaseInsensitive = true };
 
-    public async Task<MessageModel> CreateMessage(MessageRequest message)
-    {
-        if (string.IsNullOrEmpty(message.Text)) return new MessageModel();
-        var entity = new MessageModel
-        {
-            Text = message.Text,
-            SenderId = message.SenderId!,
-            ReceiverId = message.ReceiverId,
-            CreatedAt = message.CreatedAt,
-            ModifiedAt = message.CreatedAt,
-            ReplyId = message.ReplyId
-        };
-        var entityEntry = context.Messages.Add(entity);
-        await context.SaveChangesAsync();
-        await AddNavigation(entity);
-        return entityEntry.Entity;
-    }
+    // public async Task<MessageModel> CreateMessage(MessageRequest message)
+    // {
+    //     if (string.IsNullOrEmpty(message.Text)) return new MessageModel();
+    //     var entity = new MessageModel
+    //     {
+    //         Text = message.Text,
+    //         SenderId = message.SenderId!,
+    //         ReceiverId = message.ReceiverId,
+    //         CreatedAt = message.CreatedAt,
+    //         ModifiedAt = message.CreatedAt,
+    //         ReplyId = message.ReplyId
+    //     };
+    //     var entityEntry = context.Messages.Add(entity);
+    //     await context.SaveChangesAsync();
+    //     await AddNavigation(entity);
+    //     return entityEntry.Entity;
+    // }
 
     public async Task<MessageModel?> CreateMessage(MultipartReader multipartReader, string senderId)
     {
@@ -51,10 +51,11 @@ public class MessageService(ApplicationContext context) : IMessageService
                     CreatedAt = message.CreatedAt,
                     ModifiedAt = message.CreatedAt,
                     ReplyId = message.ReplyId,
+                    ForwardId = message.ForwardId,
                     IsSent = false
                 };
                 var entityEntry = context.Messages.Add(entity);
-                 await context.SaveChangesAsync();
+                await context.SaveChangesAsync();
                 return entityEntry.Entity;
             }
 
@@ -82,7 +83,7 @@ public class MessageService(ApplicationContext context) : IMessageService
     {
         var entity = await context.Messages.FirstOrDefaultAsync(item => item.Id == message.Id);
 
-        if (entity == null || !entity.SenderId.Equals(caller)) return null;
+        if (entity == null || !entity.SenderId.Equals(caller) || !string.IsNullOrEmpty(entity.ForwardId)) return null;
         if (entity.Text.Equals(message.Text) || string.IsNullOrEmpty(message.Text))
         {
             var entry = context.Messages.Entry(entity);
@@ -141,6 +142,7 @@ public class MessageService(ApplicationContext context) : IMessageService
             .Include(m => m.Sender)
             .Include(m => m.Receiver)
             .Include(m => m.Files)
+            .Include(m => m.ForwardedMessage)
             .Where(item => (item.ReceiverId.Equals(caller) && !item.IsReceiverDeleted) ||
                            (item.SenderId.Equals(caller) && !item.IsSenderDeleted))
             .Where(item => item.IsSent)
@@ -153,5 +155,6 @@ public class MessageService(ApplicationContext context) : IMessageService
         await context.Entry(entity).Reference(m => m.Receiver).LoadAsync();
         await context.Entry(entity).Reference(m => m.RepliedMessage).LoadAsync();
         await context.Entry(entity).Collection(m => m.Files).LoadAsync();
+        await context.Entry(entity).Reference(m => m.ForwardedMessage).LoadAsync();
     }
 }

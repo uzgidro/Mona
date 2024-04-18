@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.SignalR;
 using Mona.Enum;
 using Mona.Model;
-using Mona.Model.Dto;
 using Mona.Service.Interface;
 
 namespace Mona.Hub;
@@ -10,12 +9,12 @@ namespace Mona.Hub;
 [Authorize]
 public class SimpleHub(IMessageService service, IUserService userService) : Hub<IHubInterfaces>
 {
-    public async Task SendDirectMessage(MessageRequest message)
-    {
-        message.SenderId = GetSender();
-        var messageItem = await service.CreateMessage(message);
-        await Clients.Users(messageItem.ReceiverId, messageItem.SenderId).ReceiveMessage(messageItem);
-    }
+    // public async Task SendDirectMessage(MessageRequest message)
+    // {
+    //     message.SenderId = GetSender();
+    //     var messageItem = await service.CreateMessage(message);
+    //     await Clients.Users(messageItem.ReceiverId, messageItem.SenderId).ReceiveMessage(messageItem);
+    // }
 
     public async Task EditMessage(MessageModel message)
     {
