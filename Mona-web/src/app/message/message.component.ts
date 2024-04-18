@@ -7,6 +7,8 @@ import {FormControl, FormGroup} from "@angular/forms";
 import {UserModel} from "../models/user";
 import {MessageModel, MessageRequest} from '../models/message';
 import {ApiService} from '../services/api.service';
+import {MatDialog} from '@angular/material/dialog'
+import { ForwardMessageDialogComponent } from './dialog/dialog.component';
 
 @Component({
   selector: 'app-message',
@@ -27,12 +29,13 @@ export class MessageComponent implements OnInit {
   private _income: MessageModel[] = []
   editingMessage?: MessageModel
   repliedMessage?: MessageModel
+  forwardedMessage?: MessageModel
 
   get income(): MessageModel[] {
     return this._income.filter(item => item.receiverId == this.selectedChat?.id || item.senderId == this.selectedChat?.id)
   }
 
-  constructor(private jwtService: JwtService, private apiService: ApiService) {
+  constructor(private jwtService: JwtService, private apiService: ApiService, private dialog:MatDialog) {
   }
 
   ngOnInit() {
@@ -80,12 +83,14 @@ export class MessageComponent implements OnInit {
   sendMessage() {
     let message = this.inputGroup.get('message')?.value;
     let replyId: string | undefined = this.repliedMessage ? this.repliedMessage.id : undefined;
+    let forwardId:string|undefined=this.forwardedMessage?this.forwardedMessage.id:undefined;
     if (this.selectedFiles?.length) {
       const messageRequest: MessageRequest = {
         text: message ? message : '',
         receiverId: this.selectedChat?.id,
         createdAt: new Date(),
-        replyId: replyId
+        replyId: replyId,
+        forwardId:forwardId
       };
       let formData = new FormData();
       formData.append('message', JSON.stringify(messageRequest))
@@ -113,7 +118,8 @@ export class MessageComponent implements OnInit {
           text: text,
           receiverId: this.selectedChat?.id,
           createdAt: new Date(),
-          replyId: replyId
+          replyId: replyId,
+          forwardId:forwardId
         }
         const formData = new FormData();
         formData.append('message', JSON.stringify(messageReq));
@@ -125,7 +131,38 @@ export class MessageComponent implements OnInit {
 
 
   forwardMessage(eventMessage: MessageModel) {
-     console.log(eventMessage);
+     this.forwardedMessage = eventMessage
+     console.log(this.forwardedMessage);
+     let replyId:string
+     if (this.repliedMessage) {
+     replyId = this.repliedMessage.id;
+    }
+     if (this.forwardedMessage) {
+      const forwardId = this.forwardedMessage.id;
+      const dialogRef = this.dialog.open(ForwardMessageDialogComponent, {
+        width: '400px',
+        data: { forwardedMessage: this.forwardedMessage, users: this.users }
+      });
+
+      dialogRef.afterClosed().subscribe((selectedRecipients: UserModel[]) => {
+        if (selectedRecipients && selectedRecipients.length > 0) {
+          selectedRecipients.forEach(recipient => {
+            const messageRequest: MessageRequest = {
+              text:this.forwardedMessage.text,
+              receiverId: recipient.id,
+              createdAt: new Date(),
+              replyId: replyId,
+              forwardId: forwardId
+            };
+            this.connection?.send("sendDirectMessage", messageRequest);
+          });
+        }
+      });
+
+      this.forwardedMessage = undefined;
+      return;
+    }
+
 
   }
   editMessage() {

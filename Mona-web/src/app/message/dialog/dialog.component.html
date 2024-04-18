@@ -1,0 +1,11 @@
+<h2 mat-dialog-title>Forward from <span class="text-yellow-600">{{data.forwardedMessage.sender.lastName}}</span></h2>
+<div mat-dialog-content>
+  <p>Selected Message: {{ data.forwardedMessage.text }}</p>
+  <ul>
+    <li *ngFor="let user of data.users" (click)="onSelectUser(user)"   [ngClass]="selectedUser?'text-red-700':''" >{{user.firstName}} {{user.lastName}}</li>
+  </ul>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="cancel()">❌</button>
+  <button mat-button color="primary"  (click)="sendMessage()">⬆️</button>
+</div>

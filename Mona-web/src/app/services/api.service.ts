@@ -1,4 +1,4 @@
-import { File } from './../models/message';
+import { File, MessageModel } from './../models/message';
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {User} from "../models/user";
