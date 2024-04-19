@@ -13,7 +13,7 @@
           </span>
           <small *ngIf="message?.isEdited">edited</small>
           <small>{{message?.createdAt |date:'HH:mm'}}</small>
-          <button *ngIf="selectedChat?.id!==message?.senderId" (click)="editMessageEventEmitter()">📝</button>
+          <button *ngIf="selectedChat?.id!==message?.senderId&&!message.forwardedMessage" (click)="editMessageEventEmitter()">📝</button>
           <button class="hover:scale-110 active:scale-95" (click)="deleteMessageForMyselfEventEmitter()">🚫</button>
           <button class="hover:scale-110 active:scale-95" (click)="deleteMessageForEveryoneEventEmitter()">❎</button>
           <button (click)="replyMessageEventEmitter()">↩️</button>
