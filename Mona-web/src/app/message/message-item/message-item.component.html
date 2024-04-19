@@ -4,11 +4,12 @@
          class="w-full bg-green-500 text-white">
           {{message?.sender?.firstName}} :
           <span [ngClass]="{'text-yellow-500 bg-green-300 italic':message?.isEdited&&message?.receiverId==selectedChat?.id}">
+          <small *ngIf="message.forwardedMessage" class=" text-blue-800 ml-2">from {{message.sender?.firstName?.slice(0,5)}}</small>
             {{ message?.text }}
-          <small *ngIf="message.forwardedMessage" class="bg-white text-blue-800 ml-2">from {{message.sender?.firstName?.slice(0,5)}}</small>
         </span>
           </span>
           <span *ngIf="message?.files?.length">
+            <small *ngIf="message.forwardedMessage?.files" class=" text-blue-800 ml-2">from {{message.sender?.firstName?.slice(0,5)}}</small>
             <small *ngFor="let file of message?.files"  (click)="downloadFileEventEmitter(file)"    class=" cursor-pointer hover:text-red-900 hover:outline-red-900  hover:outline-2 hover:border-b-2 hover:border-b-slate-950 ">{{file.name}}</small>
           </span>
           <small *ngIf="message?.isEdited">edited</small>

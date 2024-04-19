@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {  UserModel } from '../../models/user';
-import { MessageModel, MessageRequest } from '../../models/message';
+import { File, MessageModel, MessageRequest } from '../../models/message';
 import { ApiService } from '../../services/api.service';
 
 @Component({
@@ -14,6 +14,7 @@ export class ForwardMessageDialogComponent {
   selectedUser?:UserModel
 
 
+
   constructor(
     public dialogRef: MatDialogRef<ForwardMessageDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { forwardedMessage: MessageModel,users:UserModel[]},
@@ -24,23 +25,19 @@ export class ForwardMessageDialogComponent {
 
   onSelectUser(user:UserModel){
     this.selectedUser=user
-    console.log(this.selectedUser);
   }
 
-  sendMessage() {
-    console.log(this.selectedUser);
-    console.log(this.data.forwardedMessage);
-
-    const messageReq:MessageRequest={
-      text: this.data.forwardedMessage.text,
-      receiverId: this.selectedUser?.id,
-      createdAt: new Date(),
-      forwardId:this.data.forwardedMessage.id
-    }
-    console.log(messageReq);
-    const formData=new FormData()
-    formData.append('message',JSON.stringify(messageReq))
-    this.apiService.sendMessage(formData);
+  sendMessages() {
+    let formData:FormData=new FormData()
+      const messageReq:MessageRequest={
+        text: this.data.forwardedMessage.text,
+        receiverId: this.selectedUser?.id,
+        createdAt: new Date(),
+        forwardId:this.data.forwardedMessage.id
+      }
+      formData.append('message',JSON.stringify(messageReq))
+      this.apiService.sendMessage(formData)
+      this.cancel()
   }
 
   cancel() {

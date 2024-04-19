@@ -79,7 +79,6 @@ export class MessageComponent implements OnInit {
     this.selectedChat = user
   }
 
-
   sendMessage() {
     let message = this.inputGroup.get('message')?.value;
     let replyId: string | undefined = this.repliedMessage ? this.repliedMessage.id : undefined;
@@ -129,41 +128,15 @@ export class MessageComponent implements OnInit {
     this.inputGroup.get('message')?.setValue('')
   }
 
-
   forwardMessage(eventMessage: MessageModel) {
-     this.forwardedMessage = eventMessage
-     console.log(this.forwardedMessage);
-     let replyId:string
-     if (this.repliedMessage) {
-     replyId = this.repliedMessage.id;
-    }
+     this.forwardedMessage = eventMessage;
      if (this.forwardedMessage) {
-      const forwardId = this.forwardedMessage.id;
       const dialogRef = this.dialog.open(ForwardMessageDialogComponent, {
         width: '400px',
         data: { forwardedMessage: this.forwardedMessage, users: this.users }
       });
-
-      dialogRef.afterClosed().subscribe((selectedRecipients: UserModel[]) => {
-        if (selectedRecipients && selectedRecipients.length > 0) {
-          selectedRecipients.forEach(recipient => {
-            const messageRequest: MessageRequest = {
-              text:this.forwardedMessage.text,
-              receiverId: recipient.id,
-              createdAt: new Date(),
-              replyId: replyId,
-              forwardId: forwardId
-            };
-            this.connection?.send("sendDirectMessage", messageRequest);
-          });
-        }
-      });
-
-      this.forwardedMessage = undefined;
-      return;
+      dialogRef.afterClosed().subscribe(() => {});
     }
-
-
   }
   editMessage() {
     const inputValue = this.inputGroup.get('message')?.value || ''
@@ -177,7 +150,6 @@ export class MessageComponent implements OnInit {
     this.inputGroup.get('message')?.setValue(eventMessage.text)
     this.editingMessage = eventMessage
   }
-
 
   downloadFile(file: File) {
     this.apiService.downloadFile(file)
