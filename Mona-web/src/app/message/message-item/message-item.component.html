@@ -1,8 +1,12 @@
         <p *ngIf="message?.repliedMessage">Replied to <span [ngClass]="{'text-red-500':message?.receiverId===selectedChat?.id}">{{message?.repliedMessage?.text}}</span>👇</p>
        <span
-          [ngClass]="{'bg-blue-700 text-white':message?.receiverId===selectedChat?.id}"
-           class="w-full bg-green-500 text-white">
-           {{message?.sender?.firstName}} : <span [ngClass]="{'text-yellow-500 bg-green-300 italic':message?.isEdited&&message?.receiverId==selectedChat?.id}"> {{ message?.text }}</span>
+        [ngClass]="{'bg-blue-700 text-white':message?.receiverId===selectedChat?.id}"
+         class="w-full bg-green-500 text-white">
+          {{message?.sender?.firstName}} :
+          <span [ngClass]="{'text-yellow-500 bg-green-300 italic':message?.isEdited&&message?.receiverId==selectedChat?.id}">
+            {{ message?.text }}
+          <small *ngIf="message.forwardedMessage" class="bg-white text-blue-800 ml-2">from {{message.sender?.firstName?.slice(0,5)}}</small>
+        </span>
           </span>
           <span *ngIf="message?.files?.length">
             <small *ngFor="let file of message?.files"  (click)="downloadFileEventEmitter(file)"    class=" cursor-pointer hover:text-red-900 hover:outline-red-900  hover:outline-2 hover:border-b-2 hover:border-b-slate-950 ">{{file.name}}</small>

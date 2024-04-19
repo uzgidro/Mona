@@ -30,7 +30,7 @@ export interface MessageModel{
   replyId?: any;
   repliedMessage?: MessageModel
   isEdited: boolean;
-  ForwardedMessage?: MessageModel;
+  forwardedMessage?: MessageModel;
   isDeleted: boolean;
   createdAt: string;
   modifiedAt: string;
