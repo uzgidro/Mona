@@ -127,10 +127,9 @@ export class MessageComponent implements OnInit {
     }
     this.inputGroup.get('message')?.setValue('')
   }
-
   forwardMessage(eventMessage: MessageModel) {
      this.forwardedMessage = eventMessage;
-     if (this.forwardedMessage) {
+     if (this.forwardedMessage){
       const dialogRef = this.dialog.open(ForwardMessageDialogComponent, {
         width: '400px',
         data: { forwardedMessage: this.forwardedMessage, users: this.users }
