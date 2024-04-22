@@ -37,7 +37,7 @@ export class ForwardMessageDialogComponent {
       }
       formData.append('message',JSON.stringify(messageReq))
       this.apiService.sendMessage(formData)
-      this.cancel()
+      this.dialogRef.close();
   }
 
   cancel() {
