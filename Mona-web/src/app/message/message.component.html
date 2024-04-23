@@ -1,44 +1,45 @@
-
 <div class="users">
 
   <ul>
     <li
-     [ngClass]="{'bg-slate-900 text-white': user === selectedChat} "
+      *ngFor="let user of users"
       class="text-black bg-white" (click)="selectChat(user)"
-       *ngFor="let user of users">
-       {{ user.firstName }} {{user.lastName}}
-       <span >{{getIncomingMessagesCount(user) }}⬇️</span>
-       <span>⬆️{{getSentMessagesCount(user)}}</span>
-      </li>
+      [ngClass]="{'bg-slate-900 text-white': user === selectedChat} ">
+      {{ user.firstName }} {{ user.lastName }}
+      <span>{{ getIncomingMessagesCount(user) }}⬇️</span>
+      <span>⬆️{{ getSentMessagesCount(user) }}</span>
+    </li>
   </ul>
 
 </div>
 
 <div class="chat bg-slate-300">
-  <h2 class="text-green-700">{{ selectedChat?.firstName }} {{selectedChat?.lastName}}</h2>
-  <form *ngIf="selectedChat"   [formGroup]="inputGroup">
-    <p *ngIf="repliedMessage">{{repliedMessage.text}}</p>
-    <p *ngIf="editingMessage">{{editingMessage.text}}</p>
-    <input  formControlName="message" type="text" [value]="this.inputGroup.value.message" >
-    <input formControlName="file"  type="file"  (change)="onFileSelected($event)" multiple>
+  <h2 class="text-green-700">{{ selectedChat?.firstName }} {{ selectedChat?.lastName }}</h2>
+  <form *ngIf="selectedChat" [formGroup]="inputGroup">
+    <p *ngIf="repliedMessage">{{ repliedMessage.text }}</p>
+    <p *ngIf="editingMessage">{{ editingMessage.text }}</p>
+    <input [value]="this.inputGroup.value.message" formControlName="message" type="text">
+    <input (change)="onFileSelected($event)" formControlName="file" multiple type="file">
     <button (click)="sendMessage()" *ngIf="!this.editingMessage">send</button>
-    <button (click)="editMessage()" *ngIf="this.editingMessage" >edit</button>
-    <ul>
-      <li *ngFor="let message of income">
-            <app-message-item
-              [message]="message"
-              [selectedChat]="selectedChat"
-              [editingMessage]="editingMessage"
-              (editMessageEvent)="onSelectEditingMessage($event)"
-              (deleteMessageForMyselfEvent)="deleteMessageForMyself($event)"
-              (deleteMessageForEveryoneEvent)="deleteMessageForEveryone($event)"
-              (replyMessageEvent)="replyMessage($event)"
-              (forwardMessageEvent)="forwardMessage($event)"
-              (downloadFileEvent)="downloadFile($event)"
-            >
-            </app-message-item >
+    <button (click)="editMessage()" *ngIf="this.editingMessage">edit</button>
+    <div #container>
+      <ul class="overflow-y-auto max-h-32">
+        <li *ngFor="let message of income">
+          <app-message-item
+            (deleteMessageForEveryoneEvent)="deleteMessageForEveryone($event)"
+            (deleteMessageForMyselfEvent)="deleteMessageForMyself($event)"
+            (downloadFileEvent)="downloadFile($event)"
+            (editMessageEvent)="onSelectEditingMessage($event)"
+            (forwardMessageEvent)="forwardMessage($event)"
+            (replyMessageEvent)="replyMessage($event)"
+            [editingMessage]="editingMessage"
+            [message]="message"
+            [selectedChat]="selectedChat"
+          >
+          </app-message-item>
         </li>
     </ul>
+    </div>
   </form>
 </div>
 

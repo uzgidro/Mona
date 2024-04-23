@@ -1,5 +1,5 @@
 import {File} from './../models/message';
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import {HubConnection} from '@microsoft/signalr';
 import {JwtService} from "../services/jwt.service";
@@ -8,7 +8,7 @@ import {UserModel} from "../models/user";
 import {MessageModel, MessageRequest} from '../models/message';
 import {ApiService} from '../services/api.service';
 import {MatDialog} from '@angular/material/dialog'
-import { ForwardMessageDialogComponent } from './dialog/dialog.component';
+import {ForwardMessageDialogComponent} from './dialog/dialog.component';
 
 @Component({
   selector: 'app-message',
@@ -30,6 +30,8 @@ export class MessageComponent implements OnInit {
   editingMessage?: MessageModel
   repliedMessage?: MessageModel
   forwardedMessage?: MessageModel
+
+  @ViewChild('container') containerRef: ElementRef;
 
   get income(): MessageModel[] {
     return this._income.filter(item => item.receiverId == this.selectedChat?.id || item.senderId == this.selectedChat?.id)
@@ -77,6 +79,31 @@ export class MessageComponent implements OnInit {
 
   selectChat(user: UserModel) {
     this.selectedChat = user
+
+    // Получаем DOM-элемент контейнера
+    const containerElement = this.containerRef.nativeElement;
+    // Получаем границы контейнера относительно видимой области браузера
+    const containerBounds = containerElement.getBoundingClientRect();
+    // Получаем высоту контейнера
+    const containerHeight = containerBounds.height;
+    console.log(containerBounds)
+    // Получаем список дочерних элементов контейнера
+    const children = containerElement.children[0].children;
+    // Проходим по всем дочерним элементам и проверяем их видимость
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i] as HTMLElement;
+      // Получаем границы дочернего элемента относительно видимой области браузера
+      const childBounds = child.getBoundingClientRect();
+      console.log(childBounds)
+      // Проверяем, находится ли дочерний элемент внутри видимой области контейнера
+      const isVisible = childBounds.top >= containerBounds.top && childBounds.bottom <= containerBounds.bottom;
+      console.log(isVisible)
+      if (isVisible) {
+        console.log('Дочерний элемент видим:', child.textContent);
+      } else {
+        console.log('Дочерний элемент не видим:', child.textContent);
+      }
+    }
   }
 
   sendMessage() {
