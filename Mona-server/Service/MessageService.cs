@@ -146,6 +146,7 @@ public class MessageService(ApplicationContext context) : IMessageService
             .Where(item => (item.ReceiverId.Equals(caller) && !item.IsReceiverDeleted) ||
                            (item.SenderId.Equals(caller) && !item.IsSenderDeleted))
             .Where(item => item.IsSent)
+            .OrderBy(item => item.CreatedAt)
             .ToListAsync();
     }
 
