@@ -36,6 +36,9 @@ export class ForwardMessageDialogComponent {
         forwardId:this.data.forwardedMessage.id
       }
       formData.append('message',JSON.stringify(messageReq))
+      this.data.forwardedMessage.files.forEach((file)=>{
+        console.log(file);
+      })
       this.apiService.sendMessage(formData)
       this.dialogRef.close();
   }
