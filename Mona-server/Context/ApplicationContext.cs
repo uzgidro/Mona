@@ -15,10 +15,16 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
         base.OnModelCreating(builder);
 
         builder.Entity<MessageModel>()
-            .HasOne(m => m.Receiver)
+            .HasOne(m => m.UserReceiver)
             .WithMany()
             .HasForeignKey(m => m.ReceiverId)
-            .IsRequired();
+            .IsRequired(false);
+
+        builder.Entity<MessageModel>()
+            .HasOne(m => m.GroupReceiver)
+            .WithMany()
+            .HasForeignKey(m => m.ReceiverId)
+            .IsRequired(false);
 
         builder.Entity<MessageModel>()
             .HasOne(m => m.Sender)
@@ -43,5 +49,12 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
             .WithOne()
             .HasForeignKey<MessageModel>(e => e.ForwardId)
             .IsRequired(false);
+
+        builder.Entity<UserModel>()
+            .HasMany(e => e.Groups)
+            .WithMany(e => e.Users)
+            .UsingEntity<UserGroup>(
+                l => l.HasOne<GroupModel>().WithMany().HasForeignKey(e => e.GroupId),
+                r => r.HasOne<UserModel>().WithMany().HasForeignKey(e => e.UserId));
     }
 }
