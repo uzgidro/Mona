@@ -13,8 +13,8 @@ export class MessageService{
 
 
 
-  sendMessage(){
-
+  sendMessage(formData:any){
+    this.apiService.sendMessage(formData)
   }
 
 
