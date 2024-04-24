@@ -82,14 +82,12 @@ export class MessageComponent implements OnInit {
   sendMessage() {
     let message = this.inputGroup.get('message')?.value;
     let replyId: string | undefined = this.repliedMessage ? this.repliedMessage.id : undefined;
-    let forwardId:string|undefined=this.forwardedMessage?this.forwardedMessage.id:undefined;
     if (this.selectedFiles?.length) {
       const messageRequest: MessageRequest = {
         text: message ? message : '',
         receiverId: this.selectedChat?.id,
         createdAt: new Date(),
         replyId: replyId,
-        forwardId:forwardId
       };
       let formData = new FormData();
       formData.append('message', JSON.stringify(messageRequest))
@@ -117,8 +115,7 @@ export class MessageComponent implements OnInit {
           text: text,
           receiverId: this.selectedChat?.id,
           createdAt: new Date(),
-          replyId: replyId,
-          forwardId:forwardId
+          replyId: replyId
         }
         const formData = new FormData();
         formData.append('message', JSON.stringify(messageReq));
