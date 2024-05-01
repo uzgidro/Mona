@@ -1,5 +1,8 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Mona.Model;
 
+[Table("Groups")]
 public class GroupModel
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();

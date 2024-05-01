@@ -8,6 +8,7 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
     : IdentityDbContext<UserModel>(options)
 {
     public DbSet<MessageModel> Messages => Set<MessageModel>();
+    public DbSet<GroupModel> Groups => Set<GroupModel>();
     public DbSet<FileModel> Files => Set<FileModel>();
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -16,12 +17,6 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
 
         builder.Entity<MessageModel>()
             .HasOne(m => m.UserReceiver)
-            .WithMany()
-            .HasForeignKey(m => m.ReceiverId)
-            .IsRequired(false);
-
-        builder.Entity<MessageModel>()
-            .HasOne(m => m.GroupReceiver)
             .WithMany()
             .HasForeignKey(m => m.ReceiverId)
             .IsRequired(false);
