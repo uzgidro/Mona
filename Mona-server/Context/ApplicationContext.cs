@@ -9,6 +9,7 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
 {
     public DbSet<MessageModel> Messages => Set<MessageModel>();
     public DbSet<GroupModel> Groups => Set<GroupModel>();
+    public DbSet<UserGroup> UserGroup => Set<UserGroup>();
     public DbSet<FileModel> Files => Set<FileModel>();
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -44,6 +45,10 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
             .WithOne()
             .HasForeignKey<MessageModel>(e => e.ForwardId)
             .IsRequired(false);
+
+        // builder.Entity<UserModel>()
+        //     .HasMany(e => e.Groups)
+        //     .WithMany();
 
         builder.Entity<UserModel>()
             .HasMany(e => e.Groups)

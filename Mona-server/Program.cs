@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.SignalR;
 using Mona.Config;
@@ -12,12 +13,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddIdentityApiEndpoints<UserModel>()
     .AddEntityFrameworkStores<ApplicationContext>();
 builder.WebHost.ConfigureKestrel(serverOptions => { serverOptions.AddServerHeader = false; });
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 builder.Services.AddSqlite<ApplicationContext>("Data Source=UGEChat.db");
 builder.Services
     .AddScoped<IMessageService, MessageService>()
     .AddScoped<ICryptoService, CryptoService>()
     .AddScoped<IJwtService, JwtService>()
+    .AddScoped<IGroupService, GroupService>()
     .AddScoped<IFileService, FileService>()
     .AddScoped<IUserService, UserService>();
 builder.Services.AddEndpointsApiExplorer();
