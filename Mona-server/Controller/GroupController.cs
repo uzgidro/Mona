@@ -29,7 +29,25 @@ public class GroupController(IGroupService service) : ControllerBase
             var group = await service.EditGroup(groupId, request);
             return Ok(group);
         }
-        catch (System.Exception)
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpPost("{groupId}")]
+    public async Task<IActionResult> AppendMembers(string groupId, IEnumerable<string> membersId)
+    {
+        try
+        {
+            var members = await service.AddMembers(groupId, membersId);
+            return Ok(members);
+        }
+        catch (Exception)
         {
             return NotFound();
         }
