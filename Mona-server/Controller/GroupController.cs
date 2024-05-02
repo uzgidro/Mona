@@ -53,6 +53,20 @@ public class GroupController(IGroupService service) : ControllerBase
         }
     }
 
+    [HttpDelete("{groupId}")]
+    public async Task<IActionResult> DeleteGroup(string groupId)
+    {
+        try
+        {
+            await service.DeleteGroup(groupId);
+            return NoContent();
+        }
+        catch (Exception)
+        {
+            return NotFound();
+        }
+    }
+
     [HttpGet("user")]
     public async Task<IActionResult> GetUserWithGroup()
     {

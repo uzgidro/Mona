@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Mona.Context;
 using Mona.Model;
 using Mona.Model.Dto;
@@ -53,6 +54,15 @@ public class GroupService(ApplicationContext context) : IGroupService
         group.Description = request.Description;
         await context.SaveChangesAsync();
         return group;
+    }
+
+    public async Task DeleteGroup(string groupId)
+    {
+        var group = GetGroup(groupId);
+        context.Groups.Remove(group);
+        var userGroups = await context.UserGroup.Where(m => string.Equals(m.GroupId, groupId)).ToListAsync();
+        context.UserGroup.RemoveRange(userGroups);
+        await context.SaveChangesAsync();
     }
 
     private GroupModel GetGroup(string groupId)

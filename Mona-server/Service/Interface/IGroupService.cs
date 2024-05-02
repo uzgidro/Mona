@@ -8,4 +8,5 @@ public interface IGroupService
     public Task<GroupModel> CreateGroup(GroupRequest request);
     public Task<List<UserGroup>> AddMembers(string groupId, IEnumerable<string> membersId);
     public Task<GroupModel> EditGroup(string groupId, GroupRequest request);
+    public Task DeleteGroup(string groupId);
 }
