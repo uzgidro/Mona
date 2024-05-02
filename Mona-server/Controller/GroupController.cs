@@ -39,12 +39,26 @@ public class GroupController(IGroupService service) : ControllerBase
         }
     }
 
-    [HttpPost("{groupId}")]
+    [HttpPost("{groupId}/append")]
     public async Task<IActionResult> AppendMembers(string groupId, IEnumerable<string> membersId)
     {
         try
         {
             var members = await service.AddMembers(groupId, membersId);
+            return Ok(members);
+        }
+        catch (Exception)
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpPost("{groupId}/remove")]
+    public async Task<IActionResult> RemoveMembers(string groupId, IEnumerable<string> membersId)
+    {
+        try
+        {
+            var members = await service.RemoveMembers(groupId, membersId);
             return Ok(members);
         }
         catch (Exception)

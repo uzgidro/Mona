@@ -44,6 +44,30 @@ public class GroupService(ApplicationContext context) : IGroupService
         return relations;
     }
 
+    public async Task<List<UserGroup>> RemoveMembers(string groupId, IEnumerable<string> membersId)
+    {
+        GetGroup(groupId);
+        var relations = new List<UserGroup>();
+        foreach (var id in membersId)
+        {
+            try
+            {
+                context.Users.First(m => string.Equals(m.Id, id));
+                var relation = context.UserGroup
+                    .First(m => string.Equals(m.GroupId, groupId) && string.Equals(m.UserId, id));
+                relations.Add(relation);
+                context.UserGroup.Remove(relation);
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
+        await context.SaveChangesAsync();
+        return relations;
+    }
+
     public async Task<GroupModel> EditGroup(string groupId, GroupRequest request)
     {
         if (string.IsNullOrEmpty(request.Name))
