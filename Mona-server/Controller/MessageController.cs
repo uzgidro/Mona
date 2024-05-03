@@ -24,22 +24,49 @@ public class MessageController(
     [ProducesResponseType(StatusCodes.Status415UnsupportedMediaType)]
     [MultipartFormData]
     [DisableFormValueModelBinding]
-    public async Task<IResult> Post()
+    public async Task<IActionResult> Post()
     {
-        var userId = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type.Equals(Claims.Id))?.Value;
-        if (string.IsNullOrEmpty(userId)) return Results.BadRequest();
-        var boundary = GetBoundary(MediaTypeHeaderValue.Parse(Request.ContentType));
-        var multipartReader = new MultipartReader(boundary, HttpContext.Request.Body);
+        try
+        {
+            var userId = HttpContext.User.Claims.First(claim => claim.Type.Equals(Claims.Id)).Value;
+            var boundary = GetBoundary(MediaTypeHeaderValue.Parse(Request.ContentType));
+            var multipartReader = new MultipartReader(boundary, HttpContext.Request.Body);
 
-        var messageModel = await messageService.CreateMessage(multipartReader, userId);
-        if (messageModel == null) return Results.BadRequest();
+            var messageModel = await messageService.CreateMessage(multipartReader, userId);
 
-        var fileUploadSummary =
-            await fileService.UploadFileAsync(multipartReader, messageModel.Id);
+            var fileUploadSummary =
+                await fileService.UploadFileAsync(multipartReader, messageModel.Id);
 
-        var activeMessage = await messageService.ActiveMessage(messageModel);
-        await hubContext.Clients.Users(activeMessage.ReceiverId, activeMessage.SenderId).ReceiveMessage(activeMessage);
-        return Results.Created(nameof(Post), fileUploadSummary);
+            var activeMessage = await messageService.ActiveMessage(messageModel);
+            if (!string.IsNullOrEmpty(activeMessage.DirectReceiverId))
+            {
+                await hubContext.Clients.Users(activeMessage.DirectReceiverId, activeMessage.SenderId)
+                    .ReceiveMessage(activeMessage);
+            }
+            else if (!string.IsNullOrEmpty(activeMessage.GroupReceiverId))
+            {
+                await hubContext.Clients.Groups(activeMessage.GroupReceiverId)
+                    .ReceiveMessage(activeMessage);
+            }
+            else
+            {
+                return BadRequest("Message did not sent");
+            }
+
+            return CreatedAtRoute(nameof(Post), fileUploadSummary);
+        }
+        catch (NullReferenceException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (ArgumentNullException e)
+        {
+            return NotFound(e.Message);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     private static string GetBoundary(MediaTypeHeaderValue contentType)

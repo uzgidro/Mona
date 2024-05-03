@@ -19,7 +19,7 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
         builder.Entity<MessageModel>()
             .HasOne(m => m.UserReceiver)
             .WithMany()
-            .HasForeignKey(m => m.ReceiverId)
+            .HasForeignKey(m => m.DirectReceiverId)
             .IsRequired(false);
 
         builder.Entity<MessageModel>()

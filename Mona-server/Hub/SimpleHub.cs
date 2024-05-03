@@ -18,29 +18,34 @@ public class SimpleHub(IMessageService service, IUserService userService) : Hub<
 
     public async Task EditMessage(MessageModel message)
     {
-        var edited = await service.EditMessage(GetSender(), message);
-        if (edited != null)
+        try
         {
-            await Clients.Users(edited.ReceiverId, edited.SenderId).ModifyMessage(edited);
+            var edited = await service.EditMessage(GetSender(), message);
+            await SetRoute(edited).ModifyMessage(edited);
+        }
+        catch (Exception e)
+        {
+            await Clients.Caller.ReceiveException(e);
         }
     }
 
     public async Task DeleteMessageForMyself(MessageModel message)
     {
-        var edited = await service.DeleteMessageForMyself(GetSender(), message);
-        if (edited != null)
+        try
         {
-            await Clients.Caller.DeleteMessage(message);
+            var deleted = await service.DeleteMessageForMyself(GetSender(), message);
+            await Clients.Caller.DeleteMessage(deleted);
+        }
+        catch (Exception e)
+        {
+            await Clients.Caller.ReceiveException(e);
         }
     }
 
     public async Task DeleteMessageForEveryone(MessageModel message)
     {
-        var edited = await service.DeleteMessageForEveryone(GetSender(), message);
-        if (edited != null)
-        {
-            await Clients.Users(message.ReceiverId, message.SenderId).DeleteMessage(message);
-        }
+        var deleted = await service.DeleteMessageForEveryone(GetSender(), message);
+        await SetRoute(deleted).DeleteMessage(message);
     }
 
     public async Task<IEnumerable<UserModel>> GetUsers()
@@ -64,5 +69,20 @@ public class SimpleHub(IMessageService service, IUserService userService) : Hub<
     private string? GetSender()
     {
         return Context.User?.Claims.First(claim => claim.Type.Equals(Claims.Id)).Value;
+    }
+
+    private IHubInterfaces SetRoute(MessageModel message)
+    {
+        if (!string.IsNullOrEmpty(message.DirectReceiverId))
+        {
+            return Clients.Users(message.DirectReceiverId, message.SenderId);
+        }
+
+        if (!string.IsNullOrEmpty(message.GroupReceiverId))
+        {
+            return Clients.Groups(message.GroupReceiverId);
+        }
+
+        throw new ArgumentException("Invalid message: No direct or group receiver specified.");
     }
 }

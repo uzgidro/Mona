@@ -6,6 +6,7 @@ using Mona.Context;
 using Mona.Model;
 using Mona.Model.Dto;
 using Mona.Service.Interface;
+using Mona.Utilities;
 
 namespace Mona.Service;
 
@@ -31,29 +32,20 @@ public class MessageService(ApplicationContext context) : IMessageService
     //     return entityEntry.Entity;
     // }
 
-    public async Task<MessageModel?> CreateMessage(MultipartReader multipartReader, string senderId)
+    public async Task<MessageModel> CreateMessage(MultipartReader multipartReader, string senderId)
     {
         var section = await multipartReader.ReadNextSectionAsync();
 
         while (section != null)
         {
-            if (section.Headers.ContainsValue("form-data; name=\"message\""))
+            if (section.Headers != null && section.Headers.ContainsValue("form-data; name=\"message\""))
             {
                 using var reader = new StreamReader(section.Body, Encoding.UTF8);
                 var messageJson = await reader.ReadToEndAsync();
                 var message = JsonSerializer.Deserialize<MessageRequest>(messageJson, Options);
-                message.SenderId = senderId;
-                var entity = new MessageModel
-                {
-                    Text = message.Text,
-                    SenderId = message.SenderId!,
-                    ReceiverId = message.ReceiverId,
-                    CreatedAt = message.CreatedAt,
-                    ModifiedAt = message.CreatedAt,
-                    ReplyId = message.ReplyId,
-                    ForwardId = message.ForwardId,
-                    IsSent = false
-                };
+
+
+                var entity = message.ToMessageModel(senderId);
                 var entityEntry = context.Messages.Add(entity);
                 await context.SaveChangesAsync();
                 return entityEntry.Entity;
@@ -62,29 +54,27 @@ public class MessageService(ApplicationContext context) : IMessageService
             section = await multipartReader.ReadNextSectionAsync();
         }
 
-        return null;
+        throw new NullReferenceException("Message named form data is expected, but not found");
     }
 
-    public async Task<MessageModel?> ActiveMessage(MessageModel messageModel)
+    public async Task<MessageModel> ActiveMessage(MessageModel messageModel)
     {
-        var entity = await context.Messages
-            .Where(item => item.Id.Equals(messageModel.Id))
-            .FirstOrDefaultAsync();
-        if (entity == null) return null;
+        var entity = context.Messages
+            .First(item => item.Id.Equals(messageModel.Id));
 
         entity.IsSent = true;
-        var entityEntry = context.Messages.Update(entity);
         await context.SaveChangesAsync();
         await AddNavigation(entity);
-        return entityEntry.Entity;
+        return entity;
     }
 
-    public async Task<MessageModel?> EditMessage(string? caller, MessageModel message)
+    public async Task<MessageModel> EditMessage(string? caller, MessageModel message)
     {
-        var entity = await context.Messages.FirstOrDefaultAsync(item => item.Id == message.Id);
+        var entity = context.Messages.First(item => item.Id == message.Id);
 
-        if (entity == null || !entity.SenderId.Equals(caller) || !string.IsNullOrEmpty(entity.ForwardId)) return null;
-        if (entity.Text.Equals(message.Text) || string.IsNullOrEmpty(message.Text))
+        if (!string.Equals(entity.SenderId, caller) || !string.IsNullOrEmpty(entity.ForwardId))
+            throw new UnauthorizedAccessException("Access denied: You do not have permission to access this resource.");
+        if (string.Equals(message.Text, entity.Text) || string.IsNullOrEmpty(message.Text))
         {
             var entry = context.Messages.Entry(entity);
             await AddNavigation(entity);
@@ -100,40 +90,40 @@ public class MessageService(ApplicationContext context) : IMessageService
         return entityEntry.Entity;
     }
 
-    public async Task<MessageModel?> DeleteMessageForMyself(string? caller, MessageModel message)
+    public async Task<MessageModel> DeleteMessageForMyself(string? caller, MessageModel message)
     {
-        var entity = await context.Messages.FirstOrDefaultAsync(item => item.Id == message.Id);
+        var entity = context.Messages.First(item => item.Id == message.Id);
 
-        if (entity == null) return null;
-        if (entity.SenderId.Equals(caller))
+        if (string.Equals(entity.SenderId, caller))
         {
             entity.IsSenderDeleted = true;
         }
-        else if (entity.ReceiverId.Equals(caller))
+        else if (string.Equals(entity.DirectReceiverId, caller))
         {
             entity.IsReceiverDeleted = true;
         }
-        else return null;
+        // if receiver not found or receiver type is group model
+        else throw new UnauthorizedAccessException("Access denied: You cannot delete this message");
 
         entity.ModifiedAt = DateTime.Now;
-        var entityEntry = context.Messages.Update(entity);
         await context.SaveChangesAsync();
         await AddNavigation(entity);
-        return entityEntry.Entity;
+        return entity;
     }
 
-    public async Task<MessageModel?> DeleteMessageForEveryone(string? caller, MessageModel message)
+    public async Task<MessageModel> DeleteMessageForEveryone(string? caller, MessageModel message)
     {
-        var entity = await context.Messages.FirstOrDefaultAsync(item => item.Id == message.Id);
+        var entity = context.Messages.First(item =>
+            string.Equals(item.Id, message.Id)
+            && string.Equals(item.SenderId, caller)
+            && !string.Equals(item.DirectReceiverId, caller));
 
-        if (entity == null || (!entity.ReceiverId.Equals(caller) && !entity.SenderId.Equals(caller))) return null;
         entity.IsReceiverDeleted = true;
         entity.IsSenderDeleted = true;
         entity.ModifiedAt = DateTime.Now;
-        var entityEntry = context.Messages.Update(entity);
         await context.SaveChangesAsync();
         await AddNavigation(entity);
-        return entityEntry.Entity;
+        return entity;
     }
 
     public async Task<IEnumerable<MessageModel>> GetMessages(string? caller)
@@ -141,10 +131,11 @@ public class MessageService(ApplicationContext context) : IMessageService
         return await context.Messages.AsNoTracking()
             .Include(m => m.Sender)
             .Include(m => m.UserReceiver)
+            .Include(m => m.GroupReceiver)
             .Include(m => m.Files)
             .Include(m => m.ForwardedMessage)
-            .Where(item => (item.ReceiverId.Equals(caller) && !item.IsReceiverDeleted) ||
-                           (item.SenderId.Equals(caller) && !item.IsSenderDeleted))
+            .Where(item => (string.Equals(caller, item.DirectReceiverId) && !item.IsReceiverDeleted) ||
+                           (string.Equals(caller, item.SenderId) && !item.IsSenderDeleted))
             .Where(item => item.IsSent)
             .OrderBy(item => item.CreatedAt)
             .ToListAsync();
@@ -154,6 +145,7 @@ public class MessageService(ApplicationContext context) : IMessageService
     {
         await context.Entry(entity).Reference(m => m.Sender).LoadAsync();
         await context.Entry(entity).Reference(m => m.UserReceiver).LoadAsync();
+        await context.Entry(entity).Reference(m => m.GroupReceiver).LoadAsync();
         await context.Entry(entity).Reference(m => m.RepliedMessage).LoadAsync();
         await context.Entry(entity).Collection(m => m.Files).LoadAsync();
         await context.Entry(entity).Reference(m => m.ForwardedMessage).LoadAsync();
