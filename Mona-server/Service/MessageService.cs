@@ -14,23 +14,14 @@ public class MessageService(ApplicationContext context) : IMessageService
 {
     private static readonly JsonSerializerOptions? Options = new() { PropertyNameCaseInsensitive = true };
 
-    // public async Task<MessageModel> CreateMessage(MessageRequest message)
-    // {
-    //     if (string.IsNullOrEmpty(message.Text)) return new MessageModel();
-    //     var entity = new MessageModel
-    //     {
-    //         Text = message.Text,
-    //         SenderId = message.SenderId!,
-    //         ReceiverId = message.ReceiverId,
-    //         CreatedAt = message.CreatedAt,
-    //         ModifiedAt = message.CreatedAt,
-    //         ReplyId = message.ReplyId
-    //     };
-    //     var entityEntry = context.Messages.Add(entity);
-    //     await context.SaveChangesAsync();
-    //     await AddNavigation(entity);
-    //     return entityEntry.Entity;
-    // }
+    public async Task<MessageModel> CreateMessage(MessageModel message)
+    {
+        if (string.IsNullOrEmpty(message.Text)) return new MessageModel();
+        var entityEntry = context.Messages.Add(message);
+        await context.SaveChangesAsync();
+        await AddNavigation(entityEntry.Entity);
+        return entityEntry.Entity;
+    }
 
     public async Task<MessageModel> CreateMessage(MultipartReader multipartReader, string senderId)
     {

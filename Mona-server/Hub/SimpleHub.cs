@@ -2,19 +2,27 @@
 using Microsoft.AspNetCore.SignalR;
 using Mona.Enum;
 using Mona.Model;
+using Mona.Model.Dto;
 using Mona.Service.Interface;
+using Mona.Utilities;
 
 namespace Mona.Hub;
 
 [Authorize]
 public class SimpleHub(IMessageService service, IUserService userService) : Hub<IHubInterfaces>
 {
-    // public async Task SendDirectMessage(MessageRequest message)
-    // {
-    //     message.SenderId = GetSender();
-    //     var messageItem = await service.CreateMessage(message);
-    //     await Clients.Users(messageItem.ReceiverId, messageItem.SenderId).ReceiveMessage(messageItem);
-    // }
+    public async Task SendMessage(MessageRequest message)
+    {
+        try
+        {
+            var messageItem = await service.CreateMessage(message.ToMessageModel(GetSender()));
+            await SetRoute(messageItem).ReceiveMessage(messageItem);
+        }
+        catch (Exception e)
+        {
+            await Clients.Caller.ReceiveException(e);
+        }
+    }
 
     public async Task EditMessage(MessageModel message)
     {
@@ -50,8 +58,7 @@ public class SimpleHub(IMessageService service, IUserService userService) : Hub<
 
     public async Task<IEnumerable<UserModel>> GetUsers()
     {
-        var sender = GetSender();
-        var userManagerUsers = await userService.GetUsersExceptCaller(sender);
+        var userManagerUsers = await userService.GetUsersExceptCaller(GetSender());
         return userManagerUsers;
     }
 

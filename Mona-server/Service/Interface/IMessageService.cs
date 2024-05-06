@@ -5,7 +5,7 @@ namespace Mona.Service.Interface;
 
 public interface IMessageService
 {
-    // Task<MessageModel> CreateMessage(MessageRequest message);
+    Task<MessageModel> CreateMessage(MessageModel message);
     Task<MessageModel> CreateMessage(MultipartReader multipartReader, string senderId);
     Task<MessageModel> ActiveMessage(MessageModel messageModel);
     Task<MessageModel> EditMessage(string? caller, MessageModel message);

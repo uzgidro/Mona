@@ -5,8 +5,10 @@ namespace Mona.Utilities;
 
 public static class Extensions
 {
-    public static MessageModel ToMessageModel(this MessageRequest request, string senderId)
+    public static MessageModel ToMessageModel(this MessageRequest request, string? senderId)
     {
+        if (string.IsNullOrEmpty(senderId)) throw new ArgumentNullException(nameof(senderId));
+
         return new MessageModel
         {
             Text = request.Text,
