@@ -29,7 +29,8 @@ public class GroupService(ApplicationContext context) : IGroupService
                 var user = context.Users.First(m => string.Equals(m.Id, id));
                 // Check if user is already in group
                 var userGroup = context.UserGroup
-                    .First(m => string.Equals(m.GroupId, groupId) && string.Equals(m.UserId, user.Id));
+                    .FirstOrDefault(m => string.Equals(m.GroupId, groupId) && string.Equals(m.UserId, user.Id));
+                if (userGroup != null) continue;
                 var relation = new UserGroup { GroupId = groupId, UserId = user.Id };
                 relations.Add(relation);
                 context.UserGroup.Add(relation);

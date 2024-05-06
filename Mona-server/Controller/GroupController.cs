@@ -14,11 +14,18 @@ public class GroupController(IGroupService service) : ControllerBase
     [HttpPost("create")]
     public async Task<IActionResult> CreateGroup(GroupRequest request)
     {
-        var userId = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type.Equals(Claims.Id))?.Value;
-        if (string.IsNullOrEmpty(userId)) return Unauthorized();
-        request.CreatorId = userId;
-        var group = await service.CreateGroup(request);
-        return Ok(group);
+        try
+        {
+            var userId = HttpContext.User.Claims.First(claim => claim.Type.Equals(Claims.Id)).Value;
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+            request.CreatorId = userId;
+            var group = await service.CreateGroup(request);
+            return Ok(group);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpPut("{groupId}")]
