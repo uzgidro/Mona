@@ -26,11 +26,11 @@ public class GroupService(ApplicationContext context) : IGroupService
         {
             try
             {
-                context.Users.First(m => string.Equals(m.Id, id));
-                var exists = context.UserGroup
-                    .FirstOrDefault(m => string.Equals(m.GroupId, groupId) && string.Equals(m.UserId, id));
-                if (exists != null) continue;
-                var relation = new UserGroup { GroupId = groupId, UserId = id };
+                var user = context.Users.First(m => string.Equals(m.Id, id));
+                // Check if user is already in group
+                var userGroup = context.UserGroup
+                    .First(m => string.Equals(m.GroupId, groupId) && string.Equals(m.UserId, user.Id));
+                var relation = new UserGroup { GroupId = groupId, UserId = user.Id };
                 relations.Add(relation);
                 context.UserGroup.Add(relation);
             }
@@ -52,9 +52,9 @@ public class GroupService(ApplicationContext context) : IGroupService
         {
             try
             {
-                context.Users.First(m => string.Equals(m.Id, id));
+                var user = context.Users.First(m => string.Equals(m.Id, id));
                 var relation = context.UserGroup
-                    .First(m => string.Equals(m.GroupId, groupId) && string.Equals(m.UserId, id));
+                    .First(m => string.Equals(m.GroupId, groupId) && string.Equals(m.UserId, user.Id));
                 relations.Add(relation);
                 context.UserGroup.Remove(relation);
             }
