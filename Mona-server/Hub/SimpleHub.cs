@@ -16,7 +16,8 @@ public class SimpleHub(IMessageService service, IUserService userService) : Hub<
         try
         {
             var messageItem = await service.CreateMessage(message.ToMessageModel(GetSender()));
-            await SetRoute(messageItem).ReceiveMessage(messageItem);
+            var activeMessage = await service.ActiveMessage(messageItem);
+            await SetRoute(messageItem).ReceiveMessage(activeMessage);
         }
         catch (Exception e)
         {

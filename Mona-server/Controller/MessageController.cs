@@ -53,7 +53,7 @@ public class MessageController(
                 return BadRequest("Message did not sent");
             }
 
-            return CreatedAtRoute(nameof(Post), fileUploadSummary);
+            return Created(nameof(Post), fileUploadSummary);
         }
         catch (NullReferenceException e)
         {
@@ -67,6 +67,13 @@ public class MessageController(
         {
             return BadRequest(e.Message);
         }
+    }
+
+    [HttpGet("history")]
+    public async Task<IActionResult> GetMessages()
+    {
+        return Ok(await messageService.GetMessages(HttpContext.User.Claims.First(claim => claim.Type.Equals(Claims.Id))
+            .Value));
     }
 
     private static string GetBoundary(MediaTypeHeaderValue contentType)

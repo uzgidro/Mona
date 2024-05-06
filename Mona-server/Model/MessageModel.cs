@@ -7,15 +7,15 @@ public class MessageModel
     public string SenderId { get; set; }
     public UserModel Sender { get; set; }
     public string? DirectReceiverId { get; set; }
-    public UserModel? UserReceiver { get; set; }
+    public UserModel? DirectReceiver { get; set; }
     public string? GroupReceiverId { get; set; }
     public GroupModel? GroupReceiver { get; set; }
     public string? ReplyId { get; set; }
+    public MessageModel? RepliedMessage { get; set; }
     public string? ForwardId { get; set; }
+    public MessageModel? ForwardedMessage { get; set; }
     public ICollection<FileModel> Files { get; set; } = new List<FileModel>();
     public bool IsSent { get; set; }
-    public MessageModel? RepliedMessage { get; set; }
-    public MessageModel? ForwardedMessage { get; set; }
     public bool IsEdited { get; set; }
     public bool IsSenderDeleted { get; set; }
     public bool IsReceiverDeleted { get; set; }

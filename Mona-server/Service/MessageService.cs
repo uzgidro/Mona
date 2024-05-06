@@ -121,7 +121,7 @@ public class MessageService(ApplicationContext context) : IMessageService
     {
         return await context.Messages.AsNoTracking()
             .Include(m => m.Sender)
-            .Include(m => m.UserReceiver)
+            .Include(m => m.DirectReceiver)
             .Include(m => m.GroupReceiver)
             .Include(m => m.Files)
             .Include(m => m.ForwardedMessage)
@@ -135,7 +135,7 @@ public class MessageService(ApplicationContext context) : IMessageService
     private async Task AddNavigation(MessageModel? entity)
     {
         await context.Entry(entity).Reference(m => m.Sender).LoadAsync();
-        await context.Entry(entity).Reference(m => m.UserReceiver).LoadAsync();
+        await context.Entry(entity).Reference(m => m.DirectReceiver).LoadAsync();
         await context.Entry(entity).Reference(m => m.GroupReceiver).LoadAsync();
         await context.Entry(entity).Reference(m => m.RepliedMessage).LoadAsync();
         await context.Entry(entity).Collection(m => m.Files).LoadAsync();
