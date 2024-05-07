@@ -26,8 +26,8 @@ public class GroupService(ApplicationContext context) : IGroupService
     public async Task<List<GroupModel>> GetUserGroupList(string caller)
     {
         return await context.UserGroup.AsNoTracking()
-            .Include(m => m.GroupModel)
             .Where(m => string.Equals(m.UserId, caller))
+            .Include(m => m.GroupModel)
             .Select(m => m.GroupModel)
             .ToListAsync();
     }
@@ -53,8 +53,9 @@ public class GroupService(ApplicationContext context) : IGroupService
                     .FirstOrDefault(m => string.Equals(m.GroupId, group.Id) && string.Equals(m.UserId, user.Id));
                 if (userGroup != null) continue;
                 var relation = new UserGroup { GroupId = group.Id, UserId = user.Id };
-                relations.Add(relation);
-                context.UserGroup.Add(relation);
+                var entityEntry = context.UserGroup.Add(relation);
+                await AddNavigation(entityEntry.Entity);
+                relations.Add(entityEntry.Entity);
             }
             catch
             {
@@ -77,8 +78,9 @@ public class GroupService(ApplicationContext context) : IGroupService
                 var user = context.Users.First(m => string.Equals(m.Id, id));
                 var relation = context.UserGroup
                     .First(m => string.Equals(m.GroupId, group.Id) && string.Equals(m.UserId, user.Id));
-                relations.Add(relation);
-                context.UserGroup.Remove(relation);
+                var entityEntry = context.UserGroup.Remove(relation);
+                await AddNavigation(entityEntry.Entity);
+                relations.Add(entityEntry.Entity);
             }
             catch
             {
@@ -99,8 +101,9 @@ public class GroupService(ApplicationContext context) : IGroupService
             var user = context.Users.First(m => string.Equals(m.Id, caller));
             var relation = context.UserGroup
                 .First(m => string.Equals(m.GroupId, group.Id) && string.Equals(m.UserId, user.Id));
-            relations = relation;
-            context.UserGroup.Remove(relation);
+            var entityEntry = context.UserGroup.Remove(relation);
+            await AddNavigation(entityEntry.Entity);
+            relations = entityEntry.Entity;
         }
         catch
         {
@@ -120,6 +123,7 @@ public class GroupService(ApplicationContext context) : IGroupService
         group.Name = request.Name;
         group.Description = request.Description;
         await context.SaveChangesAsync();
+        await AddNavigation(group);
         return group;
     }
 
@@ -127,10 +131,25 @@ public class GroupService(ApplicationContext context) : IGroupService
     {
         var group = GetGroup(groupId);
         context.Groups.Remove(group);
-        var userGroups = await context.UserGroup.Where(m => string.Equals(m.GroupId, groupId)).ToListAsync();
+        var userGroups = await context.UserGroup
+            .Where(m => string.Equals(m.GroupId, groupId))
+            .Include(m => m.GroupModel)
+            .Include(m => m.GroupModel)
+            .ToListAsync();
         context.UserGroup.RemoveRange(userGroups);
         await context.SaveChangesAsync();
         return userGroups;
+    }
+
+    private async Task AddNavigation(GroupModel entity)
+    {
+        await context.Entry(entity).Collection(m => m.Users).LoadAsync();
+    }
+
+    private async Task AddNavigation(UserGroup entity)
+    {
+        await context.Entry(entity).Reference(m => m.GroupModel).LoadAsync();
+        await context.Entry(entity).Reference(m => m.UserModel).LoadAsync();
     }
 
     private GroupModel GetGroup(string groupId)

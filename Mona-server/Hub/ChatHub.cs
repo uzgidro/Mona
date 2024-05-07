@@ -7,7 +7,7 @@ using Mona.Utilities;
 namespace Mona.Hub;
 
 [Authorize]
-public class ChatHub(IMessageService service, IUserService userService, IGroupService groupService)
+public class ChatHub(IMessageService service, IUserService userService)
     : MainHub
 {
     public async Task SendMessage(MessageRequest message)

@@ -128,7 +128,7 @@ public class GroupController(
     }
 
     [HttpGet("list")]
-    public async Task<IActionResult> GetUserWithGroup()
+    public async Task<IActionResult> GetUserGroupList()
     {
         var userGroupList =
             await service.GetUserGroupList(GetUserId());

@@ -8,4 +8,7 @@ public interface IHubInterfaces
     Task ModifyMessage(MessageModel message);
     Task DeleteMessage(MessageModel message);
     Task ReceiveException(Exception e);
+    Task EditGroup(GroupModel group);
+    Task AppendMember(GroupModel group);
+    Task RemoveMember(GroupModel group);
 }
