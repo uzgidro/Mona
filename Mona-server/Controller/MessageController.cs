@@ -34,8 +34,8 @@ public class MessageController(
 
             var messageModel = await messageService.CreateMessage(multipartReader, userId);
 
-            var fileUploadSummary =
-                await fileService.UploadFileAsync(multipartReader, messageModel.Id);
+            if (!string.IsNullOrEmpty(messageModel.ForwardId))
+                await fileService.UploadFileAsync(multipartReader, messageModel);
 
             var activeMessage = await messageService.ActiveMessage(messageModel);
             if (!string.IsNullOrEmpty(activeMessage.DirectReceiverId))
@@ -53,7 +53,7 @@ public class MessageController(
                 return BadRequest("Message did not sent");
             }
 
-            return Created(nameof(Post), fileUploadSummary);
+            return Created(nameof(Post), activeMessage);
         }
         catch (NullReferenceException e)
         {

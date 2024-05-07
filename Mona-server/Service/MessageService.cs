@@ -35,7 +35,6 @@ public class MessageService(ApplicationContext context) : IMessageService
                 var messageJson = await reader.ReadToEndAsync();
                 var message = JsonSerializer.Deserialize<MessageRequest>(messageJson, Options);
 
-
                 var entity = message.ToMessageModel(senderId);
                 var entityEntry = context.Messages.Add(entity);
                 await context.SaveChangesAsync();
@@ -119,20 +118,30 @@ public class MessageService(ApplicationContext context) : IMessageService
 
     public async Task<IEnumerable<MessageModel>> GetMessages(string? caller)
     {
-        return await context.Messages.AsNoTracking()
+        var userGroups = await context.UserGroup.AsNoTracking().Where(item => string.Equals(item.UserId, caller))
+            .Select(m => m.GroupId).ToListAsync();
+
+        var messages = await context.Messages.AsNoTracking()
             .Include(m => m.Sender)
             .Include(m => m.DirectReceiver)
             .Include(m => m.GroupReceiver)
             .Include(m => m.Files)
             .Include(m => m.ForwardedMessage)
-            .Where(item => (string.Equals(caller, item.DirectReceiverId) && !item.IsReceiverDeleted) ||
-                           (string.Equals(caller, item.SenderId) && !item.IsSenderDeleted))
+            .Include(m => m.RepliedMessage)
+            .Where(item =>
+                (string.Equals(caller, item.DirectReceiverId) && !item.IsReceiverDeleted) ||
+                (string.Equals(caller, item.SenderId) && !item.IsSenderDeleted) ||
+                userGroups.Contains(item.GroupReceiverId))
             .Where(item => item.IsSent)
             .OrderBy(item => item.CreatedAt)
             .ToListAsync();
+
+        foreach (var message in messages) await IncludeFiles(message);
+
+        return messages;
     }
 
-    private async Task AddNavigation(MessageModel? entity)
+    private async Task AddNavigation(MessageModel entity)
     {
         await context.Entry(entity).Reference(m => m.Sender).LoadAsync();
         await context.Entry(entity).Reference(m => m.DirectReceiver).LoadAsync();
@@ -140,5 +149,15 @@ public class MessageService(ApplicationContext context) : IMessageService
         await context.Entry(entity).Reference(m => m.RepliedMessage).LoadAsync();
         await context.Entry(entity).Collection(m => m.Files).LoadAsync();
         await context.Entry(entity).Reference(m => m.ForwardedMessage).LoadAsync();
+        await IncludeFiles(entity);
+    }
+
+    private async Task IncludeFiles(MessageModel? message)
+    {
+        if (message?.ForwardedMessage != null)
+            await context.Entry(message.ForwardedMessage).Collection(m => m.Files).LoadAsync();
+
+        if (message?.RepliedMessage != null)
+            await context.Entry(message.RepliedMessage).Collection(m => m.Files).LoadAsync();
     }
 }

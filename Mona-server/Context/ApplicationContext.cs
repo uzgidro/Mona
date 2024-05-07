@@ -42,15 +42,21 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
 
         builder.Entity<MessageModel>()
             .HasOne(e => e.RepliedMessage)
-            .WithOne()
-            .HasForeignKey<MessageModel>(e => e.ReplyId)
+            .WithMany()
+            .HasForeignKey(e => e.ReplyId)
             .IsRequired(false);
 
         builder.Entity<MessageModel>()
             .HasOne(e => e.ForwardedMessage)
-            .WithOne()
-            .HasForeignKey<MessageModel>(e => e.ForwardId)
+            .WithMany()
+            .HasForeignKey(e => e.ForwardId)
             .IsRequired(false);
+
+        builder.Entity<MessageModel>(entity =>
+        {
+            entity.HasIndex(e => e.ForwardId);
+            entity.HasIndex(e => e.ReplyId);
+        });
 
         builder.Entity<UserModel>()
             .HasMany(e => e.Groups)

@@ -12,7 +12,7 @@ public class FileService(ApplicationContext context) : IFileService
 {
     private const string UploadsSubDirectory = "FilesUploaded";
 
-    public async Task<FileUploadSummary> UploadFileAsync(MultipartReader multipartReader, string messageId)
+    public async Task<FileUploadSummary> UploadFileAsync(MultipartReader multipartReader, MessageModel message)
     {
         var fileCount = 0;
         long totalSizeInBytes = 0;
@@ -28,7 +28,7 @@ public class FileService(ApplicationContext context) : IFileService
                 var file = await SaveFileAsync(fileSection, filePaths, notUploadedFiles);
                 await context.Files.AddAsync(new FileModel
                 {
-                    Name = file.Name, Path = file.Path, Size = file.Size, MessageId = messageId,
+                    Name = file.Name, Path = file.Path, Size = file.Size, MessageId = message.Id,
                     CreatedAt = DateTime.Now
                 });
                 await context.SaveChangesAsync();
@@ -41,7 +41,7 @@ public class FileService(ApplicationContext context) : IFileService
 
         return new FileUploadSummary
         {
-            MessageId = messageId,
+            Message = message,
             TotalFilesUploaded = fileCount,
             TotalSizeUploaded = ConvertSizeToString(totalSizeInBytes),
             FilePaths = filePaths,
