@@ -9,4 +9,5 @@ public class GroupModel
     public string Name { get; set; }
     public string? Description { get; set; }
     public IEnumerable<UserModel> Users { get; init; } = new List<UserModel>();
+    public IEnumerable<UserGroup> UserGroups { get; init; } = new List<UserGroup>();
 }

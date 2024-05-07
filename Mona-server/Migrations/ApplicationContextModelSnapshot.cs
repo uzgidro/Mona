@@ -175,7 +175,7 @@ namespace Mona.Migrations
 
                     b.HasIndex("MessageId");
 
-                    b.ToTable("Files");
+                    b.ToTable("Files", (string)null);
                 });
 
             modelBuilder.Entity("Mona.Model.GroupModel", b =>
@@ -192,7 +192,7 @@ namespace Mona.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Groups");
+                    b.ToTable("Groups", (string)null);
                 });
 
             modelBuilder.Entity("Mona.Model.MessageModel", b =>
@@ -249,7 +249,7 @@ namespace Mona.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("Mona.Model.UserGroup", b =>
@@ -264,7 +264,7 @@ namespace Mona.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserGroup");
+                    b.ToTable("UserGroup", (string)null);
                 });
 
             modelBuilder.Entity("Mona.Model.UserModel", b =>

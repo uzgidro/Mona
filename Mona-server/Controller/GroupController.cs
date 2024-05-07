@@ -88,11 +88,17 @@ public class GroupController(IGroupService service) : ControllerBase
         }
     }
 
-    [HttpGet("user")]
+    [HttpGet("list")]
     public async Task<IActionResult> GetUserWithGroup()
     {
-        // var aaa = await context.Users.Include(model => model.Groups).ToListAsync();
-        // return Ok(aaa);
-        return Ok();
+        var userGroupList =
+            await service.GetUserGroupList(HttpContext.User.Claims.First(claim => claim.Type.Equals(Claims.Id)).Value);
+        return Ok(userGroupList);
+    }
+
+    [HttpGet("{groupId}")]
+    public async Task<IActionResult> GetGroupInfo(string groupId)
+    {
+        return Ok(await service.GetGroupInfo(groupId));
     }
 }

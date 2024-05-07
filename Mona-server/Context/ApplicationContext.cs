@@ -62,7 +62,7 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
             .HasMany(e => e.Groups)
             .WithMany(e => e.Users)
             .UsingEntity<UserGroup>(
-                l => l.HasOne<GroupModel>().WithMany().HasForeignKey(e => e.GroupId),
-                r => r.HasOne<UserModel>().WithMany().HasForeignKey(e => e.UserId));
+                l => l.HasOne<GroupModel>(e => e.GroupModel).WithMany(e => e.UserGroups).HasForeignKey(e => e.GroupId),
+                r => r.HasOne<UserModel>(e => e.UserModel).WithMany(e => e.UserGroups).HasForeignKey(e => e.UserId));
     }
 }

@@ -18,6 +18,27 @@ public class GroupService(ApplicationContext context) : IGroupService
         return group.Entity;
     }
 
+    public async Task<List<GroupModel>> GetGroupList()
+    {
+        return await context.Groups.ToListAsync();
+    }
+
+    public async Task<List<GroupModel>> GetUserGroupList(string caller)
+    {
+        return await context.UserGroup.AsNoTracking()
+            .Include(m => m.GroupModel)
+            .Where(m => string.Equals(m.UserId, caller))
+            .Select(m => m.GroupModel)
+            .ToListAsync();
+    }
+
+    public async Task<GroupModel> GetGroupInfo(string groupId)
+    {
+        return await context.Groups
+            .Include(m => m.Users)
+            .FirstAsync(m => string.Equals(m.Id, groupId));
+    }
+
     public async Task<List<UserGroup>> AddMembers(string groupId, IEnumerable<string> membersId)
     {
         GetGroup(groupId);

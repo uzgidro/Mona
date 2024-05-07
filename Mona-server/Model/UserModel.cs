@@ -6,5 +6,6 @@ public class UserModel : IdentityUser
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public List<GroupModel> Groups { get; } = [];
+    public IEnumerable<GroupModel> Groups { get; init; } = new List<GroupModel>();
+    public IEnumerable<UserGroup> UserGroups { get; init; } = new List<UserGroup>();
 }
