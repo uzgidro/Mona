@@ -41,7 +41,7 @@ public class GroupService(ApplicationContext context) : IGroupService
 
     public async Task<List<UserGroup>> AddMembers(string groupId, IEnumerable<string> membersId)
     {
-        GetGroup(groupId);
+        var group = GetGroup(groupId);
         var relations = new List<UserGroup>();
         foreach (var id in membersId)
         {
@@ -50,9 +50,9 @@ public class GroupService(ApplicationContext context) : IGroupService
                 var user = context.Users.First(m => string.Equals(m.Id, id));
                 // Check if user is already in group
                 var userGroup = context.UserGroup
-                    .FirstOrDefault(m => string.Equals(m.GroupId, groupId) && string.Equals(m.UserId, user.Id));
+                    .FirstOrDefault(m => string.Equals(m.GroupId, group.Id) && string.Equals(m.UserId, user.Id));
                 if (userGroup != null) continue;
-                var relation = new UserGroup { GroupId = groupId, UserId = user.Id };
+                var relation = new UserGroup { GroupId = group.Id, UserId = user.Id };
                 relations.Add(relation);
                 context.UserGroup.Add(relation);
             }
@@ -68,7 +68,7 @@ public class GroupService(ApplicationContext context) : IGroupService
 
     public async Task<List<UserGroup>> RemoveMembers(string groupId, IEnumerable<string> membersId)
     {
-        GetGroup(groupId);
+        var group = GetGroup(groupId);
         var relations = new List<UserGroup>();
         foreach (var id in membersId)
         {
@@ -76,7 +76,7 @@ public class GroupService(ApplicationContext context) : IGroupService
             {
                 var user = context.Users.First(m => string.Equals(m.Id, id));
                 var relation = context.UserGroup
-                    .First(m => string.Equals(m.GroupId, groupId) && string.Equals(m.UserId, user.Id));
+                    .First(m => string.Equals(m.GroupId, group.Id) && string.Equals(m.UserId, user.Id));
                 relations.Add(relation);
                 context.UserGroup.Remove(relation);
             }
@@ -84,6 +84,27 @@ public class GroupService(ApplicationContext context) : IGroupService
             {
                 // ignored
             }
+        }
+
+        await context.SaveChangesAsync();
+        return relations;
+    }
+
+    public async Task<UserGroup> LeaveGroup(string groupId, string caller)
+    {
+        var group = GetGroup(groupId);
+        var relations = new UserGroup();
+        try
+        {
+            var user = context.Users.First(m => string.Equals(m.Id, caller));
+            var relation = context.UserGroup
+                .First(m => string.Equals(m.GroupId, group.Id) && string.Equals(m.UserId, user.Id));
+            relations = relation;
+            context.UserGroup.Remove(relation);
+        }
+        catch
+        {
+            // ignored
         }
 
         await context.SaveChangesAsync();
@@ -102,13 +123,14 @@ public class GroupService(ApplicationContext context) : IGroupService
         return group;
     }
 
-    public async Task DeleteGroup(string groupId)
+    public async Task<List<UserGroup>> DeleteGroup(string groupId)
     {
         var group = GetGroup(groupId);
         context.Groups.Remove(group);
         var userGroups = await context.UserGroup.Where(m => string.Equals(m.GroupId, groupId)).ToListAsync();
         context.UserGroup.RemoveRange(userGroups);
         await context.SaveChangesAsync();
+        return userGroups;
     }
 
     private GroupModel GetGroup(string groupId)

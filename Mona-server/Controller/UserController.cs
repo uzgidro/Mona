@@ -8,7 +8,7 @@ namespace Mona.Controller;
 [Authorize]
 [ApiController]
 [Route("/users")]
-public class UserController(UserManager<UserModel> userManager) : ControllerBase
+public class UserController(UserManager<UserModel> userManager) : MainController
 {
     [HttpGet("list")]
     public async Task<IResult> GetUserList()

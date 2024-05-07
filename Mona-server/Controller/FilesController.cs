@@ -8,7 +8,7 @@ namespace Mona.Controller;
 [Authorize]
 [ApiController]
 [Route("[controller]")]
-public class FilesController(ApplicationContext context) : ControllerBase
+public class FilesController(ApplicationContext context) : MainController
 {
     [HttpGet("download/{id}")]
     public async Task<IActionResult> DownloadFile(string id)

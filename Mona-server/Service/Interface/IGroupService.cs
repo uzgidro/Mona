@@ -11,6 +11,7 @@ public interface IGroupService
     public Task<GroupModel> GetGroupInfo(string groupId);
     public Task<List<UserGroup>> AddMembers(string groupId, IEnumerable<string> membersId);
     public Task<List<UserGroup>> RemoveMembers(string groupId, IEnumerable<string> membersId);
+    public Task<UserGroup> LeaveGroup(string groupId, string caller);
     public Task<GroupModel> EditGroup(string groupId, GroupRequest request);
-    public Task DeleteGroup(string groupId);
+    public Task<List<UserGroup>> DeleteGroup(string groupId);
 }

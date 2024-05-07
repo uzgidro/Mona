@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Mona.Enum;
+using Microsoft.AspNetCore.SignalR;
+using Mona.Hub;
 using Mona.Model.Dto;
 using Mona.Service.Interface;
 
@@ -9,17 +10,24 @@ namespace Mona.Controller;
 [Authorize]
 [ApiController]
 [Route("[controller]")]
-public class GroupController(IGroupService service) : ControllerBase
+public class GroupController(
+    IGroupService service,
+    IHubContext<ChatHub, IHubInterfaces> hubContext) : MainController
 {
     [HttpPost("create")]
     public async Task<IActionResult> CreateGroup(GroupRequest request)
     {
         try
         {
-            var userId = HttpContext.User.Claims.First(claim => claim.Type.Equals(Claims.Id)).Value;
+            var userId = GetUserId();
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
             request.CreatorId = userId;
             var group = await service.CreateGroup(request);
+            foreach (var user in group.Users)
+            {
+                await hubContext.Groups.AddToGroupAsync(user.Id, group.Id);
+            }
+
             return Ok(group);
         }
         catch (Exception e)
@@ -52,6 +60,11 @@ public class GroupController(IGroupService service) : ControllerBase
         try
         {
             var members = await service.AddMembers(groupId, membersId);
+            foreach (var userGroup in members)
+            {
+                await hubContext.Groups.AddToGroupAsync(userGroup.UserId, userGroup.GroupId);
+            }
+
             return Ok(members);
         }
         catch (Exception)
@@ -66,6 +79,27 @@ public class GroupController(IGroupService service) : ControllerBase
         try
         {
             var members = await service.RemoveMembers(groupId, membersId);
+            foreach (var userGroup in members)
+            {
+                await hubContext.Groups.RemoveFromGroupAsync(userGroup.UserId, userGroup.GroupId);
+            }
+
+            return Ok(members);
+        }
+        catch (Exception)
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpPost("{groupId}/leave")]
+    public async Task<IActionResult> LeaveGroup(string groupId)
+    {
+        try
+        {
+            var id = GetUserId();
+            var members = await service.LeaveGroup(groupId, id);
+            await hubContext.Groups.RemoveFromGroupAsync(id, groupId);
             return Ok(members);
         }
         catch (Exception)
@@ -79,7 +113,12 @@ public class GroupController(IGroupService service) : ControllerBase
     {
         try
         {
-            await service.DeleteGroup(groupId);
+            var userGroups = await service.DeleteGroup(groupId);
+            foreach (var userGroup in userGroups)
+            {
+                await hubContext.Groups.RemoveFromGroupAsync(userGroup.UserId, userGroup.GroupId);
+            }
+
             return NoContent();
         }
         catch (Exception)
@@ -92,7 +131,7 @@ public class GroupController(IGroupService service) : ControllerBase
     public async Task<IActionResult> GetUserWithGroup()
     {
         var userGroupList =
-            await service.GetUserGroupList(HttpContext.User.Claims.First(claim => claim.Type.Equals(Claims.Id)).Value);
+            await service.GetUserGroupList(GetUserId());
         return Ok(userGroupList);
     }
 

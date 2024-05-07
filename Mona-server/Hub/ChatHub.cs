@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.SignalR;
-using Mona.Enum;
 using Mona.Model;
 using Mona.Model.Dto;
 using Mona.Service.Interface;
@@ -9,7 +7,8 @@ using Mona.Utilities;
 namespace Mona.Hub;
 
 [Authorize]
-public class SimpleHub(IMessageService service, IUserService userService) : Hub<IHubInterfaces>
+public class ChatHub(IMessageService service, IUserService userService, IGroupService groupService)
+    : MainHub
 {
     public async Task SendMessage(MessageRequest message)
     {
@@ -72,25 +71,5 @@ public class SimpleHub(IMessageService service, IUserService userService) : Hub<
     public async Task JoinGroup(string group)
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, group);
-    }
-
-    private string? GetSender()
-    {
-        return Context.User?.Claims.First(claim => claim.Type.Equals(Claims.Id)).Value;
-    }
-
-    private IHubInterfaces SetRoute(MessageModel message)
-    {
-        if (!string.IsNullOrEmpty(message.DirectReceiverId))
-        {
-            return Clients.Users(message.DirectReceiverId, message.SenderId);
-        }
-
-        if (!string.IsNullOrEmpty(message.GroupReceiverId))
-        {
-            return Clients.Groups(message.GroupReceiverId);
-        }
-
-        throw new ArgumentException("Invalid message: No direct or group receiver specified.");
     }
 }

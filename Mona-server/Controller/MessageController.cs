@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
-using Mona.Enum;
 using Mona.Hub;
 using Mona.Service.Interface;
 using Mona.Utilities;
@@ -16,7 +15,7 @@ namespace Mona.Controller;
 public class MessageController(
     IFileService fileService,
     IMessageService messageService,
-    IHubContext<SimpleHub, IHubInterfaces> hubContext) : ControllerBase
+    IHubContext<ChatHub, IHubInterfaces> hubContext) : MainController
 {
     [HttpPost("send")]
     [RequestSizeLimit(2147483648)] // 2 GB
@@ -28,7 +27,7 @@ public class MessageController(
     {
         try
         {
-            var userId = HttpContext.User.Claims.First(claim => claim.Type.Equals(Claims.Id)).Value;
+            var userId = GetUserId();
             var boundary = GetBoundary(MediaTypeHeaderValue.Parse(Request.ContentType));
             var multipartReader = new MultipartReader(boundary, HttpContext.Request.Body);
 
@@ -72,8 +71,7 @@ public class MessageController(
     [HttpGet("history")]
     public async Task<IActionResult> GetMessages()
     {
-        return Ok(await messageService.GetMessages(HttpContext.User.Claims.First(claim => claim.Type.Equals(Claims.Id))
-            .Value));
+        return Ok(await messageService.GetMessages(GetUserId()));
     }
 
     private static string GetBoundary(MediaTypeHeaderValue contentType)

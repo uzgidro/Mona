@@ -92,6 +92,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapIdentityApi<UserModel>();
-app.MapHub<SimpleHub>("/hub");
+app.MapHub<ChatHub>("/hub");
 app.MapControllers();
 app.Run();
