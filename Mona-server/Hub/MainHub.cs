@@ -20,7 +20,7 @@ public abstract class MainHub : Hub<IHubInterfaces>
 
         if (!string.IsNullOrEmpty(message.GroupReceiverId))
         {
-            return Clients.Groups(message.GroupReceiverId);
+            return Clients.Group(message.GroupReceiverId);
         }
 
         throw new ArgumentException("Invalid message: No direct or group receiver specified.");

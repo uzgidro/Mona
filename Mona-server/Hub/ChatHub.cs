@@ -67,9 +67,4 @@ public class ChatHub(IMessageService service, IUserService userService)
         var messages = await service.GetMessages(GetSender());
         return messages;
     }
-
-    public async Task JoinGroup(string group)
-    {
-        await Groups.AddToGroupAsync(Context.ConnectionId, group);
-    }
 }

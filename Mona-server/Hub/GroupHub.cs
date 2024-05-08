@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Mona.Model;
 using Mona.Model.Dto;
 using Mona.Service.Interface;
 
@@ -115,5 +116,10 @@ public class GroupHub(IMessageService service, IUserService userService, IGroupS
         {
             await Clients.Caller.ReceiveException(e);
         }
+    }
+
+    public async Task<List<GroupModel>> GetUserGroupList()
+    {
+        return await groupService.GetUserGroupList(GetSender());
     }
 }
