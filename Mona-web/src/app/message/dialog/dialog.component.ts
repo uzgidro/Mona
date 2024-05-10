@@ -32,16 +32,10 @@ export class ForwardMessageDialogComponent {
       const messageReq:MessageRequest={
         receiverId: this.selectedUser?.id,
         createdAt: new Date(),
-        forwardId:this.data.forwardedMessage?.forwardId ? this.data.forwardedMessage.forwardId : this.data.forwardedMessage.id
+        forwardId:this.data.forwardedMessage.forwardId ? this.data.forwardedMessage.forwardId : this.data.forwardedMessage.id
       }
       formData.append('message',JSON.stringify(messageReq))
-      // this.data.forwardedMessage.files.forEach((file)=>{
-      //   console.log(file);
-
-
-      // })
       this.apiService.sendMessage(formData)
-
       this.dialogRef.close();
   }
 
