@@ -15,8 +15,8 @@ public class ChatHub(IMessageService service, IUserService userService)
         try
         {
             var messageItem = await service.CreateMessage(message.ToMessageModel(GetSender()));
-            var activeMessage = await service.ActiveMessage(messageItem);
-            await SetRoute(messageItem).ReceiveMessage(activeMessage);
+            var activeMessage = await service.ActiveMessage(messageItem.Id);
+            await SetRoute(activeMessage).ReceiveMessage(activeMessage);
         }
         catch (Exception e)
         {
@@ -37,12 +37,12 @@ public class ChatHub(IMessageService service, IUserService userService)
         }
     }
 
-    public async Task DeleteMessageForMyself(MessageModel message)
+    public async Task PinMessage(string messageId)
     {
         try
         {
-            var deleted = await service.DeleteMessageForMyself(GetSender(), message);
-            await Clients.Caller.DeleteMessage(deleted);
+            var pinned = await service.PinMessage(messageId);
+            await SetRoute(pinned).PinMessage(pinned);
         }
         catch (Exception e)
         {
@@ -50,10 +50,23 @@ public class ChatHub(IMessageService service, IUserService userService)
         }
     }
 
-    public async Task DeleteMessageForEveryone(MessageModel message)
+    public async Task DeleteMessageForMyself(string messageId)
     {
-        var deleted = await service.DeleteMessageForEveryone(GetSender(), message);
-        await SetRoute(deleted).DeleteMessage(message);
+        try
+        {
+            var deleted = await service.DeleteMessageForMyself(GetSender(), messageId);
+            await Clients.Caller.DeleteMessage(deleted.Id);
+        }
+        catch (Exception e)
+        {
+            await Clients.Caller.ReceiveException(e);
+        }
+    }
+
+    public async Task DeleteMessageForEveryone(string messageId)
+    {
+        var deleted = await service.DeleteMessageForEveryone(GetSender(), messageId);
+        await SetRoute(deleted).DeleteMessage(deleted.Id);
     }
 
     public async Task<IEnumerable<UserModel>> GetUsers()

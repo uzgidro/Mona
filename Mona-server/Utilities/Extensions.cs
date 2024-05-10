@@ -21,6 +21,7 @@ public static class Extensions
             ModifiedAt = request.CreatedAt,
             ReplyId = request.ReplyId,
             ForwardId = request.ForwardId,
+            IsPinned = false,
             IsSent = false
         };
     }

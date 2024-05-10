@@ -47,10 +47,9 @@ public class MessageService(ApplicationContext context) : IMessageService
         throw new NullReferenceException("Message named form data is expected, but not found");
     }
 
-    public async Task<MessageModel> ActiveMessage(MessageModel messageModel)
+    public async Task<MessageModel> ActiveMessage(string messageId)
     {
-        var entity = context.Messages
-            .First(item => item.Id.Equals(messageModel.Id));
+        var entity = await RetrieveMessage(messageId);
 
         entity.IsSent = true;
         await context.SaveChangesAsync();
@@ -58,17 +57,16 @@ public class MessageService(ApplicationContext context) : IMessageService
         return entity;
     }
 
-    public async Task<MessageModel> EditMessage(string? caller, MessageModel message)
+    public async Task<MessageModel> EditMessage(string caller, MessageModel message)
     {
-        var entity = context.Messages.First(item => item.Id == message.Id);
+        var entity = await RetrieveMessage(message.Id);
 
         if (!string.Equals(entity.SenderId, caller) || !string.IsNullOrEmpty(entity.ForwardId))
             throw new UnauthorizedAccessException("Access denied: You do not have permission to access this resource.");
         if (string.Equals(message.Text, entity.Text) || string.IsNullOrEmpty(message.Text))
         {
-            var entry = context.Messages.Entry(entity);
             await AddNavigation(entity);
-            return entry.Entity;
+            return entity;
         }
 
         entity.Text = message.Text;
@@ -80,9 +78,9 @@ public class MessageService(ApplicationContext context) : IMessageService
         return entityEntry.Entity;
     }
 
-    public async Task<MessageModel> DeleteMessageForMyself(string? caller, MessageModel message)
+    public async Task<MessageModel> DeleteMessageForMyself(string caller, string messageId)
     {
-        var entity = context.Messages.First(item => item.Id == message.Id);
+        var entity = await RetrieveMessage(messageId);
 
         if (string.Equals(entity.SenderId, caller))
         {
@@ -101,10 +99,10 @@ public class MessageService(ApplicationContext context) : IMessageService
         return entity;
     }
 
-    public async Task<MessageModel> DeleteMessageForEveryone(string? caller, MessageModel message)
+    public async Task<MessageModel> DeleteMessageForEveryone(string caller, string messageId)
     {
         var entity = context.Messages.First(item =>
-            string.Equals(item.Id, message.Id)
+            string.Equals(item.Id, messageId)
             && string.Equals(item.SenderId, caller)
             && !string.Equals(item.DirectReceiverId, caller));
 
@@ -116,7 +114,7 @@ public class MessageService(ApplicationContext context) : IMessageService
         return entity;
     }
 
-    public async Task<IEnumerable<MessageModel>> GetMessages(string? caller)
+    public async Task<IEnumerable<MessageModel>> GetMessages(string caller)
     {
         var userGroups = await context.UserGroup.AsNoTracking().Where(item => string.Equals(item.UserId, caller))
             .Select(m => m.GroupId).ToListAsync();
@@ -141,6 +139,15 @@ public class MessageService(ApplicationContext context) : IMessageService
         return messages;
     }
 
+    public async Task<MessageModel> PinMessage(string messageId)
+    {
+        var entity = await RetrieveMessage(messageId);
+        entity.IsPinned = !entity.IsPinned;
+        await context.SaveChangesAsync();
+        await AddNavigation(entity);
+        return entity;
+    }
+
     private async Task AddNavigation(MessageModel entity)
     {
         await context.Entry(entity).Reference(m => m.Sender).LoadAsync();
@@ -150,6 +157,11 @@ public class MessageService(ApplicationContext context) : IMessageService
         await context.Entry(entity).Collection(m => m.Files).LoadAsync();
         await context.Entry(entity).Reference(m => m.ForwardedMessage).LoadAsync();
         await IncludeFiles(entity);
+    }
+
+    private async Task<MessageModel> RetrieveMessage(string messageId)
+    {
+        return await context.Messages.FirstAsync(m => string.Equals(m.Id, messageId));
     }
 
     private async Task IncludeFiles(MessageModel? message)

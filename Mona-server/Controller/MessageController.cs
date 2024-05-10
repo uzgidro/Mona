@@ -36,7 +36,7 @@ public class MessageController(
             if (!string.IsNullOrEmpty(messageModel.ForwardId))
                 await fileService.UploadFileAsync(multipartReader, messageModel);
 
-            var activeMessage = await messageService.ActiveMessage(messageModel);
+            var activeMessage = await messageService.ActiveMessage(messageModel.Id);
             if (!string.IsNullOrEmpty(activeMessage.DirectReceiverId))
             {
                 await hubContext.Clients.Users(activeMessage.DirectReceiverId, activeMessage.SenderId)

@@ -15,6 +15,7 @@ public class MessageModel
     public string? ForwardId { get; set; }
     public MessageModel? ForwardedMessage { get; set; }
     public ICollection<FileModel> Files { get; set; } = new List<FileModel>();
+    public bool IsPinned { get; set; }
     public bool IsSent { get; set; }
     public bool IsEdited { get; set; }
     public bool IsSenderDeleted { get; set; }
