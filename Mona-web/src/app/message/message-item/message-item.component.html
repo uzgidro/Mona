@@ -1,9 +1,9 @@
-        <p *ngIf="message?.repliedMessage">Replied to <span [ngClass]="{'text-red-500':message?.receiverId===selectedChat?.id}">{{message?.repliedMessage?.text}}</span>👇</p>
+        <p *ngIf="message?.repliedMessage">Replied to <span [ngClass]="{'text-red-500':message?.directReceiverId===selectedChat?.id}">{{message?.repliedMessage?.text}}</span>👇</p>
        <span
-        [ngClass]="{'bg-blue-700 text-white':message?.receiverId===selectedChat?.id}"
+        [ngClass]="{'bg-blue-700 text-white':message?.directReceiverId===selectedChat?.id}"
          class="w-full bg-green-500 text-white">
           {{message?.sender?.firstName}} :
-          <span [ngClass]="{'text-yellow-500 bg-green-300 italic':message?.isEdited&&message?.receiverId==selectedChat?.id}">
+          <span [ngClass]="{'text-yellow-500 bg-green-300 italic':message?.isEdited&&message?.directReceiverId==selectedChat?.id}">
           <small *ngIf="message.forwardedMessage" class=" text-blue-800 ml-2">from {{message.sender?.firstName?.slice(0,5)}}</small>
             {{ message?.text }}
         </span>

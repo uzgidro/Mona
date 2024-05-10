@@ -12,6 +12,17 @@
       </li>
   </ul>
 
+  <ul>
+    <li
+      [ngClass]="{'bg-slate-900 text-white': group === selectedChat} "
+      class="text-black bg-white" (click)="selectChat(group)"
+      *ngFor="let group of groups">
+      {{ group.name }}
+      <span >{{getIncomingMessagesCount(group) }}⬇️</span>
+      <span>⬆️{{getSentMessagesCount(group)}}</span>
+    </li>
+  </ul>
+
 </div>
 
 <div class="chat bg-slate-300">

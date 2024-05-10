@@ -16,8 +16,8 @@ export class MessageItemComponent {
 
 
  @Output() editMessageEvent=new EventEmitter<MessageModel>()
- @Output() deleteMessageForMyselfEvent=new EventEmitter<MessageModel>()
- @Output() deleteMessageForEveryoneEvent=new EventEmitter<MessageModel>()
+ @Output() deleteMessageForMyselfEvent=new EventEmitter<string>()
+ @Output() deleteMessageForEveryoneEvent=new EventEmitter<string>()
  @Output() replyMessageEvent=new EventEmitter<MessageModel>()
  @Output() forwardMessageEvent=new EventEmitter<MessageModel>()
  @Output() downloadFileEvent=new EventEmitter<any>()
@@ -33,10 +33,10 @@ export class MessageItemComponent {
  }
 
  deleteMessageForMyselfEventEmitter(){
-  this.deleteMessageForMyselfEvent.emit(this.message)
+  this.deleteMessageForMyselfEvent.emit(this.message.id)
  }
  deleteMessageForEveryoneEventEmitter(){
-  this.deleteMessageForEveryoneEvent.emit(this.message)
+  this.deleteMessageForEveryoneEvent.emit(this.message.id)
  }
  editMessageEventEmitter(){
   this.editMessageEvent.emit(this.message)

@@ -25,11 +25,13 @@ export interface MessageModel{
   text: string;
   senderId: string;
   sender: UserModel;
-  receiverId: string;
+  directReceiverId?: string;
+  groupReceiverId?: string;
   receiver: UserModel;
   replyId?: any;
   repliedMessage?: MessageModel
   isEdited: boolean;
+  isPinned: boolean;
   forwardedMessage?: MessageModel;
   isDeleted: boolean;
   createdAt: string;
