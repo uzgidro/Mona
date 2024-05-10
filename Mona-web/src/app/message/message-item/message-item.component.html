@@ -1,4 +1,4 @@
-        <p *ngIf="message?.repliedMessage">Replied to <span [ngClass]="{'text-red-500':message?.directReceiverId===selectedChat?.id}">{{message?.repliedMessage?.text}}</span>👇</p>
+        <p *ngIf="message?.repliedMessage">Replied to <span [ngClass]="{'text-red-500':message?.directReceiverId===selectedChat?.id}">{{message?.repliedMessage?.text ||message?.repliedMessage?.forwardedMessage?.text}}</span>👇</p>
 
         <!-- MY MESSAGES -->
          <span
