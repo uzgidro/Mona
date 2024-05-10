@@ -101,10 +101,7 @@ public class MessageService(ApplicationContext context) : IMessageService
 
     public async Task<MessageModel> DeleteMessageForEveryone(string caller, string messageId)
     {
-        var entity = context.Messages.First(item =>
-            string.Equals(item.Id, messageId)
-            && string.Equals(item.SenderId, caller)
-            && !string.Equals(item.DirectReceiverId, caller));
+        var entity = await RetrieveMessage(messageId);
 
         entity.IsReceiverDeleted = true;
         entity.IsSenderDeleted = true;
@@ -167,9 +164,13 @@ public class MessageService(ApplicationContext context) : IMessageService
     private async Task IncludeFiles(MessageModel? message)
     {
         if (message?.ForwardedMessage != null)
-            await context.Entry(message.ForwardedMessage).Collection(m => m.Files).LoadAsync();
+            await AddNavigation(message.ForwardedMessage);
+            //await context.Entry(message.ForwardedMessage).Collection(m => m.Files).LoadAsync();
+            //await context.Entry(message.ForwardedMessage).Reference(m => m.Sender).LoadAsync();
 
         if (message?.RepliedMessage != null)
-            await context.Entry(message.RepliedMessage).Collection(m => m.Files).LoadAsync();
+            await AddNavigation(message.RepliedMessage);
+       // await context.Entry(message.RepliedMessage).Collection(m => m.Files).LoadAsync();
+         //   await context.Entry(message.RepliedMessage).Reference(m => m.Sender).LoadAsync();
     }
 }

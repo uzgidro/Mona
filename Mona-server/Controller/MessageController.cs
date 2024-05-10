@@ -33,7 +33,7 @@ public class MessageController(
 
             var messageModel = await messageService.CreateMessage(multipartReader, userId);
 
-            if (!string.IsNullOrEmpty(messageModel.ForwardId))
+            if (string.IsNullOrEmpty(messageModel.ForwardId))
                 await fileService.UploadFileAsync(multipartReader, messageModel);
 
             var activeMessage = await messageService.ActiveMessage(messageModel.Id);

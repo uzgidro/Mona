@@ -25,7 +25,7 @@ export class MessageComponent implements OnInit {
     file: new FormControl('')
   })
 
-  selectedFiles: any[] = [];
+  selectedFiles?:any[]
   chatConnection?: HubConnection
   groupConnection?: HubConnection
   private _income: MessageModel[] = []
@@ -54,31 +54,34 @@ export class MessageComponent implements OnInit {
     let message = this.inputGroup.get('message')?.value;
     let replyId: string | undefined = this.repliedMessage ? this.repliedMessage.id : undefined;
     let forwardId: string | undefined = this.forwardedMessage ? this.forwardedMessage.id : undefined;
-    if (this.selectedFiles.length > 0) {
-      const messageRequest: MessageRequest = {
-        text: message ? message : '',
-        receiverId: this.selectedChat?.id,
-        createdAt: new Date(),
-        replyId: replyId,
-        forwardId: forwardId
-      };
+    const messageRequest: MessageRequest = {
+      text: message ? message : '',
+      receiverId: this.selectedChat?.id,
+      createdAt: new Date(),
+      replyId: replyId,
+      forwardId: forwardId
+    };
+    if (this.selectedFiles) {
+      console.log(this.selectedFiles);
+
       let formData = new FormData();
       formData.append('message', JSON.stringify(messageRequest))
+      console.log(this.selectedFiles);
+
       const filesArr = [...this.selectedFiles]
+      console.log(filesArr);
+
       filesArr.forEach(file => {
+        console.log(file);
+
         formData.append("file", file, file.name);
       });
+
+
       this.apiService.sendMessage(formData)
       this.inputGroup.get('file')?.setValue('')
     } else {
-      const messageReq: MessageRequest = {
-        text: message,
-        receiverId: this.selectedChat?.id,
-        createdAt: new Date(),
-        replyId: replyId,
-        forwardId: forwardId
-      }
-      this.chatConnection.send("sendMessage", messageReq)
+      this.chatConnection.send("sendMessage", messageRequest)
     }
     this.inputGroup.get('message')?.setValue('')
   }
@@ -135,7 +138,8 @@ export class MessageComponent implements OnInit {
   }
 
   onFileSelected(event: any) {
-    this.selectedFiles = event.target.files
+    console.log(event.target.files.length);
+    this.selectedFiles=event.target.files
     console.log(this.selectedFiles);
   }
 

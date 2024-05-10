@@ -1,7 +1,7 @@
 import { UserModel } from "./user";
 
 export interface MessageRequest{
-  text:string
+  text?:string
   senderId?:string
   receiverId:string|number|undefined
   replyId?: string
