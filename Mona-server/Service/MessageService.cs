@@ -102,6 +102,13 @@ public class MessageService(ApplicationContext context) : IMessageService
     public async Task<MessageModel> DeleteMessageForEveryone(string caller, string messageId)
     {
         var entity = await RetrieveMessage(messageId);
+        // if in DM not sender or receiver, or in GM not sender
+        if ((string.IsNullOrEmpty(entity.DirectReceiverId) ||
+             (!string.Equals(entity.SenderId, caller) &&
+              !string.Equals(entity.DirectReceiverId, caller))) &&
+            (string.IsNullOrEmpty(entity.GroupReceiverId) ||
+             !string.Equals(entity.SenderId, caller)))
+            throw new UnauthorizedAccessException("You cannot delete this message");
 
         entity.IsReceiverDeleted = true;
         entity.IsSenderDeleted = true;
@@ -165,12 +172,8 @@ public class MessageService(ApplicationContext context) : IMessageService
     {
         if (message?.ForwardedMessage != null)
             await AddNavigation(message.ForwardedMessage);
-            //await context.Entry(message.ForwardedMessage).Collection(m => m.Files).LoadAsync();
-            //await context.Entry(message.ForwardedMessage).Reference(m => m.Sender).LoadAsync();
 
         if (message?.RepliedMessage != null)
             await AddNavigation(message.RepliedMessage);
-       // await context.Entry(message.RepliedMessage).Collection(m => m.Files).LoadAsync();
-         //   await context.Entry(message.RepliedMessage).Reference(m => m.Sender).LoadAsync();
     }
 }
