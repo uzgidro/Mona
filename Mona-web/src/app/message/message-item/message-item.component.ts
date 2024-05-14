@@ -1,6 +1,8 @@
+import { MatDialog } from '@angular/material/dialog';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { File, MessageModel } from '../../models/message';
 import { UserModel } from '../../models/user';
+import { ForwardMessageDialogComponent } from '../dialog/dialog.component';
 
 @Component({
   selector: 'app-message-item',
@@ -22,6 +24,15 @@ export class MessageItemComponent {
  @Output() replyMessageEvent=new EventEmitter<MessageModel>()
  @Output() forwardMessageEvent=new EventEmitter<MessageModel>()
  @Output() downloadFileEvent=new EventEmitter<any>()
+  forwardedMessage: any='jssk';
+  users: any='ka';
+
+
+  selectedMessage:MessageModel
+
+  constructor(private dialog: MatDialog){
+
+  }
 
 
 
@@ -45,6 +56,20 @@ export class MessageItemComponent {
  replyMessageEventEmitter(){
   this.replyMessageEvent.emit(this.message)
  }
+
+
+  openModal(message:MessageModel) {
+    console.log(message);
+    this.selectedMessage=message
+  if (this.selectedMessage) {
+    const dialogRef = this.dialog.open(ForwardMessageDialogComponent, {
+      width: '400px',
+    });
+    dialogRef.afterClosed().subscribe(() => {
+    });
+  }
+}
+
 
 
 

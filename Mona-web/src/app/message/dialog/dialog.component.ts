@@ -17,27 +17,11 @@ export class ForwardMessageDialogComponent {
 
   constructor(
     public dialogRef: MatDialogRef<ForwardMessageDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { forwardedMessage: MessageModel,users:UserModel[]},
-    private apiService:ApiService
+    @Inject(MAT_DIALOG_DATA) public data:{},
 
   ) {}
 
 
-  onSelectUser(user:UserModel){
-    this.selectedUser=user
-  }
-
-  sendMessages(){
-    let formData:FormData=new FormData()
-      const messageReq:MessageRequest={
-        receiverId: this.selectedUser?.id,
-        createdAt: new Date(),
-        forwardId:this.data.forwardedMessage.forwardId ? this.data.forwardedMessage.forwardId : this.data.forwardedMessage.id
-      }
-      formData.append('message',JSON.stringify(messageReq))
-      this.apiService.sendMessage(formData)
-      this.dialogRef.close();
-  }
 
   cancel() {
     this.dialogRef.close();

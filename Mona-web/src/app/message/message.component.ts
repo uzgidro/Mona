@@ -87,7 +87,7 @@ export class MessageComponent implements OnInit {
       this.chatConnection.send("sendMessage", messageRequest)
     }
     this.inputGroup.get('message')?.setValue('')
-  }
+   }
 
   forwardMessage(eventMessage: MessageModel) {
     this.forwardedMessage = eventMessage;

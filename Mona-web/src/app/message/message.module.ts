@@ -6,13 +6,15 @@ import {MessageComponent} from './message.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { MessageItemComponent } from './message-item/message-item.component';
 import { ForwardMessageDialogComponent } from './dialog/dialog.component';
+import { SendMessageComponent } from './send-message/send-message.component';
 
 
 @NgModule({
   declarations: [
     MessageComponent,
     MessageItemComponent,
-    ForwardMessageDialogComponent
+    ForwardMessageDialogComponent,
+    SendMessageComponent
   ],
   imports: [
     CommonModule,
