@@ -7,6 +7,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { MessageItemComponent } from './message-item/message-item.component';
 import { ForwardMessageDialogComponent } from './dialog/dialog.component';
 import { SendMessageComponent } from './send-message/send-message.component';
+import { DeleteMessageComponent } from './delete-message/delete-message.component';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { SendMessageComponent } from './send-message/send-message.component';
     MessageComponent,
     MessageItemComponent,
     ForwardMessageDialogComponent,
-    SendMessageComponent
+    SendMessageComponent,
+    DeleteMessageComponent
   ],
   imports: [
     CommonModule,
