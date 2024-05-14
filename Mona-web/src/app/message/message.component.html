@@ -73,7 +73,7 @@
           <button *ngFor="let user of users"
           (click)="selectChat(user)"
             class="flex flex-row bg-slate-300 items-center hover:bg-blue-400 hover:text-slate-50 rounded-xl p-2"
-            [ngClass]="{'bg-blue-400 text-slate-50': selectedChat==user}"
+            [ngClass]="{'bg-blue-500 text-slate-50':selectedChat==user}"
           >
             <div
               class="flex items-center justify-center h-8 w-8 bg-gray-200 rounded-full hover:bg-slate-50 hover:text-blue-500'"
@@ -82,7 +82,7 @@
               {{user.firstName.slice(0,1)}}
             </div>
             <div class="ml-2 text-sm font-semibold"
-            [ngClass]="{'text-white': selectedChat==user}"
+             [ngClass]="{' text-blue-600': selectedChat==user}"
              >
              {{user.firstName}} {{user.lastName}}
             </div>
