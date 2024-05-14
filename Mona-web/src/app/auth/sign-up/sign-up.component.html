@@ -1,4 +1,4 @@
-<form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+<!-- <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
   <label for="first-name">First Name: </label>
   <input id="first-name" type="text" formControlName="firstName">
   <small *ngIf="profileForm.get('firstName')?.hasError(ErrorCode.REQUIRED) && profileForm.get('firstName')?.touched"
@@ -27,4 +27,61 @@
   <button type="submit">sign up</button>
 
   <small *ngIf="conflictError" style="color: red">Пользователь уже существует</small>
-</form>
+</form> -->
+
+<div class="flex flex-col justify-center font-[sans-serif] text-[#333] sm:h-screen p-4">
+  <div class="max-w-md w-full mx-auto border border-gray-300 rounded-md p-6">
+    <div class="text-center mb-12">
+        Create your account
+    </div>
+    <form  [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+      <div class="space-y-6">
+        <div>
+          <label class="text-sm mb-2 block" for="first-name">First Name :</label>
+          <input type="text" class="bg-white border border-gray-300 w-full text-sm px-4 py-3 rounded-md outline-blue-500" placeholder="Enter your firstname" id="first-name"  formControlName="firstName" />
+          <small *ngIf="profileForm.get('firstName')?.hasError(ErrorCode.REQUIRED) && profileForm.get('firstName')?.touched"
+          style="color: red">Обязательное поле</small>
+        </div>
+        <div>
+          <label class="text-sm mb-2 block"  for="last-name">Last Name :</label>
+          <input type="text" class="bg-white border border-gray-300 w-full text-sm px-4 py-3 rounded-md outline-blue-500" placeholder="Enter email"  id="last-name" type="text" formControlName="lastName" />
+          <small *ngIf="profileForm.get('lastName')?.hasError(ErrorCode.REQUIRED) && profileForm.get('lastName')?.touched"
+          style="color: red">Обязательное поле</small>
+        </div>
+        <div>
+          <label class="text-sm mb-2 block">Personal ID :</label>
+          <input  class="bg-white border border-gray-300 w-full text-sm px-4 py-3 rounded-md outline-blue-500" placeholder="Enter your username"   formControlName="username" id="username" type="text"/>
+          <small *ngIf="profileForm.get('username')?.hasError(ErrorCode.REQUIRED) && profileForm.get('username')?.touched"
+          style="color: red">Обязательное поле</small>
+        </div>
+        <div>
+          <label class="text-sm mb-2 block" for="password">Password :</label>
+          <input class="bg-white border border-gray-300 w-full text-sm px-4 py-3 rounded-md outline-blue-500" placeholder="Enter password"   id="password" type="password" formControlName="password" (input)="onPasswordInput()"/>
+          <small *ngIf="profileForm.hasError(ErrorCode.PASSWORD_IDENTITY) && profileForm.get('password')?.touched"
+          style="color: red">Пароли не совпадают</small>
+         <small *ngIf="profileForm.get('password')?.hasError(ErrorCode.MIN_LENGTH) && profileForm.get('password')?.touched"
+          style="color: red">Минимальная длина пароля 6</small>
+
+        </div>
+        <div>
+          <label class="text-sm mb-2 block" for="password_repeat">Confirm Password</label>
+          <input class="bg-white border border-gray-300 w-full text-sm px-4 py-3 rounded-md outline-blue-500" placeholder="Enter confirm password" id="password_repeat" type="password" formControlName="passwordRepeat" (input)="onPasswordInput()" />
+          <small *ngIf="profileForm.hasError(ErrorCode.PASSWORD_IDENTITY)" style="color: red">Пароли не совпадают</small>
+        </div>
+        <div class="flex items-center">
+          <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 shrink-0 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+          <label for="remember-me" class="ml-3 block text-sm">
+            I accept the <a href="javascript:void(0);" class="text-blue-600 font-semibold hover:underline ml-1">Terms and Conditions</a>
+          </label>
+        </div>
+      </div>
+      <div class="!mt-10">
+        <button type="submit" class="w-full py-3 px-4 text-sm font-semibold rounded text-white bg-blue-500 hover:bg-blue-600 focus:outline-none">
+          Create an account
+        </button>
+        <small *ngIf="conflictError" style="color: red">Пользователь уже существует</small>
+      </div>
+      <p class="text-sm mt-6 text-center">Already have an account? <a routerLink="/auth/sign-in" class="text-blue-600 font-semibold hover:underline ml-1">Login here</a></p>
+    </form>
+  </div>
+</div>

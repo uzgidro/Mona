@@ -18,6 +18,7 @@ import {GroupModel} from "../models/group";
 export class MessageComponent implements OnInit {
 
   users: UserModel[] = []
+  userSelected:boolean=false
   groups: GroupModel[] = []
   selectedChat?: any
   inputGroup = new FormGroup({
@@ -25,6 +26,8 @@ export class MessageComponent implements OnInit {
     file: new FormControl('')
   })
 
+
+  currentUser:UserModel
   selectedFiles?:any[]
   chatConnection?: HubConnection
   groupConnection?: HubConnection

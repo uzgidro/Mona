@@ -4,7 +4,7 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {ApiService} from "../../services/api.service";
 import {JwtService} from "../../services/jwt.service";
 import {Tokens} from "../../models/tokens";
-import {Router} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import { HttpErrorResponse } from '@angular/common/http';
 
 
@@ -12,15 +12,15 @@ import { HttpErrorResponse } from '@angular/common/http';
   selector: 'app-sign-in',
   standalone: true,
   imports: [
+    ReactiveFormsModule,
     NgIf,
-    ReactiveFormsModule
+    RouterLink
   ],
   templateUrl: './sign-in.component.html',
   styleUrl: './sign-in.component.css'
 })
 export class SignInComponent {
   isLoginValid = true
-
   profileForm = new FormGroup({
     username: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required]),

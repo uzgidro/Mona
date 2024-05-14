@@ -10,6 +10,7 @@ import { UserModel } from '../../models/user';
 export class MessageItemComponent {
 
  @Input() message?:MessageModel
+ @Input() income?:MessageModel[]
  @Input() selectedChat?:UserModel
  @Input()  editingMessage?: MessageModel
  @Input() repliedMessage?:MessageModel
