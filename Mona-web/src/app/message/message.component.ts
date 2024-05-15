@@ -45,7 +45,7 @@ export class MessageComponent implements OnInit {
 
   ngOnInit() {
     let accessToken = this.jwtService.getAccessToken()
-  
+
     this.setChatConnection(accessToken)
     this.setGroupConnection(accessToken)
   }
