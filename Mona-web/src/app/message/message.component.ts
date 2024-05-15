@@ -45,6 +45,7 @@ export class MessageComponent implements OnInit {
 
   ngOnInit() {
     let accessToken = this.jwtService.getAccessToken()
+  
     this.setChatConnection(accessToken)
     this.setGroupConnection(accessToken)
   }
@@ -65,11 +66,8 @@ export class MessageComponent implements OnInit {
       forwardId: forwardId
     };
     if (this.selectedFiles) {
-      console.log(this.selectedFiles);
-
       let formData = new FormData();
       formData.append('message', JSON.stringify(messageRequest))
-      console.log(this.selectedFiles);
 
       const filesArr = [...this.selectedFiles]
       console.log(filesArr);

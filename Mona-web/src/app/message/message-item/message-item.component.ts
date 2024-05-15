@@ -14,7 +14,7 @@ export class MessageItemComponent {
  @Input() message?:MessageModel
  @Input() income?:MessageModel[]
  @Input() selectedChat?:UserModel
- @Input()  editingMessage?: MessageModel
+ @Input() editingMessage?: MessageModel
  @Input() repliedMessage?:MessageModel
 
 
@@ -59,11 +59,11 @@ export class MessageItemComponent {
 
 
   openModal(message:MessageModel) {
-    console.log(message);
     this.selectedMessage=message
-  if (this.selectedMessage) {
+   if (this.selectedMessage) {
     const dialogRef = this.dialog.open(ForwardMessageDialogComponent, {
       width: '400px',
+      data: { message: this.selectedMessage }
     });
     dialogRef.afterClosed().subscribe(() => {
     });
