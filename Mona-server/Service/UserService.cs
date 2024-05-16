@@ -15,6 +15,6 @@ public class UserService(UserManager<UserModel> userManager) : IUserService
 
     public async Task<UserModel> GetUserInfo(string id)
     {
-        return await userManager.Users.FirstAsync(m => string.Equals(m.Id, id));
+        return await userManager.Users.Include(m => m.Groups).FirstAsync(m => string.Equals(m.Id, id));
     }
 }
