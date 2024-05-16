@@ -1,10 +1,10 @@
+import { UserModel } from './../models/user';
 import {File, MessageModel, MessageRequest} from '../models/message';
 import {Component, OnInit, ViewChild} from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import {HubConnection} from '@microsoft/signalr';
 import {JwtService} from "../services/jwt.service";
 import {FormControl, FormGroup} from "@angular/forms";
-import {UserModel} from "../models/user";
 import {ApiService} from '../services/api.service';
 import {MatDialog} from '@angular/material/dialog'
 import {ForwardMessageDialogComponent} from './dialog/dialog.component';
@@ -38,6 +38,7 @@ export class MessageComponent implements OnInit {
   editingMessage?: MessageModel
   repliedMessage?: MessageModel
   forwardedMessage?: MessageModel
+  currentUser:UserModel
 
   get income(): MessageModel[] {
     return this._income.filter(item => item.directReceiverId == this.selectedChat?.id || item.senderId == this.selectedChat?.id || item.groupReceiverId == this.selectedChat?.id)
@@ -50,6 +51,19 @@ export class MessageComponent implements OnInit {
     let accessToken = this.jwtService.getAccessToken()
     this.setChatConnection(accessToken)
     this.setGroupConnection(accessToken)
+    let id=this.jwtService.getIdFromJwt()
+    this.apiService.getUserInfo(id).subscribe({
+      next: (value: UserModel) => {
+        this.currentUser = value; // Assigning value to currentUser
+        console.log(this.currentUser);
+
+      },
+      error: (error) => {
+        console.error("Error occurred while fetching user info:", error);
+      }
+    });
+
+
   }
 
   selectChat(chat: any) {
