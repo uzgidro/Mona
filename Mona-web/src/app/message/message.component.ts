@@ -1,5 +1,5 @@
 import {File, MessageModel, MessageRequest} from '../models/message';
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import {HubConnection} from '@microsoft/signalr';
 import {JwtService} from "../services/jwt.service";
@@ -9,6 +9,7 @@ import {ApiService} from '../services/api.service';
 import {MatDialog} from '@angular/material/dialog'
 import {ForwardMessageDialogComponent} from './dialog/dialog.component';
 import {GroupModel} from "../models/group";
+import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-message',
@@ -16,6 +17,11 @@ import {GroupModel} from "../models/group";
   styleUrl: './message.component.css'
 })
 export class MessageComponent implements OnInit {
+  @ViewChild('sidenav') sidenav!: MatSidenav;
+
+  toggleSidenav() {
+    this.sidenav.toggle();
+  }
 
   users: UserModel[] = []
   groups: GroupModel[] = []
