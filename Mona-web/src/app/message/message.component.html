@@ -127,7 +127,7 @@
                      <path d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z"/>
                   </svg>
                   <span class="flex-1 ms-3 whitespace-nowrap">My Stories</span>
-                  <!-- <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Pro</span> -->
+                  <!-- <span class="inline px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Pro</span> -->
                </a>
             </li>
           <!-- My stories end-->
@@ -317,14 +317,48 @@
       <!-- Folders abd Toggle end -->
 
     <!-- Main content -->
-       <div class="ml-20 flex items-center justify-center w-full  bg-slate-600">
-       <h1>Main content</h1>
-      </div>
+     <div class="ml-20 grid grid-cols-6 gap-4  bg-slate-600">
+      <!-- LEFT BLOCK (USER MESSAGES AND USERS) -->
+        <div class="bg-gray-300 p-4 col-span-6 md:col-span-2">
+          <h1>USERS</h1>
+          <h1 *ngFor="let user of users">
+            {{user.firstName}}
+            {{user.lastName}}
+          </h1>
 
-    <!-- Main content end -->
+        </div>
 
 
 
+
+        <!-- RIGHT BLOCK (MESSAGING)-->
+          <div class="bg-white p-4 hidden md:block col-span-4">
+            <!-- MESSAGING -->
+            <ng-container *ngIf="selectedChat else selectAchat ">
+              <div>
+                <h1>Messages</h1>
+              </div>
+            </ng-container>
+          <!-- MESSAGING  END-->
+
+
+
+            <!-- SELECT A CHAT -->
+            <ng-template #selectAchat>
+              <div class="w-full h-screen flex items-center justify-center">
+                <div class=" fixed bg-transparent flex items-center justify-center">
+                <h1 class="bg-slate-200 text-black p-3.5 border-red-50 rounded-full">Select a chat to start messaging</h1>
+               </div>
+              </div>
+            </ng-template>
+          <!-- SELECT A CHAT END-->
+
+          </div>
+          <!-- RIGHT BLOCK END -->
+    </div>
+
+
+ <!-- Main content end -->
 
     </div>
   </mat-drawer-content>
