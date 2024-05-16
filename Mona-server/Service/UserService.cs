@@ -12,4 +12,9 @@ public class UserService(UserManager<UserModel> userManager) : IUserService
         return await userManager.Users
             .Where(user => !user.Id.Equals(username)).ToListAsync();
     }
+
+    public async Task<UserModel> GetUserInfo(string id)
+    {
+        return await userManager.Users.FirstAsync(m => string.Equals(m.Id, id));
+    }
 }
