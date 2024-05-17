@@ -319,12 +319,43 @@
     <!-- Main content -->
      <div class="ml-20 grid grid-cols-6 gap-4  bg-slate-600">
       <!-- LEFT BLOCK (USER MESSAGES AND USERS) -->
-        <div class="bg-gray-300 p-4 col-span-6 md:col-span-2">
-          <h1>USERS</h1>
-          <h1 *ngFor="let user of users">
-            {{user.firstName}}
-            {{user.lastName}}
-          </h1>
+        <div class="bg-white p-4 col-span-6 md:col-span-2">
+          <!-- SEARCH BAR -->
+          <div class="h-14 flex items-center fixed top-2 z-50  w-auto">
+            <div class="bg-slate-100   flex px-4 py-2 rounded-full border-2 border-slate-300 overflow-hidden  max-w-full sm:w-full  lg:w-[300px]  font-[sans-serif]">
+              <input type="email" placeholder="Search Something..."
+                class="w-full outline-none bg-transparent text-gray-600 text-sm" />
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192.904 192.904" width="16px" class="fill-gray-600">
+                <path
+                  d="m190.707 180.101-47.078-47.077c11.702-14.072 18.752-32.142 18.752-51.831C162.381 36.423 125.959 0 81.191 0 36.422 0 0 36.423 0 81.193c0 44.767 36.422 81.187 81.191 81.187 19.688 0 37.759-7.049 51.831-18.751l47.079 47.078a7.474 7.474 0 0 0 5.303 2.197 7.498 7.498 0 0 0 5.303-12.803zM15 81.193C15 44.694 44.693 15 81.191 15c36.497 0 66.189 29.694 66.189 66.193 0 36.496-29.692 66.187-66.189 66.187C44.693 147.38 15 117.689 15 81.193z">
+                </path>
+              </svg>
+            </div>
+          </div>
+
+          <!-- SEARCH BAR END-->
+
+
+
+          <!-- USER MESSAGES -->
+          <div class="overflow-y-auto h-screen p-3 mb-9 pb-20 mt-14" >
+            <!-- USER MESSAGE BOX -->
+              <div class="flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md" *ngFor="let user of users"  (click)="selectChat(user)">
+              <div class="w-12 h-12 bg-gray-300 rounded-full mr-3">
+                <img src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato" alt="User Avatar" class="w-12 h-12 rounded-full">
+              </div>
+              <div class="flex-1">
+                <h2 class="text-lg font-semibold">{{user.firstName}}</h2>
+                <p class="text-gray-600 ">Hi Steve</p>
+              </div>
+             </div>
+          </div>
+          <!-- USER MESSAGES END-->
+
+
+
+
+
 
         </div>
 
@@ -332,12 +363,190 @@
 
 
         <!-- RIGHT BLOCK (MESSAGING)-->
-          <div class="bg-white p-4 hidden md:block col-span-4">
+          <div class="bg-white p-4 hidden md:block col-span-4  h-full">
             <!-- MESSAGING -->
-            <ng-container *ngIf="selectedChat else selectAchat ">
-              <div>
-                <h1>Messages</h1>
+            <ng-container *ngIf="selectedChat else selectAchat " >
+
+
+              <!-- MESSAGING COMPONENT  -->
+
+                  <div class="flex-1 p:2 sm:p-6 justify-between flex flex-col h-screen">
+                  <div class="flex sm:items-center justify-between py-3 border-b-2 border-gray-200">
+                 <div class="relative flex items-center space-x-4">
+                  <div class="relative">
+                 <span class="absolute text-green-500 right-0 bottom-0">
+                 <svg width="20" height="20">
+                 <circle cx="8" cy="8" r="8" fill="currentColor"></circle>
+                </svg>
+                 </span>
+                <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="" class="w-10 sm:w-16 h-10 sm:h-16 rounded-full">
+                </div>
+                <div class="flex flex-col leading-tight">
+                 <div class="text-2xl mt-1 flex items-center">
+                 <span class="text-gray-700 mr-3">{{selectedChat?.firstName}} {{selectedChat?.lastName}}</span>
+                 </div>
+                  <span class="text-lg text-gray-600">User</span>
+                 </div>
+                  </div>
+                  </div>
+                  <div id="messages" class="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
+                   <div class="chat-message"> //1
+                  <div class="flex items-end">
+                 <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start">
+                   <div><span class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600">Can be verified on any platform using docker</span></div>
+                 </div>
+                <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="My profile" class="w-6 h-6 rounded-full order-1">
+                </div>
+                  </div>
+                   <div class="chat-message">  //2
+                   <div class="flex items-end justify-end">
+                   <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end">
+                   <div><span class="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white ">Your error message says permission denied, npm global installs must be given root privileges.</span></div>
+                  </div>
+                  <img src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="My profile" class="w-6 h-6 rounded-full order-2">
+                  </div>
+                  </div>
+                  <div class="chat-message"> //3
+                 <div class="flex items-end">
+                  <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start">
+                 <div><span class="px-4 py-2 rounded-lg inline-block bg-gray-300 text-gray-600">Command was run with root privileges. I'm sure about that.</span></div>
+                 <div><span class="px-4 py-2 rounded-lg inline-block bg-gray-300 text-gray-600">I've update the description so it's more obviously now</span></div>
+                 <div><span class="px-4 py-2 rounded-lg inline-block bg-gray-300 text-gray-600">FYI https://askubuntu.com/a/700266/510172</span></div>
+                 <div>
+                 <span class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600">
+                    Check the line above (it ends with a # so, I'm running it as root )
+                    <pre># npm install </pre>
+                 </span>
               </div>
+              </div>
+               <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="My profile" class="w-6 h-6 rounded-full order-1">
+              </div>
+                  </div>
+                 <div class="chat-message">       //4
+                 <div class="flex items-end justify-end">
+                <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end">
+                 <div><span class="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white ">Any updates on this issue? I'm getting the same error when trying to install devtools. Thanks</span></div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="My profile" class="w-6 h-6 rounded-full order-2">
+                </div>
+                 </div>
+                 <div class="chat-message">   //5
+                 <div class="flex items-end">
+                 <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start">
+                  <div><span class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600">Thanks for your message David. I thought I'm alone with this issue. Please, ? the issue to support it :</span></div>
+                  </div>
+                   <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="My profile" class="w-6 h-6 rounded-full order-1">
+                  </div>
+                   </div>
+                <div class="chat-message"> //6
+                <div class="flex items-end justify-end">
+                <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end">
+                <div><span class="px-4 py-2 rounded-lg inline-block bg-blue-600 text-white ">Are you using sudo?</span></div>
+                <div><span class="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white ">Run this command sudo chown -R `whoami` /Users//.npm-global/ then install the package globally without using sudo</span></div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="My profile" class="w-6 h-6 rounded-full order-2">
+               </div>
+                 </div>
+                <div class="chat-message"> //7
+               <div class="flex items-end">
+              <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start">
+              <div><span class="px-4 py-2 rounded-lg inline-block bg-gray-300 text-gray-600">It seems like you are from Mac OS world. There is no /Users/ folder on linux ?</span></div>
+              <div><span class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600">I have no issue with any other packages installed with root permission globally.</span></div>
+              </div>
+              <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="My profile" class="w-6 h-6 rounded-full order-1">
+              </div>
+                </div>
+                <div class="chat-message">  //8
+             <div class="flex items-end justify-end">
+             <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end">
+              <div><span class="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white ">yes, I have a mac. I never had issues with root permission as well, but this helped me to solve the problem</span></div>
+             </div>
+             <img src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="My profile" class="w-6 h-6 rounded-full order-2">
+             </div>
+                </div>
+                 <div class="chat-message">//9
+                <div class="flex items-end">
+                <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start">
+                <div><span class="px-4 py-2 rounded-lg inline-block bg-gray-300 text-gray-600">I get the same error on Arch Linux (also with sudo)</span></div>
+                 <div><span class="px-4 py-2 rounded-lg inline-block bg-gray-300 text-gray-600">I also have this issue, Here is what I was doing until now: #1076</span></div>
+                 <div><span class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600">even i am facing</span></div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="My profile" class="w-6 h-6 rounded-full order-1">
+                 </div>
+                </div>
+
+
+                 <!-- FILE MESSAGE -->
+                  <div class="grid pb-11">
+                  <div class="flex gap-2.5 mb-4">
+                    <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="My profile" class="w-6 h-6 rounded-full">
+                   <div class="grid">
+                     <h5 class="text-gray-900 text-sm font-semibold leading-snug pb-1">Shanay cruz</h5>
+                     <div class="w-full max-w-xs grid">
+                       <div class="px-3.5 py-2 bg-gray-100 rounded flex flex-col gap-2">
+                         <h5 class="text-sm font-normal text-gray-900">Check out one of the biggest figma design system there ui component library based on tailwind css</h5>
+                         <a href="#" class="text-sm font-normal text-indigo-600 underline">https://pagedone.io/blocks</a>
+                         <img src="https://pagedone.io/asset/uploads/1715316833.png" alt="Image">
+                       </div>
+                       <div class="justify-end items-center inline-flex mb-2.5">
+                         <h6 class="text-gray-500 text-xs font-normal leading-4 py-1">05:14 PM</h6>
+                       </div>
+                     </div>
+                   </div>
+                  </div>
+                  </div>
+
+
+
+                </div>
+
+                  <!--MESSAGE SENDING  -->
+                   <div class="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0 ">
+     <div class="relative flex">
+        <span class="absolute inset-y-0 flex items-center">
+           <button type="button" class="inline-flex items-center justify-center rounded-full h-12 w-12 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 text-gray-600">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+              </svg>
+           </button>
+        </span>
+        <input type="text" placeholder="Write your message!" class="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 bg-gray-200 rounded-md py-3">
+        <div class="absolute right-0 items-center inset-y-0 hidden sm:flex">
+           <button type="button" class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 text-gray-600">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+              </svg>
+           </button>
+           <button type="button" class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 text-gray-600">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+           </button>
+           <button type="button" class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 text-gray-600">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+           </button>
+           <button type="button" class="inline-flex items-center justify-center rounded-lg px-4 py-3 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none">
+              <span class="font-bold">Send</span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-6 w-6 ml-2 transform rotate-90">
+                 <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
+              </svg>
+           </button>
+        </div>
+     </div>
+                  </div>
+                  <!--MESSAGE SENDING END  -->
+
+                 </div>
+
+              <!-- MESSAGING COMPONENT 2 -->
+
+
+
+
+
             </ng-container>
           <!-- MESSAGING  END-->
 
