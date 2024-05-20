@@ -45,7 +45,12 @@ dependencies:
   go_router: ^14.1.1
   # Fetch Data From Api
   dio: ^5.4.3+1
+  # DI
   get_it: ^7.7.0
+  # Logger
+  talker_flutter: ^4.2.0
+  talker_dio_logger: ^4.2.0
+  talker_bloc_logger: ^4.2.0
 
 dev_dependencies:
   flutter_test:
@@ -58,6 +63,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
   json_serializable: ^6.7.1
+  build_runner:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
