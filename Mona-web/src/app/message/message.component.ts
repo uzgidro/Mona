@@ -10,6 +10,7 @@ import {MatDialog} from '@angular/material/dialog'
 import {ForwardMessageDialogComponent} from './dialog/dialog.component';
 import {GroupModel} from "../models/group";
 import { MatSidenav } from '@angular/material/sidenav';
+import { MessageActionsComponent } from './message-actions/message-actions.component';
 
 @Component({
   selector: 'app-message',
@@ -162,6 +163,29 @@ export class MessageComponent implements OnInit {
     this.selectedFiles=event.target.files
     console.log(this.selectedFiles);
   }
+
+  openMessageActions(message:MessageModel){
+    const dialogRef = this.dialog.open(MessageActionsComponent, {
+      width: '400px',
+      data:
+       {
+        message:message,
+        forwardedMessage: this.forwardedMessage,
+        users: this.users,
+        deleteMessageForMyself: this.deleteMessageForMyself.bind(this),
+        deleteMessageForEveryone: this.deleteMessageForEveryone.bind(this),
+        },
+
+    });
+    dialogRef.afterClosed().subscribe(() => {
+    });
+
+  }
+
+
+
+
+
 
   private setChatConnection(accessToken: string) {
     const chatConnection = new signalR.HubConnectionBuilder()
