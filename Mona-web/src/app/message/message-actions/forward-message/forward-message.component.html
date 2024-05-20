@@ -34,9 +34,20 @@
             <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
               <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Forward to :</h3>
               <div class="mt-2">
-                <p class="text-sm text-gray-500" *ngFor="let user of data.users">
+                <!-- <p class="text-sm text-gray-500" *ngFor="let user of data.users">
                   <span  (click)=" onSelectUser(user)"  [ngClass]="selectedUser?'text-red-700':''" >{{user.firstName}} {{user.lastName}}</span>
-                </p>
+                </p> -->
+
+                <div class="overflow-y-auto" *ngFor="let user of data.users">
+                    <div (click)=" onSelectUser(user)"  [ngClass]="{'text-red-600': selectedUser===user}" class="flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md"  >
+                    <div class="w-12 h-12 bg-gray-300 rounded-full mr-3">
+                      <img src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato" alt="User Avatar" class="w-12 h-12 rounded-full">
+                    </div>
+                    <div class="flex-1">
+                      <h2 class="text-lg font-semibold">{{user.firstName}}</h2>
+                    </div>
+                   </div>
+                </div>
               </div>
             </div>
           </div>
