@@ -27,10 +27,9 @@ export class MessageActionsComponent implements OnInit {
       deleteMessageForMyself: (messageId:string) => void,
       deleteMessageForEveryone: (messageId:string) => void,
       editMessage: (eventMessage: MessageModel) => void,
+      replyMessage: (eventMessage: MessageModel) => void,
       currentUser:UserModel
-
     },
-    private apiService:ApiService,
     private dialog: MatDialog
   ) {
 
@@ -100,6 +99,11 @@ export class MessageActionsComponent implements OnInit {
     }
     this.cancel()
 
+  }
+
+  reply(){
+   this.data.replyMessage(this.data.message)
+   this.cancel()
   }
 
 

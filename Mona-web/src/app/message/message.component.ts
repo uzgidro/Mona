@@ -105,6 +105,7 @@ export class MessageComponent implements OnInit {
       this.chatConnection.send("sendMessage", messageRequest)
     }
     this.inputGroup.get('message')?.setValue('')
+    this.repliedMessage=undefined
   }
 
   forwardMessage(eventMessage: MessageModel) {
@@ -175,11 +176,13 @@ export class MessageComponent implements OnInit {
         deleteMessageForMyself: this.deleteMessageForMyself.bind(this),
         deleteMessageForEveryone: this.deleteMessageForEveryone.bind(this),
         editMessage: this.onSelectEditingMessage.bind(this),
-        currentUser:this.currentUser
+        currentUser:this.currentUser,
+        replyMessage:this.replyMessage.bind(this),
         },
 
     });
     dialogRef.afterClosed().subscribe(() => {
+
     });
 
   }

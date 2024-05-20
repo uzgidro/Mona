@@ -24,7 +24,8 @@ import { ForwardMessageComponent } from './message-actions/forward-message/forwa
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule,
-    MatSidenavModule
+    MatSidenavModule,
+  
 
   ]
 })
