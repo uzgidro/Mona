@@ -8,13 +8,15 @@ import { MessageItemComponent } from './message-item/message-item.component';
 import { ForwardMessageDialogComponent } from './dialog/dialog.component';
 import {MatButtonModule} from '@angular/material/button';
 import {MatSidenavModule} from '@angular/material/sidenav';
+import { MessageActionsComponent } from './message-actions/message-actions.component';
 
 
 @NgModule({
   declarations: [
     MessageComponent,
     MessageItemComponent,
-    ForwardMessageDialogComponent
+    ForwardMessageDialogComponent,
+    MessageActionsComponent
   ],
   imports: [
     CommonModule,

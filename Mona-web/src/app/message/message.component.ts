@@ -175,6 +175,7 @@ export class MessageComponent implements OnInit {
         deleteMessageForMyself: this.deleteMessageForMyself.bind(this),
         deleteMessageForEveryone: this.deleteMessageForEveryone.bind(this),
         editMessage: this.onSelectEditingMessage.bind(this),
+        currentUser:this.currentUser
         },
 
     });

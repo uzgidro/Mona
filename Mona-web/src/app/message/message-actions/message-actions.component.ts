@@ -1,14 +1,16 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {  UserModel } from '../../models/user';
-import { File, MessageModel, MessageRequest } from '../../models/message';
+import {  MessageModel} from '../../models/message';
 import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-message-actions',
   templateUrl: './message-actions.component.html',
-  styleUrls: ['./message-actions.component.css']
-})
+  styleUrls: ['./message-actions.component.css'],
+}
+)
+
 
 
 
@@ -24,6 +26,7 @@ export class MessageActionsComponent implements OnInit {
       deleteMessageForMyself: (messageId:string) => void,
       deleteMessageForEveryone: (messageId:string) => void,
       editMessage: (eventMessage: MessageModel) => void,
+      currentUser:UserModel
 
     },
     private apiService:ApiService
@@ -32,6 +35,8 @@ export class MessageActionsComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.data.message.directReceiverId);
+    console.log(this.data.currentUser.id);
   }
 
 
@@ -74,6 +79,8 @@ export class MessageActionsComponent implements OnInit {
   }
 
   editMessage(){
+
+
     this.data.editMessage(this.data.message)
     this.cancel()
   }
