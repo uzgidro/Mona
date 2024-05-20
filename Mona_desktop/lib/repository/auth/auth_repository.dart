@@ -13,8 +13,6 @@ class AuthRepository implements AbstractAuthRepository {
     var response = await dio.post('http://127.0.0.1:5031/auth/sign-in',
         data: {'username': 'Abbos', 'password': 'asdasd'});
     var loginResponse = LoginResponse.fromJson(response.data);
-    print(loginResponse.accessToken);
-    print(loginResponse.refreshToken);
     return loginResponse;
   }
 }
