@@ -1,3 +1,4 @@
+import { ForwardMessageComponent } from './message-actions/forward-message/forward-message.component';
 import { UserModel } from './../models/user';
 import {File, MessageModel, MessageRequest} from '../models/message';
 import {Component, OnInit, ViewChild} from '@angular/core';
@@ -7,7 +8,6 @@ import {JwtService} from "../services/jwt.service";
 import {FormControl, FormGroup} from "@angular/forms";
 import {ApiService} from '../services/api.service';
 import {MatDialog} from '@angular/material/dialog'
-import {ForwardMessageDialogComponent} from './dialog/dialog.component';
 import {GroupModel} from "../models/group";
 import { MatSidenav } from '@angular/material/sidenav';
 import { MessageActionsComponent } from './message-actions/message-actions.component';
@@ -110,7 +110,7 @@ export class MessageComponent implements OnInit {
   forwardMessage(eventMessage: MessageModel) {
     this.forwardedMessage = eventMessage;
     if (this.forwardedMessage) {
-      const dialogRef = this.dialog.open(ForwardMessageDialogComponent, {
+      const dialogRef = this.dialog.open(ForwardMessageComponent, {
         width: '400px',
         data: {forwardedMessage: this.forwardedMessage, users: this.users}
       });

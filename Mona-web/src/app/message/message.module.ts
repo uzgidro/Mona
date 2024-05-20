@@ -5,18 +5,18 @@ import {MessageRoutingModule} from './message-routing.module';
 import {MessageComponent} from './message.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { MessageItemComponent } from './message-item/message-item.component';
-import { ForwardMessageDialogComponent } from './dialog/dialog.component';
 import {MatButtonModule} from '@angular/material/button';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import { MessageActionsComponent } from './message-actions/message-actions.component';
+import { ForwardMessageComponent } from './message-actions/forward-message/forward-message.component';
 
 
 @NgModule({
   declarations: [
     MessageComponent,
     MessageItemComponent,
-    ForwardMessageDialogComponent,
-    MessageActionsComponent
+    MessageActionsComponent,
+    ForwardMessageComponent
   ],
   imports: [
     CommonModule,

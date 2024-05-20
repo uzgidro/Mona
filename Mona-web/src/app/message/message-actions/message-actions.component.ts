@@ -1,5 +1,6 @@
+import { ForwardMessageComponent } from './forward-message/forward-message.component';
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import {  UserModel } from '../../models/user';
 import {  MessageModel} from '../../models/message';
 import { ApiService } from '../../services/api.service';
@@ -15,7 +16,7 @@ import { ApiService } from '../../services/api.service';
 
 
 export class MessageActionsComponent implements OnInit {
-
+  selectedUser?:UserModel
   constructor(
     public dialogRef: MatDialogRef<MessageActionsComponent>,
     @Inject(MAT_DIALOG_DATA) public data:
@@ -29,17 +30,20 @@ export class MessageActionsComponent implements OnInit {
       currentUser:UserModel
 
     },
-    private apiService:ApiService
+    private apiService:ApiService,
+    private dialog: MatDialog
   ) {
 
   }
 
   ngOnInit() {
-    console.log(this.data.message.directReceiverId);
-    console.log(this.data.currentUser.id);
+
   }
 
 
+  onSelectUser(user:UserModel){
+    this.selectedUser=user
+  }
 
   cancel() {
     this.dialogRef.close();
@@ -79,11 +83,32 @@ export class MessageActionsComponent implements OnInit {
   }
 
   editMessage(){
-
-
     this.data.editMessage(this.data.message)
     this.cancel()
   }
+
+
+
+  forwardMessage(){
+    if (this.data.message) {
+      const dialogRef = this.dialog.open(ForwardMessageComponent, {
+        width: '400px',
+        data: {forwardedMessage: this.data.message, users: this.data.users}
+      });
+      dialogRef.afterClosed().subscribe(() => {
+      });
+    }
+    this.cancel()
+
+  }
+
+
+
+
+
+
+
+
 
 
 
