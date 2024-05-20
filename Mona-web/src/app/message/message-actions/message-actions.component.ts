@@ -16,7 +16,16 @@ export class MessageActionsComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<MessageActionsComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {message:MessageModel, forwardedMessage: MessageModel,users:UserModel[], deleteMessageForMyself: (messageId:string) => void,deleteMessageForEveryone: (messageId:string) => void,},
+    @Inject(MAT_DIALOG_DATA) public data:
+     {
+      message:MessageModel,
+      forwardedMessage: MessageModel,
+      users:UserModel[],
+      deleteMessageForMyself: (messageId:string) => void,
+      deleteMessageForEveryone: (messageId:string) => void,
+      editMessage: (eventMessage: MessageModel) => void,
+
+    },
     private apiService:ApiService
   ) {
 
@@ -44,13 +53,30 @@ export class MessageActionsComponent implements OnInit {
 
   deleteForEveryone() {
     if (this.data.deleteMessageForMyself) {
-      console.log(this.data.message);
-
       this.data.deleteMessageForEveryone(this.data.message.id);
       this.cancel()
     }
   }
 
+
+  copyText(){
+    const messageContent = this.data.message.forwardedMessage?this.data.message.forwardedMessage.text:this.data.message.text;
+    navigator.clipboard.writeText(messageContent)
+      .then(() => {
+        console.log('Message copied to clipboard:', messageContent);
+        // Optionally, you can provide user feedback here
+      })
+      .catch((error) => {
+        console.error('Failed to copy message to clipboard:', error);
+        // Optionally, you can handle errors here
+      });
+      this.cancel()
+  }
+
+  editMessage(){
+    this.data.editMessage(this.data.message)
+    this.cancel()
+  }
 
 
 

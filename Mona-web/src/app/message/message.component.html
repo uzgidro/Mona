@@ -412,7 +412,7 @@
                         </span>
                        </div>
                        <div class="justify-end items-center inline-flex mb-2.5">
-                         <h6 class="text-gray-500 text-xs font-normal leading-4 py-1">{{ message.createdAt | date:'HH:mm' }}</h6>
+                         <h6 class="text-gray-500 text-xs font-normal leading-4 py-1"> <small *ngIf="message.isEdited">edited</small> {{ message.createdAt | date:'HH:mm' }}</h6>
                        </div>
                      </div>
                    </div>
@@ -451,11 +451,29 @@
                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
            </button>
-           <button (click)="sendMessage()"  class="inline-flex items-center justify-center rounded-lg px-4 py-3 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none">
+           <button
+            *ngIf="!editingMessage"
+            (click)="sendMessage()"
+             class="inline-flex items-center justify-center rounded-lg px-4 py-3 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none"
+             >
               <span class="font-bold">Send</span>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-6 w-6 ml-2 transform rotate-90">
                  <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
               </svg>
+           </button>
+
+           <button *ngIf="editingMessage"
+           (click)="editMessage()"
+           class="inline-flex items-center justify-center rounded-lg px-4 py-3 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none"
+           >
+           <span class="hidden md:inline-block">Edit</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                   stroke="currentColor" class="w-6 h-6 ml-1">
+                   <path stroke-linecap="round" stroke-linejoin="round"
+                       d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+               </svg>
+
+
            </button>
         </div>
       </form>
