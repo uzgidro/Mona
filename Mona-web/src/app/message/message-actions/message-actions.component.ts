@@ -28,6 +28,7 @@ export class MessageActionsComponent implements OnInit {
       deleteMessageForEveryone: (messageId:string) => void,
       editMessage: (eventMessage: MessageModel) => void,
       replyMessage: (eventMessage: MessageModel) => void,
+      pinMessage: (eventMessage: MessageModel) => void,
       currentUser:UserModel
     },
     private dialog: MatDialog
@@ -107,6 +108,15 @@ export class MessageActionsComponent implements OnInit {
   }
 
 
+
+  pinMessage(){
+    this.data.pinMessage(this.data.message)
+    this.cancel()
+  }
+  unpinMessage(){
+    this.cancel()
+
+  }
 
 
 

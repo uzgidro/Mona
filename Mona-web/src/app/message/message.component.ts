@@ -165,6 +165,10 @@ export class MessageComponent implements OnInit {
     console.log(this.selectedFiles);
   }
 
+  pinMessage(message:MessageModel){
+    this.chatConnection?.send('PinMessage',message)
+  }
+
   openMessageActions(message:MessageModel){
     const dialogRef = this.dialog.open(MessageActionsComponent, {
       width: '400px',
@@ -178,6 +182,7 @@ export class MessageComponent implements OnInit {
         editMessage: this.onSelectEditingMessage.bind(this),
         currentUser:this.currentUser,
         replyMessage:this.replyMessage.bind(this),
+        pinMessage:this.pinMessage.bind(this),
         },
 
     });
