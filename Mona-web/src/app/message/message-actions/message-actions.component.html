@@ -11,7 +11,7 @@
             <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
                <div class="mt-2 w-full">
 
-
+                 <!-- REPLY MESSAGE  -->
                 <button (click)="reply()" type="button" class="flex items-center gap-2 w-full text-slate-900  hover:bg-slate-100  font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 border-none outline-none">
                   <svg  class="text-gray-400 dark:text-gray-500 w-5 h-5" viewBox="-0.5 0 28 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
 
@@ -31,6 +31,10 @@
                  <span class="text-sm">Reply</span>
 
                 </button>
+                 <!-- REPLY MESSAGE END -->
+
+
+                 <!-- FORWARD MESSAGE  -->
                 <button (click)="forwardMessage()" type="button" class="flex items-center w-full gap-2 text-slate-900 hover:bg-slate-100 border-none outline-none font-medium rounded-lg text-sm px-5 py-2.5 mt-2 mb-2 ">
                   <svg fill="#9ca3af" class="text-gray-400 dark:text-gray-500 w-6 h-6" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
 	                           viewBox="0 0 512.297 512.297" xml:space="preserve">
@@ -49,6 +53,9 @@
                   </svg>
                   <span class="text-sm">Forward</span>
                 </button>
+                 <!-- FORWARD MESSAGE END -->
+
+                 <!-- EDIT MESSAGE -->
                 <button  (click)="editMessage()"    class="w-full flex items-center px-5 py-2.5 me-2 mb-2  text-slate-900  text-sm   hover:bg-slate-100 font-medium  rounded-lg space-x-1 border-none outline-none "
                   *ngIf="data.message.directReceiverId!==data.currentUser.id&&!(data.message.forwardedMessage)"
 
@@ -62,6 +69,9 @@
                   </span>
                    <span class="text-sm">Edit</span>
                 </button>
+                 <!-- EDIT MESSAGE  END-->
+
+                 <!-- COPY MESSAGE -->
                 <button (click)="copyText()" class=" w-full flex text-slate-900  hover:bg-slate-100  border-none outline-none font-medium rounded-lg text-sm px-5 py-2.5 mt-2 mb-2">
 
                    <span  class="flex items-center justify-between gap-2">
@@ -71,7 +81,11 @@
                       <span class="text-sm">Copy</span>
                   </span>
 
-              </button>
+                </button>
+                 <!-- COPY MESSAGE END-->
+
+
+                 <!-- DELETE MESSAGE -->
                 <button (click)="deleteForMe()" type="button" class=" w-full flex items-center gap-2 outline-none border-none text-slate-900  hover:bg-slate-100  font-medium rounded-lg text-sm px-5 py-2.5 mt-2 mb-2">
                   <svg class="text-gray-400 dark:text-gray-500 w-6 h-6"
                   aria-hidden="true"
@@ -84,6 +98,9 @@
                 </svg>
                 <span class="block text-sm">Delete</span>
                 </button>
+                 <!-- DELETE MESSAGE END-->
+
+                 <!-- MUTUAL DELETE  -->
                 <button (click)="deleteForEveryone()" type="button" class="w-full flex items-center gap-2  text-slate-900  hover:bg-slate-100 border-none outline-none  font-medium rounded-lg text-sm px-5 py-2.5 mt-2 mb-2">
                   <svg class="text-gray-400 dark:text-gray-500 w-6 h-6"
                   aria-hidden="true"
@@ -96,14 +113,15 @@
                 </svg>
                 <span class="block text-sm">Mutual delete</span>
                 </button>
+                <!-- MUTUAL DELETE END -->
 
                </div>
             </div>
           </div>
         </div>
         <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-          <!-- <button type="button" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">Deactivate</button> -->
-          <button type="button" class="mt-3 inline-flex w-full justify-center rounded-md  px-3 py-2  sm:mt-0 sm:w-auto" (click)="cancel()">
+          <!-- CANCEL -->
+           <button type="button" class="mt-3 inline-flex w-full justify-center rounded-md  px-3 py-2  sm:mt-0 sm:w-auto" (click)="cancel()">
             <svg class="w-5 h-5 text-gray-500" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
               <title>cancel</title>
               <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -115,6 +133,7 @@
               </g>
           </svg>
           </button>
+          <!-- CANCEL END -->
         </div>
       </div>
     </div>
