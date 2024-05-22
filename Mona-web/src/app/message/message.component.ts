@@ -48,6 +48,7 @@ export class MessageComponent implements OnInit {
   constructor(private jwtService: JwtService, private apiService: ApiService, private dialog: MatDialog) {
   }
 
+
   ngOnInit() {
     let accessToken = this.jwtService.getAccessToken()
     this.setChatConnection(accessToken)
@@ -188,7 +189,10 @@ export class MessageComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(() => {
 
+
     });
+
+
 
   }
 

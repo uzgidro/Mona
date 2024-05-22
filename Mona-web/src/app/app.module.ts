@@ -8,16 +8,20 @@ import {CookieService} from "ngx-cookie-service";
 import {AuthInterceptor} from "./services/auth.interceptor";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import {MatButtonModule} from '@angular/material/button';
+import { MessageActionsComponent } from './message/message-actions/message-actions.component';
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatButtonModule,
+
   ],
   providers: [CookieService,
     {

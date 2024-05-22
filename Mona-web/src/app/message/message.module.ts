@@ -9,6 +9,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import { MessageActionsComponent } from './message-actions/message-actions.component';
 import { ForwardMessageComponent } from './message-actions/forward-message/forward-message.component';
+import { MatDialogContent } from '@angular/material/dialog';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { ForwardMessageComponent } from './message-actions/forward-message/forwa
     ReactiveFormsModule,
     MatButtonModule,
     MatSidenavModule,
-  
+    MatDialogContent
+
 
   ]
 })
