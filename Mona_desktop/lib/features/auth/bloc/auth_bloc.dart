@@ -1,6 +1,8 @@
 ﻿import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:mona_desktop/core/constants.dart';
 import 'package:mona_desktop/core/injections.dart';
 import 'package:mona_desktop/core/models/models_export.dart';
 import 'package:mona_desktop/repository/repository_export.dart';
@@ -15,6 +17,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<SignInEvent>((event, emit) async {
       try {
         var login = await _authRepository.login(event.username, event.password);
+        await getIt<FlutterSecureStorage>().write(key: accessToken, value: login.accessToken);
+        await getIt<FlutterSecureStorage>().write(key: refreshToken, value: login.refreshToken);
         emit(LoginSuccess(response: login));
       } catch (e, st) {
         emit(LoginFail(exception: e));

@@ -84,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
             bloc: bloc,
             builder: (context, state) {
               if (state is LoginSuccess) {
-                return Text('login Success');
+                return Text(state.response.accessToken);
               }
               if (state is LoginFail) {
                 return Text('Username or password invalid');
