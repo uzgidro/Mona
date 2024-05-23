@@ -7,13 +7,14 @@ import 'package:mona_desktop/repository/repository_export.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 part 'auth_event.dart';
+
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(this._authRepository) : super(AuthInitial()) {
-    on<LoginEvent>((event, emit) async {
+    on<SignInEvent>((event, emit) async {
       try {
-        var login = await _authRepository.login();
+        var login = await _authRepository.login(event.username, event.password);
         emit(LoginSuccess(response: login));
       } catch (e, st) {
         emit(LoginFail(exception: e));

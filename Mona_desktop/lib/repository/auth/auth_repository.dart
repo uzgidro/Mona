@@ -8,10 +8,9 @@ class AuthRepository implements AbstractAuthRepository {
   final Dio dio;
 
   @override
-  Future<LoginResponse> login() async {
-
+  Future<LoginResponse> login(String username, String password) async {
     var response = await dio.post('http://127.0.0.1:5031/auth/sign-in',
-        data: {'username': 'Abbos', 'password': 'asdasd'});
+        data: {'username': username, 'password': password});
     var loginResponse = LoginResponse.fromJson(response.data);
     return loginResponse;
   }
