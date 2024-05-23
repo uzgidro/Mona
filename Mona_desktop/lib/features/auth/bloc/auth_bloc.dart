@@ -2,8 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:injectable/injectable.dart';
 import 'package:mona_desktop/core/constants.dart';
-import 'package:mona_desktop/core/injections.dart';
+import 'package:mona_desktop/core/di/injections.dart';
 import 'package:mona_desktop/core/models/models_export.dart';
 import 'package:mona_desktop/repository/repository_export.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -12,6 +13,7 @@ part 'auth_event.dart';
 
 part 'auth_state.dart';
 
+@Injectable()
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(this._authRepository) : super(AuthInitial()) {
     on<SignInEvent>((event, emit) async {

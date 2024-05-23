@@ -1,5 +1,5 @@
 ﻿import 'package:go_router/go_router.dart';
-import 'package:mona_desktop/core/injections.dart';
+import 'package:mona_desktop/core/di/injections.dart';
 import 'package:mona_desktop/features/auth/presentation/presentation_export.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:mona_desktop/core/injections.dart';
+import 'package:mona_desktop/core/di/injections.dart';
 import 'package:mona_desktop/features/mona.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 

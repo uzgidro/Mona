@@ -26,6 +26,7 @@ dependencies:
   dio: ^5.4.3+1
   # DI
   get_it: ^7.7.0
+  injectable: ^2.4.2
   # Logger
   talker_flutter: ^4.2.0
   talker_dio_logger: ^4.2.0
@@ -40,6 +41,7 @@ dev_dependencies:
 
   flutter_lints: ^4.0.0
   json_serializable: ^6.7.1
+  injectable_generator:
   build_runner:
 
 flutter:
