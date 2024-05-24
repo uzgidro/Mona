@@ -1,22 +1,34 @@
 ﻿import 'package:go_router/go_router.dart';
 import 'package:mona_desktop/core/di/injections.dart';
+import 'package:mona_desktop/core/guard/auth_guard.dart';
 import 'package:mona_desktop/features/auth/presentation/presentation_export.dart';
+import 'package:mona_desktop/features/auth/presentation/sign_up_screen.dart';
+import 'package:mona_desktop/features/home/presentation/home_screen.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
-final GoRouter router = GoRouter(routes: [
+final GoRouter router = GoRouter(routes: <RouteBase>[
   GoRoute(
     path: '/',
-    redirect: (context, state) => '/auth',
+    redirect: (context, state) async {
+      if (await getIt<AuthGuard>().isAuthorized()) {
+        return '/home';
+      } else {
+        return '/auth/sign-in';
+      }
+    },
   ),
   GoRoute(
-      path: '/auth',
-      redirect: (context, state) => '/auth/sign-in',
-      routes: [
-        GoRoute(
-          path: 'sign-in',
-          builder: (context, state) => LoginScreen(),
-        )
-      ])
+    path: '/auth/sign-in',
+    builder: (context, state) => SignInScreen(),
+  ),
+  GoRoute(
+    path: '/auth/sign-up',
+    builder: (context, state) => SignUpScreen(),
+  ),
+  GoRoute(
+    path: '/home',
+    builder: (context, state) => HomeScreen(),
+  )
 ], observers: [
   TalkerRouteObserver(getIt<Talker>())
 ]);

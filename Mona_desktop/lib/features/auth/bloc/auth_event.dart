@@ -4,11 +4,21 @@
 sealed class AuthEvent extends Equatable {}
 
 final class SignInEvent extends AuthEvent {
-  final String username;
-  final String password;
+  final SignInRequest signInRequest;
 
-  SignInEvent({required this.username, required this.password});
+  SignInEvent({required this.signInRequest});
+
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [signInRequest];
+}
+
+final class SignUpEvent extends AuthEvent {
+  final SignUpRequest signUpRequest;
+
+  SignUpEvent({required this.signUpRequest});
+
+
+  @override
+  List<Object?> get props => [signUpRequest];
 }
