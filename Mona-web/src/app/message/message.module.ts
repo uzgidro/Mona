@@ -10,6 +10,8 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import { MessageActionsComponent } from './message-actions/message-actions.component';
 import { ForwardMessageComponent } from './message-actions/forward-message/forward-message.component';
 import { MatDialogContent } from '@angular/material/dialog';
+import { ContactsComponent } from './contacts/contacts.component';
+import { AddContactComponent } from './contacts/add-contact/add-contact.component';
 
 
 @NgModule({
@@ -17,7 +19,9 @@ import { MatDialogContent } from '@angular/material/dialog';
     MessageComponent,
     MessageItemComponent,
     MessageActionsComponent,
-    ForwardMessageComponent
+    ForwardMessageComponent,
+    ContactsComponent,
+    AddContactComponent
   ],
   imports: [
     CommonModule,
@@ -29,6 +33,6 @@ import { MatDialogContent } from '@angular/material/dialog';
     MatDialogContent
 
 
-  ]
+  ],
 })
 export class MessageModule { }

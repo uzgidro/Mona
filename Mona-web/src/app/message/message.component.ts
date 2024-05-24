@@ -9,8 +9,9 @@ import {FormControl, FormGroup} from "@angular/forms";
 import {ApiService} from '../services/api.service';
 import {MatDialog} from '@angular/material/dialog'
 import {GroupModel} from "../models/group";
-import { MatSidenav } from '@angular/material/sidenav';
+import { MatDrawer, MatSidenav } from '@angular/material/sidenav';
 import { MessageActionsComponent } from './message-actions/message-actions.component';
+import { ContactsComponent } from './contacts/contacts.component';
 
 @Component({
   selector: 'app-message',
@@ -19,6 +20,7 @@ import { MessageActionsComponent } from './message-actions/message-actions.compo
 })
 export class MessageComponent implements OnInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
+  @ViewChild('drawer') drawer: MatDrawer;
 
   toggleSidenav() {
     this.sidenav.toggle();
@@ -189,6 +191,34 @@ export class MessageComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(() => {
 
+
+
+    });
+
+
+
+  }
+
+
+  openDrawer(){
+    this.drawer.open()
+  }
+
+  onDrawerClosed(){
+    this.dialog.open(ContactsComponent);
+
+  }
+
+  openContacts(){
+    this.drawer.close()
+    this.dialog.open(ContactsComponent, {
+      width: '400px',
+      data:
+       {
+
+        users: this.users,
+        selectChat:this.selectChat.bind(this),
+        },
 
     });
 
