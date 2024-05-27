@@ -26,8 +26,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await getIt<FlutterSecureStorage>()
             .write(key: refreshToken, value: login.refreshToken);
         emit(SignInSuccess(response: login));
+      } on DioException catch (e) {
+        // on connection error
+        if (e.type.index == 6) {
+          emit(SignInFail(authFail: AuthFail.connectionError));
+        } else if (e.response?.statusCode == 400) {
+          emit(SignInFail(authFail: AuthFail.badRequest));
+        }
       } catch (e, st) {
-        emit(SignInFail(exception: e));
+        emit(SignInFail(authFail: AuthFail.unexpected));
         getIt<Talker>().handle(e, st);
       }
     });

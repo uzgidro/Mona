@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mona_desktop/core/di/injections.dart';
 import 'package:mona_desktop/core/dto/auth_fail.dart';
-import 'package:mona_desktop/core/models/sign_up_request.dart';
 import 'package:mona_desktop/features/auth/bloc/auth_bloc.dart';
 
 import '../../../core/models/models_export.dart';
@@ -24,7 +23,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String? _usernameError;
 
   final GlobalKey<FormState> _formKey =
-  GlobalKey<FormState>(); // A key for managing the form
+      GlobalKey<FormState>(); // A key for managing the form
 
   void _submitForm() {
     // Check if the form is valid
@@ -36,17 +35,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
       // You can perform actions with the form data here and extract the details
       _bloc.add(SignUpEvent(
           signUpRequest: SignUpRequest(
-            username: _usernameController.text,
-            password: _passwordController.text,
-            firstName: _firstNameController.text,
-            lastName: _lastNameController.text,
-          )));
+        username: _usernameController.text,
+        password: _passwordController.text,
+        firstName: _firstNameController.text,
+        lastName: _lastNameController.text,
+      )));
     }
   }
 
   void _signIn() {
-    _bloc.add(SignInEvent(signInRequest: SignInRequest(
-        username: _usernameController.text, password: _passwordController.text)));
+    _bloc.add(SignInEvent(
+        signInRequest: SignInRequest(
+            username: _usernameController.text,
+            password: _passwordController.text)));
   }
 
   @override
@@ -85,22 +86,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ));
           }
           if (state is SignUpFail) {
-            print(state.authFail);
             switch (state.authFail) {
               case AuthFail.conflict:
                 setState(() {
-                  _usernameError = 'Что-то не то с логином';
+                  _usernameError = 'Данный логин уже зарегистрирован';
                 });
-              case AuthFail.badRequest:
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Запрос не удался'),
-                  action: SnackBarAction(
-                    label: 'Повторить',
-                    onPressed: () {
-                      _submitForm();
-                    },
-                  ),
-                ));
               case AuthFail.connectionError:
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text('Проблемы с интернетом'),
@@ -111,7 +101,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                   ),
                 ));
-              case AuthFail.unexpected:
+              default:
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text('Запрос не удался'),
                   action: SnackBarAction(
@@ -187,7 +177,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     TextFormField(
                       decoration:
-                      InputDecoration(labelText: 'Повторите пароль'),
+                          InputDecoration(labelText: 'Повторите пароль'),
                       // Label for the name field
                       validator: (value) {
                         // Validation function for the name field

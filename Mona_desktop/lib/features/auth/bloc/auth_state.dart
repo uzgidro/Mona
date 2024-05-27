@@ -12,9 +12,10 @@ final class SignInSuccess extends AuthState {
 }
 
 final class SignInFail extends AuthState {
-  SignInFail({required this.exception});
+  final AuthFail authFail;
 
-  final Object exception;
+  SignInFail({required this.authFail});
+
 }
 
 final class SignUpSuccess extends AuthState {}
