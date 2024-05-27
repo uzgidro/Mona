@@ -47,6 +47,11 @@ public class MessageController(
                 await hubContext.Clients.Groups(activeMessage.GroupReceiverId)
                     .ReceiveMessage(activeMessage);
             }
+            else if (!string.IsNullOrEmpty(activeMessage.ChatId))
+            {
+                // await hubContext.Clients.Groups(activeMessage.GroupReceiverId)
+                // .ReceiveMessage(activeMessage);
+            }
             else
             {
                 return BadRequest("Message did not sent");
@@ -71,7 +76,7 @@ public class MessageController(
     [HttpGet("history")]
     public async Task<IActionResult> GetMessages()
     {
-        return Ok(await messageService.GetMessages(GetUserId()));
+        return Ok(await messageService.GetUserChatsAsync(GetUserId()));
     }
 
     private static string GetBoundary(MediaTypeHeaderValue contentType)

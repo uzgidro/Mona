@@ -12,5 +12,6 @@ public interface IMessageService
     Task<MessageModel> DeleteMessageForMyself(string caller, string messageId);
     Task<MessageModel> DeleteMessageForEveryone(string caller, string messageId);
     Task<IEnumerable<MessageModel>> GetMessages(string caller);
+    Task<List<ChatModel>> GetUserChatsAsync(string caller);
     Task<MessageModel> PinMessage(string messageId);
 }

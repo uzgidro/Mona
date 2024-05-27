@@ -26,6 +26,11 @@ public class MessageService(ApplicationContext context) : IMessageService
     public async Task<MessageModel> CreateMessage(MultipartReader multipartReader, string senderId)
     {
         var section = await multipartReader.ReadNextSectionAsync();
+        // var userChats = await context.ChatClients
+        //     .Where(m => string.Equals(m.ChatId, senderId))
+        //     .Include(m => m.Chat)
+        //     .Select(m => m.Chat)
+        //     .ToListAsync();
 
         while (section != null)
         {
@@ -34,6 +39,27 @@ public class MessageService(ApplicationContext context) : IMessageService
                 using var reader = new StreamReader(section.Body, Encoding.UTF8);
                 var messageJson = await reader.ReadToEndAsync();
                 var message = JsonSerializer.Deserialize<MessageRequest>(messageJson, Options);
+
+                if (string.IsNullOrEmpty(message.ChatId))
+                {
+                    var commonChat = await context.Chats
+                        .Where(chat => chat.ChatUsers.Any(cu => cu.ClientId == senderId) &&
+                                       chat.ChatUsers.Any(cu => cu.ClientId == message.ReceiverId))
+                        .FirstOrDefaultAsync();
+                    if (commonChat != null)
+                    {
+                        message.ChatId = commonChat.Id;
+                    }
+                    else
+                    {
+                        var entry = context.Chats.Add(new ChatModel());
+                        context.ChatClients.Add(new ChatClientModel()
+                            { ChatId = entry.Entity.Id, ClientId = senderId });
+                        context.ChatClients.Add(new ChatClientModel()
+                            { ChatId = entry.Entity.Id, ClientId = message.ReceiverId });
+                        message.ChatId = entry.Entity.Id;
+                    }
+                }
 
                 var entity = message.ToMessageModel(senderId);
                 var entityEntry = context.Messages.Add(entity);
@@ -143,6 +169,30 @@ public class MessageService(ApplicationContext context) : IMessageService
         return messages;
     }
 
+    public async Task<List<ChatModel>> GetUserChatsAsync(string caller)
+    {
+        var userChats = await context.ChatClients
+            .Where(cu => cu.ClientId == caller)
+            .Select(cu => new
+            {
+                ChatId = cu.ChatId,
+                LastMessage = cu.Chat.Messages.OrderByDescending(m => m.CreatedAt).FirstOrDefault()
+            })
+            .ToListAsync();
+        // var eee = userChats.Select(c => new
+        // {
+        //     ChatId = c.ChatId,
+        //     LastMessage = new
+        //     {
+        //         Id = c.LastMessage.Id,
+        //         Text = c.LastMessage.Text,
+        //         CreatedAt = c.LastMessage.CreatedAt,
+        //         SenderId = c.LastMessage.SenderId,
+        //     }
+        // }).ToList();
+        return new List<ChatModel>();
+    }
+
     public async Task<MessageModel> PinMessage(string messageId)
     {
         var entity = await RetrieveMessage(messageId);
@@ -158,6 +208,7 @@ public class MessageService(ApplicationContext context) : IMessageService
         await context.Entry(entity).Reference(m => m.DirectReceiver).LoadAsync();
         await context.Entry(entity).Reference(m => m.GroupReceiver).LoadAsync();
         await context.Entry(entity).Reference(m => m.RepliedMessage).LoadAsync();
+        await context.Entry(entity).Reference(m => m.Chat).LoadAsync();
         await context.Entry(entity).Collection(m => m.Files).LoadAsync();
         await context.Entry(entity).Reference(m => m.ForwardedMessage).LoadAsync();
         await IncludeFiles(entity);

@@ -2,10 +2,33 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mona_desktop/core/di/injections.dart';
+import 'package:mona_desktop/core/middleware/jwt_service.dart';
 import 'package:mona_desktop/features/auth/bloc/auth_bloc.dart';
+import 'package:signalr_netcore/signalr_client.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final AuthBloc bloc = getIt<AuthBloc>();
+
+  @override
+  void initState() {
+    super.initState();
+    const serverUrl = "http://127.0.0.1:5031/chat";
+    final hubConnection = HubConnectionBuilder().withUrl(serverUrl, options: HttpConnectionOptions(
+      accessTokenFactory: () async => await getIt<JwtService>().getAccessToken()
+    )).build();
+
+    hubConnection.start()?.catchError((e, st) {
+      getIt<Talker>().handle(e);
+    }).then((value) {
+      hubConnection.invoke('getUsers').then((value) => print(value));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

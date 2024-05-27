@@ -11,6 +11,8 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
     public DbSet<GroupModel> Groups => Set<GroupModel>();
     public DbSet<UserGroup> UserGroup => Set<UserGroup>();
     public DbSet<FileModel> Files => Set<FileModel>();
+    public DbSet<ChatModel> Chats => Set<ChatModel>();
+    public DbSet<ChatClientModel> ChatClients => Set<ChatClientModel>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -30,7 +32,7 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
 
         builder.Entity<MessageModel>()
             .HasOne(m => m.Sender)
-            .WithMany()
+            .WithMany(u => u.SentMessages)
             .HasForeignKey(m => m.SenderId)
             .IsRequired();
 
@@ -57,6 +59,25 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
             entity.HasIndex(e => e.ForwardId);
             entity.HasIndex(e => e.ReplyId);
         });
+
+        builder.Entity<ChatClientModel>()
+            .HasKey(cu => new { cu.ClientId, cu.ChatId });
+
+        builder.Entity<ChatClientModel>()
+            .HasOne(cu => cu.Chat)
+            .WithMany(c => c.ChatUsers)
+            .HasForeignKey(cu => cu.ChatId);
+
+        builder.Entity<MessageModel>()
+            .HasOne(m => m.Chat)
+            .WithMany(c => c.Messages)
+            .HasForeignKey(m => m.ChatId);
+
+        builder.Entity<MessageModel>()
+            .HasOne(m => m.Sender)
+            .WithMany(u => u.SentMessages)
+            .HasForeignKey(m => m.SenderId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<UserModel>()
             .HasMany(e => e.Groups)
