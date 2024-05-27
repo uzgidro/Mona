@@ -15,6 +15,23 @@ class JwtService {
 
   JwtService({required this.storage});
 
+  Future<String> getAccessToken() async {
+    try {
+      return await storage.read(key: accessToken) as String;
+    } catch (e, st) {
+      getIt<Talker>().handle(e, st);
+      return '';
+    }
+  }
+
+  Future<String> getRefreshToken() async {
+    try {
+      return await storage.read(key: refreshToken) as String;
+    } catch (e, st) {
+      getIt<Talker>().handle(e, st);
+      return '';
+    }
+  }
 
   Future<bool> saveTokens(SignInResponse response) async {
     try {
@@ -38,7 +55,7 @@ class JwtService {
     }
   }
 
-  Future<bool> isAuthenticated() async{
+  Future<bool> isAuthenticated() async {
     return await storage.read(key: accessToken) != null;
   }
 }
