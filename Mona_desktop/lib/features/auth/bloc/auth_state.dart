@@ -25,3 +25,5 @@ final class SignUpFail extends AuthState {
 
   SignUpFail({required this.authFail});
 }
+
+final class SignOutSuccess extends AuthState {}

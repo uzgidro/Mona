@@ -1,14 +1,14 @@
 ﻿import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mona_desktop/core/models/models_export.dart';
+import 'package:mona_desktop/core/dto/dto_export.dart';
 import 'package:mona_desktop/repository/auth/abstract_auth_repository.dart';
 import 'package:mona_desktop/repository/repository_export.dart';
 
 @Injectable(as: AbstractAuthRepository)
 class AuthRepository implements AbstractAuthRepository {
-  AuthRepository({required this.dio});
-
   final Dio dio;
+
+  AuthRepository({required this.dio});
 
   @override
   Future<SignInResponse> signIn(SignInRequest signInRequest) async {

@@ -1,30 +1,24 @@
 ﻿import 'package:dio/dio.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mona_desktop/core/constants.dart';
 import 'package:mona_desktop/core/di/injections.dart';
 import 'package:mona_desktop/core/dto/auth_fail.dart';
-import 'package:mona_desktop/core/models/models_export.dart';
+import 'package:mona_desktop/core/dto/dto_export.dart';
+import 'package:mona_desktop/core/middleware/middleware.dart';
 import 'package:mona_desktop/repository/repository_export.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 part 'auth_event.dart';
-
 part 'auth_state.dart';
 
 @Injectable()
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc(this._authRepository) : super(AuthInitial()) {
+  AuthBloc(this.authRepository, this.jwtService) : super(AuthInitial()) {
     on<SignInEvent>((event, emit) async {
       try {
-        var login = await _authRepository.signIn(event.signInRequest);
-        await getIt<FlutterSecureStorage>()
-            .write(key: accessToken, value: login.accessToken);
-        await getIt<FlutterSecureStorage>()
-            .write(key: refreshToken, value: login.refreshToken);
+        var login = await authRepository.signIn(event.signInRequest);
+        await jwtService.saveTokens(login);
         emit(SignInSuccess(response: login));
       } on DioException catch (e) {
         // on connection error
@@ -41,7 +35,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     on<SignUpEvent>((event, emit) async {
       try {
-        var statusCode = await _authRepository.signUp(event.signUpRequest);
+        var statusCode = await authRepository.signUp(event.signUpRequest);
         if (statusCode == 201) {
           emit(SignUpSuccess());
         }
@@ -60,7 +54,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         getIt<Talker>().handle(e, st);
       }
     });
+
+    on<SignOutEvent>((event, emit) async {
+      try {
+        await jwtService.removeTokens();
+        emit(SignOutSuccess());
+      } catch (e, st) {
+        getIt<Talker>().handle(e, st);
+      }
+    });
   }
 
-  final AbstractAuthRepository _authRepository;
+  final AbstractAuthRepository authRepository;
+  final JwtService jwtService;
 }

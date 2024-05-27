@@ -2,7 +2,6 @@
 import 'package:mona_desktop/core/di/injections.dart';
 import 'package:mona_desktop/core/guard/auth_guard.dart';
 import 'package:mona_desktop/features/auth/presentation/presentation_export.dart';
-import 'package:mona_desktop/features/auth/presentation/sign_up_screen.dart';
 import 'package:mona_desktop/features/home/presentation/home_screen.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mona_desktop/core/di/injections.dart';
 import 'package:mona_desktop/core/dto/auth_fail.dart';
-import 'package:mona_desktop/core/models/sign_in_request.dart';
+import 'package:mona_desktop/core/dto/sign_in_request.dart';
 import 'package:mona_desktop/features/auth/bloc/auth_bloc.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -12,15 +12,14 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final _bloc = getIt<AuthBloc>();
+  final bloc = getIt<AuthBloc>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
   String? _usernameError;
   String? _passwordError;
 
-  final GlobalKey<FormState> _formKey =
-      GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
@@ -29,7 +28,7 @@ class _SignInScreenState extends State<SignInScreen> {
         _usernameError = null;
         _passwordError = null;
       });
-      _bloc.add(SignInEvent(
+      bloc.add(SignInEvent(
           signInRequest: SignInRequest(
               username: _usernameController.text,
               password: _passwordController.text)));
@@ -47,7 +46,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: BlocListener<AuthBloc, AuthState>(
-      bloc: _bloc,
+      bloc: bloc,
       listener: (context, state) {
         if (state is SignInSuccess) {
           context.go('/home');

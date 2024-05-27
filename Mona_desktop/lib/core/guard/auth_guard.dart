@@ -1,14 +1,14 @@
-﻿import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:injectable/injectable.dart';
-import 'package:mona_desktop/core/constants.dart';
+﻿import 'package:injectable/injectable.dart';
+import 'package:mona_desktop/core/middleware/middleware.dart';
 
 @Injectable()
 class AuthGuard {
-  final FlutterSecureStorage storage;
+  final JwtService jwtService;
 
-  AuthGuard({required this.storage});
+  AuthGuard({required this.jwtService});
+
 
   Future<bool> isAuthorized() async{
-    return await storage.read(key: accessToken) != null;
+    return await jwtService.isAuthenticated();
   }
 }

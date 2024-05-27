@@ -5,7 +5,7 @@ import 'package:mona_desktop/core/di/injections.dart';
 import 'package:mona_desktop/core/dto/auth_fail.dart';
 import 'package:mona_desktop/features/auth/bloc/auth_bloc.dart';
 
-import '../../../core/models/models_export.dart';
+import '../../../core/dto/dto_export.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
