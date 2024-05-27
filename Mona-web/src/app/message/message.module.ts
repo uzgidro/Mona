@@ -12,6 +12,8 @@ import { ForwardMessageComponent } from './message-actions/forward-message/forwa
 import { MatDialogContent } from '@angular/material/dialog';
 import { ContactsComponent } from './contacts/contacts.component';
 import { AddContactComponent } from './contacts/add-contact/add-contact.component';
+import { NewGroupComponent } from './new-group/new-group.component';
+import { AddMembersComponent } from './new-group/add-members/add-members.component';
 
 
 @NgModule({
@@ -21,7 +23,9 @@ import { AddContactComponent } from './contacts/add-contact/add-contact.componen
     MessageActionsComponent,
     ForwardMessageComponent,
     ContactsComponent,
-    AddContactComponent
+    AddContactComponent,
+    NewGroupComponent,
+    AddMembersComponent
   ],
   imports: [
     CommonModule,

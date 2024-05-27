@@ -1,3 +1,4 @@
+import { GroupModel, GroupRequest } from './../models/group';
 import { ForwardMessageComponent } from './message-actions/forward-message/forward-message.component';
 import { UserModel } from './../models/user';
 import {File, MessageModel, MessageRequest} from '../models/message';
@@ -8,10 +9,10 @@ import {JwtService} from "../services/jwt.service";
 import {FormControl, FormGroup} from "@angular/forms";
 import {ApiService} from '../services/api.service';
 import {MatDialog} from '@angular/material/dialog'
-import {GroupModel} from "../models/group";
 import { MatDrawer, MatSidenav } from '@angular/material/sidenav';
 import { MessageActionsComponent } from './message-actions/message-actions.component';
 import { ContactsComponent } from './contacts/contacts.component';
+import { NewGroupComponent } from './new-group/new-group.component';
 
 @Component({
   selector: 'app-message',
@@ -221,7 +222,24 @@ export class MessageComponent implements OnInit {
         },
 
     });
+  }
 
+  createGroups(groupRequest:GroupRequest){
+    this.groupConnection.send('createGroup',groupRequest)
+  }
+
+
+  newGroup(){
+    this.drawer.close()
+    this.dialog.open(NewGroupComponent, {
+      width: '400px',
+      data:
+       {
+        users:this.users,
+        createGroup:this.createGroups.bind(this),
+        },
+
+    });
 
 
   }

@@ -95,14 +95,14 @@
          <ul class="space-y-2 font-medium">
           <!-- New Group -->
             <li>
-               <button href="#" class="flex w-full items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+               <button (click)="newGroup()"  class="flex w-full items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                   <svg class="w-5 h-5  transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
                     <circle cx="9" cy="6" r="4" stroke="#1C274C" stroke-width="1.5"/>
                     <path d="M15 9C16.6569 9 18 7.65685 18 6C18 4.34315 16.6569 3 15 3" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"/>
                     <ellipse cx="9" cy="17" rx="7" ry="4" stroke="#1C274C" stroke-width="1.5"/>
                     <path d="M18 14C19.7542 14.3847 21 15.3589 21 16.5C21 17.5293 19.9863 18.4229 18.5 18.8704" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"/>
                   </svg>
-                  <span class="ms-3">New gorup</span>
+                  <span class="ms-3">New group</span>
                </button>
             </li>
           <!-- New Group end-->
@@ -347,7 +347,16 @@
           <!-- USER MESSAGES -->
           <div class="overflow-y-auto h-screen p-3 mb-9 pb-20 mt-14" >
             <!-- USER MESSAGE BOX -->
-              <div class="flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md" *ngFor="let user of users"  (click)="selectChat(user)">
+              <div class="flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md" *ngFor="let group of groups"  >
+              <div class="w-12 h-12 bg-gray-300 rounded-full mr-3">
+                <img src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato" alt="User Avatar" class="w-12 h-12 rounded-full">
+              </div>
+              <div class="flex-1">
+                <h2 class="text-lg font-semibold">{{group.name?.length>6?group.name.slice(0,6):group.name}}</h2>
+                <p class="text-gray-600 ">Hi Steve</p>
+              </div>
+             </div>
+             <div class="flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md" *ngFor="let user of users"  (click)="selectChat(user)">
               <div class="w-12 h-12 bg-gray-300 rounded-full mr-3">
                 <img src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato" alt="User Avatar" class="w-12 h-12 rounded-full">
               </div>
@@ -356,6 +365,8 @@
                 <p class="text-gray-600 ">Hi Steve</p>
               </div>
              </div>
+
+
           </div>
           <!-- USER MESSAGES END-->
 

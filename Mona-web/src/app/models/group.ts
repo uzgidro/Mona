@@ -6,3 +6,11 @@ export interface GroupModel {
   description?: string
   users?: UserModel[]
 }
+
+
+
+export interface GroupRequest{
+  name:string
+  description:string,
+  members?:string[]
+}
