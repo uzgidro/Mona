@@ -117,7 +117,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: Column(
           children: [
             Form(
-              key: _formKey, // Associate the form key with this Form widget
+              key: _formKey,
               child: Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Column(
@@ -125,70 +125,60 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     TextFormField(
                       decoration: InputDecoration(
                           labelText: 'Логин', errorText: _usernameError),
-                      // Label for the name field
                       validator: (value) {
-                        // Validation function for the name field
                         if (value!.isEmpty) {
-                          return 'Поле не может быть пустым'; // Return an error message if the name is empty
+                          return 'Поле не может быть пустым';
                         }
-                        return null; // Return null if the name is valid
+                        return null;
                       },
                       controller: _usernameController,
                     ),
                     TextFormField(
                       decoration: InputDecoration(labelText: 'Имя'),
-                      // Label for the name field
                       validator: (value) {
-                        // Validation function for the name field
                         if (value!.isEmpty) {
-                          return 'Поле не может быть пустым'; // Return an error message if the name is empty
+                          return 'Поле не может быть пустым';
                         }
-                        return null; // Return null if the name is valid
+                        return null;
                       },
                       controller: _firstNameController,
                     ),
                     TextFormField(
                       decoration: InputDecoration(labelText: 'Фамилия'),
-                      // Label for the name field
                       validator: (value) {
-                        // Validation function for the name field
                         if (value!.isEmpty) {
-                          return 'Поле не может быть пустым'; // Return an error message if the name is empty
+                          return 'Поле не может быть пустым';
                         }
-                        return null; // Return null if the name is valid
+                        return null;
                       },
                       controller: _lastNameController,
                     ),
                     TextFormField(
                       decoration: InputDecoration(labelText: 'Пароль'),
-                      // Label for the name field
                       validator: (value) {
-                        // Validation function for the name field
                         if (value!.isEmpty) {
-                          return 'Поле не может быть пустым'; // Return an error message if the name is empty
+                          return 'Поле не может быть пустым';
                         }
                         if (_passwordController.text !=
                             _repeatPasswordController.text) {
                           return 'Пароли не совпадают';
                         }
-                        return null; // Return null if the name is valid
+                        return null;
                       },
                       controller: _passwordController,
                     ),
                     TextFormField(
                       decoration:
                           InputDecoration(labelText: 'Повторите пароль'),
-                      // Label for the name field
                       validator: (value) {
-                        // Validation function for the name field
                         if (value!.isEmpty) {
-                          return 'Поле не может быть пустым'; // Return an error message if the name is empty
+                          return 'Поле не может быть пустым';
                         }
                         if (_passwordController.text !=
                             _repeatPasswordController.text) {
                           return 'Пароли не совпадают';
                         }
-                        return null; // Return null if the name is valid
+                        return null;
                       },
                       controller: _repeatPasswordController,
                     ),
@@ -200,9 +190,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       onPressed: () {
                         context.go('/auth/sign-in');
                       },
-                      // Call the _submitForm function when the button is pressed
-                      child: Text(
-                          'Уже есть аккаунт, войти!'), // Text on the button
+                      child: Text('Уже есть аккаунт, войти!'),
                     ),
                   ],
                 ),

@@ -20,17 +20,15 @@ class _SignInScreenState extends State<SignInScreen> {
   String? _passwordError;
 
   final GlobalKey<FormState> _formKey =
-      GlobalKey<FormState>(); // A key for managing the form
+      GlobalKey<FormState>();
 
   void _submitForm() {
-    // Check if the form is valid
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save(); // Save the form data
       setState(() {
         _usernameError = null;
         _passwordError = null;
       });
-      // You can perform actions with the form data here and extract the details
       _bloc.add(SignInEvent(
           signInRequest: SignInRequest(
               username: _usernameController.text,
@@ -87,7 +85,7 @@ class _SignInScreenState extends State<SignInScreen> {
       child: Column(
         children: [
           Form(
-            key: _formKey, // Associate the form key with this Form widget
+            key: _formKey,
             child: Padding(
               padding: EdgeInsets.all(16.0),
               child: Column(
@@ -95,42 +93,35 @@ class _SignInScreenState extends State<SignInScreen> {
                   TextFormField(
                     decoration: InputDecoration(
                         labelText: 'Логин', errorText: _usernameError),
-                    // Label for the name field
                     validator: (value) {
-                      // Validation function for the name field
                       if (value!.isEmpty) {
-                        return 'Поле не может быть пустым'; // Return an error message if the name is empty
+                        return 'Поле не может быть пустым';
                       }
-                      return null; // Return null if the name is valid
+                      return null;
                     },
                     controller: _usernameController,
                   ),
                   TextFormField(
                     decoration: InputDecoration(
                         labelText: 'Пароль', errorText: _passwordError),
-                    // Label for the email field
                     validator: (value) {
-                      // Validation function for the email field
                       if (value!.isEmpty) {
-                        return 'Поле не может быть пустым'; // Return an error message if the email is empty
+                        return 'Поле не может быть пустым';
                       }
-                      // You can add more complex validation logic here
-                      return null; // Return null if the email is valid
+                      return null;
                     },
                     controller: _passwordController,
                   ),
                   SizedBox(height: 20.0),
                   ElevatedButton(
                     onPressed: _submitForm,
-                    // Call the _submitForm function when the button is pressed
-                    child: Text('Войти'), // Text on the button
+                    child: Text('Войти'),
                   ),
                   TextButton(
                     onPressed: () {
                       context.go('/auth/sign-up');
                     },
-                    // Call the _submitForm function when the button is pressed
-                    child: Text('Создать аккаунт'), // Text on the button
+                    child: Text('Создать аккаунт'),
                   ),
                 ],
               ),
