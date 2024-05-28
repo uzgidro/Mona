@@ -317,6 +317,7 @@ export class MessageComponent implements OnInit {
     });
     groupConnection.on("AppendMember", (group: GroupModel) => {
       // TODO()
+      this.groups.push(group)
     });
     groupConnection.on("RemoveMember", (group: GroupModel) => {
       // TODO()
