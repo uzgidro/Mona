@@ -21,26 +21,35 @@ export class AddMembersComponent {
       createGroup: (groupRequest: GroupRequest) => void,
       groupName:string
     },
-    private apiService:ApiService,
-    private dialog: MatDialog,
+
   ) {
   }
 
 
-  addUserToGroup(userId:string){
-    this.selectedUsers.push(userId)
+  addUserToGroup(userId: string) {
+    if (this.selectedUsers.includes(userId)) {
+      this.selectedUsers = this.selectedUsers.filter(user => user !== userId);
+    } else {
+      this.selectedUsers = [...this.selectedUsers, userId];
+    }
+
+    console.log(this.selectedUsers);
+  }
+
+  isUserSelected(userId: string): boolean {
+    return this.selectedUsers.some(id => id === userId);
   }
 
 
+
   createGroups(){
-    const groupRequest={
+    const groupRequest:GroupRequest={
       name:this.data.groupName,
       description:'....',
       members:this.selectedUsers
     }
 
     console.log(groupRequest);
-
     this.data.createGroup(groupRequest)
     this.cancel()
   }

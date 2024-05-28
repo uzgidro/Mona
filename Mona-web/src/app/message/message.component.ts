@@ -49,6 +49,13 @@ export class MessageComponent implements OnInit {
   }
 
   constructor(private jwtService: JwtService, private apiService: ApiService, private dialog: MatDialog) {
+
+    this.inputGroup = new FormGroup({
+      message: new FormControl(''),
+      file: new FormControl('')
+    })
+
+
   }
 
 
@@ -216,7 +223,6 @@ export class MessageComponent implements OnInit {
       width: '400px',
       data:
        {
-
         users: this.users,
         selectChat:this.selectChat.bind(this),
         },
@@ -225,7 +231,15 @@ export class MessageComponent implements OnInit {
   }
 
   createGroups(groupRequest:GroupRequest){
-    this.groupConnection.send('createGroup',groupRequest)
+    console.log(groupRequest);
+    this.groupConnection?.send('createGroup',groupRequest)
+    console.log(this.groups);
+
+  }
+
+
+  addMemberstoGroup(groupId:string,users:string[]){
+    this.groupConnection?.send('appendMembers',groupId,users)
   }
 
 
@@ -237,11 +251,10 @@ export class MessageComponent implements OnInit {
        {
         users:this.users,
         createGroup:this.createGroups.bind(this),
+        addMemberstoGroup:this.addMemberstoGroup.bind(this)
         },
 
     });
-
-
   }
 
 
@@ -317,8 +330,10 @@ export class MessageComponent implements OnInit {
       })
       .then(() => {
         if (groupConnection) {
-          groupConnection.invoke('getUserGroupList').then((groups: GroupModel[]) => this.groups = groups)
-
+          groupConnection.invoke('getUserGroupList').then((groups: GroupModel[]) => {
+            this.groups = groups
+            console.log(this.groups);
+          })
         }
       })
   }

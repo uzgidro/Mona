@@ -1,10 +1,10 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { UserModel } from '../../models/user';
 import { ApiService } from '../../services/api.service';
-import { AddContactComponent } from '../contacts/add-contact/add-contact.component';
 import { AddMembersComponent } from './add-members/add-members.component';
 import { GroupModel, GroupRequest } from '../../models/group';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-new-group',
@@ -13,21 +13,29 @@ import { GroupModel, GroupRequest } from '../../models/group';
 })
 export class NewGroupComponent {
 
-groupName:string=''
+  myGroup: FormGroup;
+
+
 
   constructor(
     public dialogRef: MatDialogRef<NewGroupComponent>,
     @Inject(MAT_DIALOG_DATA) public data:
      {
-
       users:UserModel[],
-      groups:GroupModel[],
       createGroup: (groupRequest: GroupRequest) => void,
     },
     private apiService:ApiService,
     private dialog: MatDialog,
   ) {
+
+    this.myGroup = new FormGroup({
+      groupName: new FormControl(''),
+      file: new FormControl('')
+    });
   }
+
+
+
 
 
 
@@ -41,16 +49,15 @@ groupName:string=''
   }
 
   addMembers(){
-
+    let groupName = this.myGroup.get('groupName')?.value;
     this.cancel()
     const dialogRef= this.dialog.open(AddMembersComponent, {
        width: '400px',
        data:
         {
-     
           users:this.data.users,
           createGroup:this.createGroups.bind(this),
-          groupName:this.groupName
+          groupName:groupName
          },
 
 
