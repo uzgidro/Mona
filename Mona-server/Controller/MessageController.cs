@@ -76,7 +76,7 @@ public class MessageController(
     [HttpGet("history")]
     public async Task<IActionResult> GetMessages()
     {
-        return Ok(await messageService.GetUserChatsAsync(GetUserId()));
+        return Ok(await messageService.GetChats(GetUserId()));
     }
 
     private static string GetBoundary(MediaTypeHeaderValue contentType)

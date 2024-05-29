@@ -80,4 +80,9 @@ public class ChatHub(IMessageService service, IUserService userService)
         var messages = await service.GetMessages(GetSender());
         return messages;
     }
+
+    public async Task<IEnumerable<ChatResponse>> GetChats()
+    {
+        return await service.GetChats(GetSender());
+    }
 }

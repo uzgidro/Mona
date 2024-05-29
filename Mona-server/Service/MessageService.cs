@@ -169,28 +169,29 @@ public class MessageService(ApplicationContext context) : IMessageService
         return messages;
     }
 
-    public async Task<List<ChatModel>> GetUserChatsAsync(string caller)
+    public async Task<List<ChatResponse>> GetChats(string caller)
     {
         var userChats = await context.ChatClients
-            .Where(cu => cu.ClientId == caller)
+            .Where(cu => string.Equals(cu.ClientId, caller))
             .Select(cu => new
             {
                 ChatId = cu.ChatId,
+                CompanionId = context.ChatClients
+                    .Where(m => string.Equals(m.ChatId, cu.ChatId) && !string.Equals(m.ClientId, caller))
+                    .Select(m => m.ClientId).FirstOrDefault(),
                 LastMessage = cu.Chat.Messages.OrderByDescending(m => m.CreatedAt).FirstOrDefault()
             })
             .ToListAsync();
-        // var eee = userChats.Select(c => new
-        // {
-        //     ChatId = c.ChatId,
-        //     LastMessage = new
-        //     {
-        //         Id = c.LastMessage.Id,
-        //         Text = c.LastMessage.Text,
-        //         CreatedAt = c.LastMessage.CreatedAt,
-        //         SenderId = c.LastMessage.SenderId,
-        //     }
-        // }).ToList();
-        return new List<ChatModel>();
+        return userChats.Select(m => new ChatResponse
+        {
+            ChatId = m.ChatId,
+            Message = m.LastMessage.Text,
+            MessageTime = m.LastMessage.CreatedAt,
+            ChatName = m.CompanionId != null && m.CompanionId.StartsWith("g-")
+                ? context.Groups.Where(gm => string.Equals(gm.Id, m.CompanionId)).Select(m => m.Name).FirstOrDefault()
+                : context.Users.Where(gm => string.Equals(gm.Id, m.CompanionId))
+                    .Select(m => m.FirstName + " " + m.LastName).FirstOrDefault(),
+        }).OrderBy(m => m.MessageTime).ToList();
     }
 
     public async Task<MessageModel> PinMessage(string messageId)

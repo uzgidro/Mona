@@ -1,18 +1,17 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'sign_in_response.dart';
+part of 'token_pair_dto.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-SignInResponse _$SignInResponseFromJson(Map<String, dynamic> json) =>
-    SignInResponse(
+TokenPairDto _$TokenPairDtoFromJson(Map<String, dynamic> json) => TokenPairDto(
       accessToken: json['accessToken'] as String,
       refreshToken: json['refreshToken'] as String,
     );
 
-Map<String, dynamic> _$SignInResponseToJson(SignInResponse instance) =>
+Map<String, dynamic> _$TokenPairDtoToJson(TokenPairDto instance) =>
     <String, dynamic>{
       'accessToken': instance.accessToken,
       'refreshToken': instance.refreshToken,

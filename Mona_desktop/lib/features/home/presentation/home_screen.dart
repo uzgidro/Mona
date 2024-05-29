@@ -2,10 +2,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mona_desktop/core/di/injections.dart';
-import 'package:mona_desktop/core/middleware/jwt_service.dart';
 import 'package:mona_desktop/features/auth/bloc/auth_bloc.dart';
+import 'package:mona_desktop/features/hub/bloc/hub_bloc.dart';
 import 'package:signalr_netcore/signalr_client.dart';
-import 'package:talker_flutter/talker_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -13,21 +12,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final AuthBloc bloc = getIt<AuthBloc>();
+  final authBloc = getIt<AuthBloc>();
+  final hubBloc = getIt<HubBloc>();
+  final hubConnection = getIt<HubConnection>();
 
   @override
   void initState() {
     super.initState();
-    const serverUrl = "http://127.0.0.1:5031/chat";
-    final hubConnection = HubConnectionBuilder().withUrl(serverUrl, options: HttpConnectionOptions(
-      accessTokenFactory: () async => await getIt<JwtService>().getAccessToken()
-    )).build();
-
-    hubConnection.start()?.catchError((e, st) {
-      getIt<Talker>().handle(e);
-    }).then((value) {
-      hubConnection.invoke('getUsers').then((value) => print(value));
-    });
+    hubBloc.add(StartConnection());
   }
 
   @override
@@ -39,23 +31,56 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ElevatedButton(
-                  onPressed: () async {
-                    bloc.add(SignOutEvent());
-                  },
-                  child: Text('Выход'),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      await hubConnection
+                          .invoke('getChats')
+                          .then((value) => print(value));
+                    },
+                    child: Text('Тест'),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      authBloc.add(SignOutEvent());
+                    },
+                    child: Text('Выход'),
+                  ),
                 ),
               ],
             ),
           ),
         ),
-        body: BlocListener<AuthBloc, AuthState>(
-          bloc: bloc,
-          listener: (context, state) {
-            if (state is SignOutSuccess) {
-              context.go('/');
-            }
-          },
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<HubBloc, HubState>(
+              bloc: hubBloc,
+              listener: (context, state) {
+                if (state is HubStarted) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Welcum'),
+                  ));
+                }
+              },
+            ),
+            BlocListener<AuthBloc, AuthState>(
+                bloc: authBloc,
+                listener: (context, state) {
+                  if (state is SignOutSuccess) {
+                    context.go('/');
+                  }
+                }),
+          ],
+          // bloc: authBloc,
+          // listener: (context, state) {
+          //   if (state is SignOutSuccess) {
+          //     context.go('/');
+          //   }
+          // },
           child: Row(
             children: [
               Padding(

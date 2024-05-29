@@ -15,6 +15,12 @@ class JwtService {
 
   JwtService({required this.storage});
 
+  Future<TokenPairDto> getTokenPair() async {
+    return TokenPairDto(
+        accessToken: await getAccessToken(),
+        refreshToken: await getRefreshToken());
+  }
+
   Future<String> getAccessToken() async {
     try {
       return await storage.read(key: accessToken) as String;
@@ -33,7 +39,7 @@ class JwtService {
     }
   }
 
-  Future<bool> saveTokens(SignInResponse response) async {
+  Future<bool> saveTokens(TokenPairDto response) async {
     try {
       await storage.write(key: accessToken, value: response.accessToken);
       await storage.write(key: refreshToken, value: response.refreshToken);

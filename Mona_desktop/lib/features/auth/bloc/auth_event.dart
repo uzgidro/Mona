@@ -16,3 +16,5 @@ final class SignUpEvent extends AuthEvent {
 }
 
 final class SignOutEvent extends AuthEvent {}
+
+final class RefreshTokenEvent extends AuthEvent{}

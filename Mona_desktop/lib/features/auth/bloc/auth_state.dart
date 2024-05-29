@@ -8,7 +8,7 @@ final class AuthInitial extends AuthState {}
 final class SignInSuccess extends AuthState {
   SignInSuccess({required this.response});
 
-  final SignInResponse response;
+  final TokenPairDto response;
 }
 
 final class SignInFail extends AuthState {
@@ -27,3 +27,11 @@ final class SignUpFail extends AuthState {
 }
 
 final class SignOutSuccess extends AuthState {}
+
+final class RefreshSuccess extends AuthState {}
+
+final class RefreshFail extends AuthState {
+  final AuthFail authFail;
+
+  RefreshFail({required this.authFail});
+}
