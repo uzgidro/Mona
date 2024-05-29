@@ -316,28 +316,28 @@ export class MessageComponent implements OnInit {
       // TODO()
 
       // Update the existing group in this.groups
-    const groupIndex = this.groups.findIndex(group => group.id === updatedGroup.id);
-    if (groupIndex !== -1) {
+     const groupIndex = this.groups.findIndex(group => group.id === updatedGroup.id);
+     if (groupIndex !== -1) {
       this.groups[groupIndex] = updatedGroup;
       console.log("Group updated:", updatedGroup);
-    }
-    });
+      }
+      });
     groupConnection.on("AppendMember", (newGroup: GroupModel) => {
-      // TODO()
+       // TODO()
        // Add the new group to this.groups if it doesn't already exist
-    if (!this.groups.some(group => group.id === newGroup.id)) {
-      this.groups.push(newGroup);
-      console.log("New group added:", newGroup);
-    }
+       if (!this.groups.some(group => group.id === newGroup.id)) {
+       this.groups.push(newGroup);
+       console.log("New group added:", newGroup);
+     }
     });
     groupConnection.on("RemoveMember", (groupWithRemovedMember: GroupModel) => {
       // TODO()
         // Update the group to remove the member
-    const groupIndex = this.groups.findIndex(group => group.id === groupWithRemovedMember.id);
-    if (groupIndex !== -1) {
-      this.groups[groupIndex] = groupWithRemovedMember;
-      console.log("Member removed from group:", groupWithRemovedMember);
-    }
+        const groupIndex = this.groups.findIndex(group => group.id === groupWithRemovedMember.id);
+        if (groupIndex !== -1) {
+          this.groups[groupIndex] = groupWithRemovedMember;
+          console.log("Member removed from group:", groupWithRemovedMember);
+        }
     });
     groupConnection.on("ReceiveException", (exception: any) => {
       console.log(exception)
