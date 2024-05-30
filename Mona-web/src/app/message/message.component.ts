@@ -82,6 +82,12 @@ export class MessageComponent implements OnInit {
     this.selectedChat = chat
   }
 
+  selectGroup(group:GroupModel){
+    console.log(group);
+
+
+  }
+
   sendMessage() {
     let message = this.inputGroup.get('message')?.value;
     let replyId: string | undefined = this.repliedMessage ? this.repliedMessage.id : undefined;
