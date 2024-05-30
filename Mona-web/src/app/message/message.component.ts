@@ -13,6 +13,7 @@ import { MatDrawer, MatSidenav } from '@angular/material/sidenav';
 import { MessageActionsComponent } from './message-actions/message-actions.component';
 import { ContactsComponent } from './contacts/contacts.component';
 import { NewGroupComponent } from './new-group/new-group.component';
+import { GroupActionsComponent } from './group-actions/group-actions.component';
 
 @Component({
   selector: 'app-message',
@@ -22,6 +23,7 @@ import { NewGroupComponent } from './new-group/new-group.component';
 export class MessageComponent implements OnInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   @ViewChild('drawer') drawer: MatDrawer;
+message: MessageModel;
 
   toggleSidenav() {
     this.sidenav.toggle();
@@ -92,7 +94,6 @@ export class MessageComponent implements OnInit {
 
   selectGroup(group:GroupModel){
     this.selectedGroup=group
-    console.log(this.selectedGroup);
     this.selectedChat=undefined
   }
 
@@ -224,6 +225,27 @@ export class MessageComponent implements OnInit {
 
 
   }
+  openGroupActions(){
+    const dialogRef = this.dialog.open(GroupActionsComponent, {
+      width: '400px',
+      data:
+       {
+        group:this.selectedGroup,
+        forwardedMessage: this.forwardedMessage,
+
+        // pinMessage:this.pinMessage.bind(this),
+        },
+
+    });
+    dialogRef.afterClosed().subscribe(() => {
+
+
+
+    });
+
+
+
+  }
 
 
   openDrawer(){
@@ -273,6 +295,11 @@ export class MessageComponent implements OnInit {
         },
 
     });
+  }
+
+  deleteGroup(group:GroupModel){
+    console.log(group);
+    this.groupConnection?.send('deleteGroup',group.id)
   }
 
 
