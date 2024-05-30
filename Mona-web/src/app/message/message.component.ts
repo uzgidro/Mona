@@ -29,10 +29,13 @@ export class MessageComponent implements OnInit {
 
   users: UserModel[] = []
   groups: GroupModel[] = []
-  selectedChat?: any
+  selectedChat?: UserModel
+  selectedGroup?:GroupModel
   inputGroup = new FormGroup({
     message: new FormControl(''),
-    file: new FormControl('')
+    file: new FormControl(''),
+    groupMessage: new FormControl(''),
+    groupFile:new FormControl('')
   })
 
   selectedFiles?:any[]
@@ -43,16 +46,20 @@ export class MessageComponent implements OnInit {
   repliedMessage?: MessageModel
   forwardedMessage?: MessageModel
   currentUser:UserModel
+  currentDate: Date = new Date();
 
   get income(): MessageModel[] {
     return this._income.filter(item => item.directReceiverId == this.selectedChat?.id || item.senderId == this.selectedChat?.id || item.groupReceiverId == this.selectedChat?.id)
   }
 
+
   constructor(private jwtService: JwtService, private apiService: ApiService, private dialog: MatDialog) {
 
     this.inputGroup = new FormGroup({
       message: new FormControl(''),
-      file: new FormControl('')
+      file: new FormControl(''),
+      groupMessage: new FormControl(''),
+      groupFile:new FormControl('')
     })
 
 
@@ -80,25 +87,30 @@ export class MessageComponent implements OnInit {
 
   selectChat(chat: any) {
     this.selectedChat = chat
+    this.selectedGroup=undefined
   }
 
   selectGroup(group:GroupModel){
-    console.log(group);
-
-
+    this.selectedGroup=group
+    console.log(this.selectedGroup);
+    this.selectedChat=undefined
   }
 
   sendMessage() {
     let message = this.inputGroup.get('message')?.value;
+    let gmessage = this.inputGroup.get('groupMessage')?.value;
     let replyId: string | undefined = this.repliedMessage ? this.repliedMessage.id : undefined;
     let forwardId: string | undefined = this.forwardedMessage ? this.forwardedMessage.id : undefined;
     const messageRequest: MessageRequest = {
-      text: message ? message : '',
-      receiverId: this.selectedChat?.id,
+      text: message||gmessage,
+      receiverId: this.selectedChat?.id||this.selectedGroup.id,
       createdAt: new Date(),
       replyId: replyId,
-      forwardId: forwardId
+      forwardId: forwardId,
+
     };
+    console.log(messageRequest);
+
     if (this.selectedFiles) {
       console.log(this.selectedFiles);
 

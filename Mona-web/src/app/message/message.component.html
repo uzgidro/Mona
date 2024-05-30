@@ -382,7 +382,7 @@
         <!-- RIGHT BLOCK (MESSAGING)-->
           <div class="bg-white p-4 hidden md:block col-span-4  h-full">
             <!-- MESSAGING -->
-            <ng-container *ngIf="selectedChat else selectAchat " >
+            <ng-container *ngIf="selectedChat" >
 
 
               <!-- MESSAGING COMPONENT  -->
@@ -534,16 +534,196 @@
             </ng-container>
           <!-- MESSAGING  END-->
 
+            <ng-container *ngIf="selectedGroup">
+
+              <!-- MESSAGING COMPONENT  -->
+
+              <div class="flex-1 p:2 sm:p-6 justify-between flex flex-col h-screen">
+                <!-- <div class="flex sm:items-center justify-between py-3 border-b-2 border-gray-200 bg-green-400">
+               <div class="relative flex items-center space-x-4  bg-yellow-200">
+                <div class="relative">
+               <span class="absolute text-green-500 right-0 bottom-0">
+               <svg width="20" height="20">
+               <circle cx="8" cy="8" r="8" fill="currentColor"></circle>
+              </svg>
+               </span>
+              <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="" class="w-10 sm:w-16 h-10 sm:h-16 rounded-full">
+              </div>
+              <div class="flex flex-col leading-tight">
+               <div class="text-2xl mt-1 flex items-center">
+               <span class="text-gray-700 mr-3">{{selectedGroup?.name}}</span>
+               </div>
+                <span class="text-lg text-gray-600">{{selectedGroup.users.length}} members</span>
+               </div>
+                </div>
+                </div> -->
+                       <!-- Header -->
+                       <div class="py-2 px-3 bg-grey-lighter flex flex-row justify-between items-center  border-b-2 border-gray-200">
+                        <div class="flex items-center">
+                          <div class="relative">
+                            <span class="absolute text-green-500 right-0 bottom-0">
+                            <svg width="20" height="20">
+                            <circle cx="8" cy="8" r="8" fill="currentColor"></circle>
+                           </svg>
+                            </span>
+                           <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="" class="w-10 sm:w-16 h-10 sm:h-16 rounded-full">
+                           </div>
+
+                            <div class="ml-4">
+                                <p class="text-grey-darkest">
+                                   {{selectedGroup.name}}
+                                </p>
+                                <p class="text-grey-darker text-xs mt-1 inline" >
+                                  {{selectedGroup.users.length}}  members
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#263238" fill-opacity=".5" d="M15.9 14.3H15l-.3-.3c1-1.1 1.6-2.7 1.6-4.3 0-3.7-3-6.7-6.7-6.7S3 6 3 9.7s3 6.7 6.7 6.7c1.6 0 3.2-.6 4.3-1.6l.3.3v.8l5.1 5.1 1.5-1.5-5-5.2zm-6.2 0c-2.6 0-4.6-2.1-4.6-4.6s2.1-4.6 4.6-4.6 4.6 2.1 4.6 4.6-2 4.6-4.6 4.6z"></path></svg>
+                            </div>
+                            <div class="ml-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#263238" fill-opacity=".5" d="M1.816 15.556v.002c0 1.502.584 2.912 1.646 3.972s2.472 1.647 3.974 1.647a5.58 5.58 0 0 0 3.972-1.645l9.547-9.548c.769-.768 1.147-1.767 1.058-2.817-.079-.968-.548-1.927-1.319-2.698-1.594-1.592-4.068-1.711-5.517-.262l-7.916 7.915c-.881.881-.792 2.25.214 3.261.959.958 2.423 1.053 3.263.215l5.511-5.512c.28-.28.267-.722.053-.936l-.244-.244c-.191-.191-.567-.349-.957.04l-5.506 5.506c-.18.18-.635.127-.976-.214-.098-.097-.576-.613-.213-.973l7.915-7.917c.818-.817 2.267-.699 3.23.262.5.501.802 1.1.849 1.685.051.573-.156 1.111-.589 1.543l-9.547 9.549a3.97 3.97 0 0 1-2.829 1.171 3.975 3.975 0 0 1-2.83-1.173 3.973 3.973 0 0 1-1.172-2.828c0-1.071.415-2.076 1.172-2.83l7.209-7.211c.157-.157.264-.579.028-.814L11.5 4.36a.572.572 0 0 0-.834.018l-7.205 7.207a5.577 5.577 0 0 0-1.645 3.971z"></path></svg>
+                            </div>
+                            <div class="ml-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#263238" fill-opacity=".6" d="M12 7a2 2 0 1 0-.001-4.001A2 2 0 0 0 12 7zm0 2a2 2 0 1 0-.001 3.999A2 2 0 0 0 12 9zm0 6a2 2 0 1 0-.001 3.999A2 2 0 0 0 12 15z"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+                <!-- MESSAGES -->
+            <!-- Messages -->
+            <div class="flex-1 overflow-auto" style="background-color: #ffffff">
+              <div class="py-2 px-3">
+                <div class="grid pb-11" *ngFor="let message of income">
+                  <div class="flex gap-2.5 mb-4">
+                    <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="My profile" class="w-6 h-6 rounded-full">
+                   <div class="grid">
+                    <small  *ngIf="message.repliedMessage">{{message.repliedMessage.text||message.repliedMessage.forwardedMessage.text}}</small>
+                     <h5 class="text-gray-900 text-sm font-semibold leading-snug pb-1" *ngIf="message.sender.id!==currentUser.id">{{message.sender.firstName}} {{message.sender.lastName}}</h5>
+                     <div *ngIf="!message.forwardedMessage" class="w-full max-w-xs grid " >
+                      <!-- REGULAR MESSAGE -->
+                       <div (contextmenu)="openMessageActions(message)"  (dblclick)="replyMessage(message)"    [ngClass]="{'bg-blue-700': message.sender.id===currentUser.id,'bg-gray-200': message.sender.id!==currentUser.id}"   class="px-3.5 py-2  rounded flex flex-col gap-2 w-full hover:cursor-pointer" >
+                         <h5 class="text-sm font-normal"  [ngClass]="{'text-white': message.sender.id===currentUser.id,'text-gray-900': message.sender.id!==currentUser.id}">{{message.text}}</h5>
+                         <h5 class="text-sm font-normal" *ngIf="message.forwardedMessage" [ngClass]="{'text-white': message.sender.id===currentUser.id,'text-gray-900': message.sender.id!==currentUser.id}">{{message.text}}</h5>
+                         <span *ngIf="message.files.length">
+                          <small *ngIf="message.forwardedMessage?.files" class=" text-blue-800 ml-2">from {{message.sender?.firstName?.slice(0,5)}}</small>
+                          <small class="text-sm font-normal" [ngClass]="{'text-white': message.sender.id===currentUser.id,'text-gray-900': message.sender.id!==currentUser.id}"
+                         *ngFor="let file of message?.files"
+                         (click)="downloadFile(file)"
+                         class=" cursor-pointer hover:text-red-900 hover:outline-red-900  hover:outline-2 hover:border-b-2 hover:border-b-slate-950 ">
+                        {{file.name}}
+                        </small>
+                        </span>
+                       </div>
+                       <div class="justify-end items-center inline-flex mb-2.5">
+                         <h6 class="text-gray-500 text-xs font-normal leading-4 py-1"> <small *ngIf="message.isEdited">edited</small> {{ message.createdAt | date:'HH:mm' }}</h6>
+                       </div>
+                     </div>
+                      <!-- REGULAR MESSAGE END -->
+
+                     <!-- FORWARD MESSAGE -->
+                     <div *ngIf="message.forwardedMessage"  class="w-full max-w-xs grid bg-green" >
+                      <div  (contextmenu)="openMessageActions(message)" (dblclick)="replyMessage(message)"     class="  text-gray-900 bg-gray-200 px-3.5 py-2  rounded flex flex-col gap-2 w-full hover:cursor-pointer" >
+                        <small class="text-sm font-normal" >from {{message.forwardedMessage.sender.firstName}} {{message.forwardedMessage.sender.lastName}}</small>
+                        <h5 class="text-sm font-normal"  [id]="message.forwardedMessage.id">{{message.forwardedMessage.text}}</h5>
+                        <span *ngIf="message.forwardedMessage.files.length">
+                          <small *ngFor="let file of message.forwardedMessage.files" >
+                             <span (click)="downloadFile(file)"  class=" cursor-pointer hover:text-red-900 hover:outline-red-900  hover:outline-2 hover:border-b-2 hover:border-b-slate-950 ">
+                              {{file?.name}}
+                             </span>
+                          </small>
+                        </span>
+                      </div>
+                      <div class="justify-end items-center inline-flex mb-2.5">
+                        <h6 class="text-gray-500 text-xs font-normal leading-4 py-1"> <small *ngIf="message.isEdited">edited</small> {{ message.createdAt | date:'HH:mm' }}</h6>
+                      </div>
+
+                    </div>
+                     <!-- FORWARD MESSAGE END -->
+
+                   </div>
+                  </div>
+                  </div>
+              </div>
+          </div>
+                <!-- MESSAGES END -->
+
+
+                <!--MESSAGE SENDING  -->
+                 <div class="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0 ">
+                  <small *ngIf="repliedMessage">Reply to {{repliedMessage.text||repliedMessage.forwardedMessage.text}}</small>
+                  <!-- <small *ngIf="repliedMessage.forwardedMessage">Reply to {{repliedMessage.forwardedMessage?.text}}</small> -->
+                 <form [formGroup]="inputGroup" class="relative flex">
+
+                   <span class="absolute inset-y-0 flex items-center">
+                   <button type="button" class="inline-flex items-center justify-center rounded-full h-12 w-12 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
+                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 text-gray-600">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                   </svg>
+                   </button>
+                   </span>
+                   <input  formControlName="groupMessage" type="text" [value]="this.inputGroup.value.message"   placeholder="Write your message!" class="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 bg-gray-200 rounded-md py-3">
+                    <div class="absolute right-0 items-center inset-y-0 hidden sm:flex">
+                  <label class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none cursor-pointer">
+                  <input  formControlName="groupFile"  type="file"  (change)="onFileSelected($event)" multiple class="sr-only">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 text-gray-600">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+                  </svg>
+                   </label>
+                   <button type="button" class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 text-gray-600">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                 </svg>
+                 </button>
+                  <button type="button" class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 text-gray-600">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                 </svg>
+                </button>
+                 <button
+                 *ngIf="!editingMessage"
+                  (click)="sendMessage()"
+                   class="inline-flex items-center justify-center rounded-lg px-4 py-3 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none"
+                    >
+               <span class="font-bold">Send</span>
+               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-6 w-6 ml-2 transform rotate-90">
+               <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
+               </svg>
+              </button>
+
+              <!-- EDIT BUTTON -->
+                <button *ngIf="editingMessage"
+                (click)="editMessage()"
+                class="inline-flex items-center justify-center rounded-lg px-4 py-3 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none"
+               >
+              <span class="hidden md:inline-block">Edit</span>
+               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6 ml-1">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+               </svg>
+                </button>
+              <!-- EDIT BUTTON END-->
+                </div>
+                </form>
+                </div>
+                <!--MESSAGE SENDING END  -->
+               </div>
+
+            <!-- MESSAGING COMPONENT 2 -->
+            </ng-container>
 
 
             <!-- SELECT A CHAT -->
-            <ng-template #selectAchat>
+            <ng-container *ngIf="!selectedChat && !selectedGroup">
               <div class="w-full h-screen flex items-center justify-center">
                 <div class=" fixed bg-transparent flex items-center justify-center">
                 <h1 class="bg-slate-200 text-black p-3.5 border-red-50 rounded-full">Select a chat to start messaging</h1>
                </div>
               </div>
-             </ng-template>
+            </ng-container>
           <!-- SELECT A CHAT END-->
 
           </div>
