@@ -3,8 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mona_desktop/core/di/injections.dart';
 import 'package:mona_desktop/features/auth/bloc/auth_bloc.dart';
+import 'package:mona_desktop/features/home/presentation/chat_list.dart';
+import 'package:mona_desktop/features/home/presentation/side_menu.dart';
 import 'package:mona_desktop/features/hub/bloc/hub_bloc.dart';
 import 'package:signalr_netcore/signalr_client.dart';
+
+import 'chat.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -15,6 +19,9 @@ class _HomeScreenState extends State<HomeScreen> {
   final authBloc = getIt<AuthBloc>();
   final hubBloc = getIt<HubBloc>();
   final hubConnection = getIt<HubConnection>();
+
+  double _width = 240;
+  double _minWidth = 140;
 
   @override
   void initState() {
@@ -75,41 +82,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
                 }),
           ],
-          // bloc: authBloc,
-          // listener: (context, state) {
-          //   if (state is SignOutSuccess) {
-          //     context.go('/');
-          //   }
-          // },
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Builder(builder: (context) {
-                        return SizedBox.square(
-                          child: IconButton(
-                            onPressed: () => Scaffold.of(context).openDrawer(),
-                            icon: Icon(Icons.menu),
-                          ),
-                        );
-                      }),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(Icons.forum_rounded),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(Icons.group_rounded),
-                    ),
-                  ],
-                ),
-              )
+              SideMenu(),
+              ChatList(),
+              Chat(),
             ],
           ),
         ));

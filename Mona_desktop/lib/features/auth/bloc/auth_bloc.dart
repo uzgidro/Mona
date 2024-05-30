@@ -11,7 +11,7 @@ import 'package:talker_flutter/talker_flutter.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
 
-@Injectable()
+@LazySingleton()
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(this.authRepository, this.jwtService, this.talker) : super(AuthInitial()) {
     on<SignInEvent>((event, emit) async {

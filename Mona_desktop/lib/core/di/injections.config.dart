@@ -52,12 +52,12 @@ extension GetItInjectableX on _i1.GetIt {
         () => injectableModule.hubConnection(gh<_i5.JwtService>()));
     gh.factory<_i10.AbstractAuthRepository>(
         () => _i11.AuthRepository(dio: gh<_i6.Dio>()));
-    gh.factory<_i12.AuthBloc>(() => _i12.AuthBloc(
+    gh.lazySingleton<_i12.AuthBloc>(() => _i12.AuthBloc(
           gh<_i13.AbstractAuthRepository>(),
           gh<_i8.JwtService>(),
           gh<_i3.Talker>(),
         ));
-    gh.factory<_i14.HubBloc>(() => _i14.HubBloc(
+    gh.lazySingleton<_i14.HubBloc>(() => _i14.HubBloc(
           gh<_i13.AbstractAuthRepository>(),
           gh<_i5.JwtService>(),
           gh<_i3.Talker>(),
