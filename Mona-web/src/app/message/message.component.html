@@ -417,7 +417,7 @@
                      <h5 class="text-gray-900 text-sm font-semibold leading-snug pb-1" *ngIf="message.sender.id!==currentUser.id">{{message.sender.firstName}} {{message.sender.lastName}}</h5>
                      <div *ngIf="!message.forwardedMessage" class="w-full max-w-xs grid " >
                       <!-- REGULAR MESSAGE -->
-                       <div (click)="openMessageActions(message)"     [ngClass]="{'bg-blue-700': message.sender.id===currentUser.id,'bg-gray-200': message.sender.id!==currentUser.id}"   class="px-3.5 py-2  rounded flex flex-col gap-2 w-full hover:cursor-pointer" >
+                       <div (contextmenu)="openMessageActions(message)"  (dblclick)="replyMessage(message)"    [ngClass]="{'bg-blue-700': message.sender.id===currentUser.id,'bg-gray-200': message.sender.id!==currentUser.id}"   class="px-3.5 py-2  rounded flex flex-col gap-2 w-full hover:cursor-pointer" >
                          <h5 class="text-sm font-normal"  [ngClass]="{'text-white': message.sender.id===currentUser.id,'text-gray-900': message.sender.id!==currentUser.id}">{{message.text}}</h5>
                          <h5 class="text-sm font-normal" *ngIf="message.forwardedMessage" [ngClass]="{'text-white': message.sender.id===currentUser.id,'text-gray-900': message.sender.id!==currentUser.id}">{{message.text}}</h5>
                          <span *ngIf="message.files.length">
@@ -438,7 +438,7 @@
 
                      <!-- FORWARD MESSAGE -->
                      <div *ngIf="message.forwardedMessage"  class="w-full max-w-xs grid bg-green" >
-                      <div (click)="openMessageActions(message)"     class="  text-gray-900 bg-gray-200 px-3.5 py-2  rounded flex flex-col gap-2 w-full hover:cursor-pointer" >
+                      <div  (contextmenu)="openMessageActions(message)" (dblclick)="replyMessage(message)"     class="  text-gray-900 bg-gray-200 px-3.5 py-2  rounded flex flex-col gap-2 w-full hover:cursor-pointer" >
                         <small class="text-sm font-normal" >from {{message.forwardedMessage.sender.firstName}} {{message.forwardedMessage.sender.lastName}}</small>
                         <h5 class="text-sm font-normal"  [id]="message.forwardedMessage.id">{{message.forwardedMessage.text}}</h5>
                         <span *ngIf="message.forwardedMessage.files.length">
