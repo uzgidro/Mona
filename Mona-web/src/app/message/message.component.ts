@@ -231,9 +231,8 @@ message: MessageModel;
       data:
        {
         group:this.selectedGroup,
-        forwardedMessage: this.forwardedMessage,
 
-        // pinMessage:this.pinMessage.bind(this),
+        deleteGroups:this.deleteGroup.bind(this),
         },
 
     });
@@ -300,6 +299,8 @@ message: MessageModel;
   deleteGroup(group:GroupModel){
     console.log(group);
     this.groupConnection?.send('deleteGroup',group.id)
+    this.groups=this.groups.filter(g=>g.id!==group.id)
+    this.selectedGroup=undefined
   }
 
 
