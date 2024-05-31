@@ -5,7 +5,7 @@ import 'package:mona_desktop/core/di/injections.dart';
 import 'package:mona_desktop/features/auth/bloc/auth_bloc.dart';
 import 'package:mona_desktop/features/home/presentation/chat_list.dart';
 import 'package:mona_desktop/features/home/presentation/side_menu.dart';
-import 'package:mona_desktop/features/hub/bloc/hub_bloc.dart';
+import 'package:mona_desktop/features/service/service_export.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 
 import 'chat.dart';

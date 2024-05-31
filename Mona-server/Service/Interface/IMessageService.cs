@@ -14,5 +14,6 @@ public interface IMessageService
     Task<MessageModel> DeleteMessageForEveryone(string caller, string messageId);
     Task<IEnumerable<MessageModel>> GetMessages(string caller);
     Task<List<ChatResponse>> GetChats(string caller);
+    Task<List<MessageDto>> GetChatMessages(string caller, string chatId);
     Task<MessageModel> PinMessage(string messageId);
 }

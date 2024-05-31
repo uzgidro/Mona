@@ -1,7 +1,7 @@
 ﻿import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'token_pair_dto.g.dart';
+part 'generated/token_pair_dto.g.dart';
 
 @JsonSerializable()
 class TokenPairDto extends Equatable {

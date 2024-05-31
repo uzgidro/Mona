@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'chat_dto.dart';
+part of '../chat_dto.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

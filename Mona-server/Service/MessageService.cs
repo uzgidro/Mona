@@ -194,6 +194,36 @@ public class MessageService(ApplicationContext context) : IMessageService
         }).OrderBy(m => m.MessageTime).ToList();
     }
 
+    public async Task<List<MessageDto>> GetChatMessages(string caller, string chatId)
+    {
+        try
+        {
+            await context.ChatClients.FirstAsync(m => string.Equals(m.ClientId, caller) &&
+                                                      string.Equals(m.ChatId, chatId));
+            var chatModels = await context.Chats.Where(m => string.Equals(m.Id, chatId))
+                .Include(m => m.Messages)
+                .Select(m => m.Messages)
+                .FirstAsync();
+
+            foreach (var model in chatModels)
+            {
+                await AddNavigation(model);
+            }
+
+            var messageDtos = chatModels.Select(m => m.ToDto()).ToList();
+
+
+            // .Select(m => m.Messages.Select(n => n.ToDto())).FirstAsync();
+            Console.WriteLine(messageDtos);
+            return messageDtos;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
     public async Task<MessageModel> PinMessage(string messageId)
     {
         var entity = await RetrieveMessage(messageId);

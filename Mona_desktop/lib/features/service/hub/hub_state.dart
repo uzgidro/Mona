@@ -10,3 +10,9 @@ final class HubStarted extends HubState {
 
   HubStarted({required this.chatList});
 }
+
+final class ChatLoaded extends HubState {
+  final List<MessageDto> messages;
+
+  ChatLoaded({required this.messages});
+}

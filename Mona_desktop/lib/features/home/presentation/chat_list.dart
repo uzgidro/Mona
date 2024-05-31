@@ -2,7 +2,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mona_desktop/core/di/injections.dart';
 import 'package:mona_desktop/core/dto/chat_dto.dart';
-import 'package:mona_desktop/features/hub/bloc/hub_bloc.dart';
+import 'package:mona_desktop/features/service/service_export.dart';
+import 'package:signalr_netcore/hub_connection.dart';
 
 class ChatList extends StatefulWidget {
   @override
@@ -10,15 +11,17 @@ class ChatList extends StatefulWidget {
 }
 
 class _ChatListState extends State<ChatList> {
-  final bloc = getIt<HubBloc>();
+  final hubBloc = getIt<HubBloc>();
+  final chatBloc = getIt<ChatBloc>();
   double _width = 240;
   double _minWidth = 140;
   final List<ChatDto> list = [];
+  final hubConnection = getIt<HubConnection>();
 
   @override
   Widget build(BuildContext context) {
     return BlocListener(
-      bloc: bloc,
+      bloc: hubBloc,
       listener: (context, state) {
         if (state is HubStarted) {
           print(state.chatList);
@@ -27,41 +30,56 @@ class _ChatListState extends State<ChatList> {
           });
         }
       },
-      child: Row(
-        children: [
-          SizedBox(
-            width: _width,
-            child: ListView.builder(
-              itemCount: list.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(list[index].chatName),
-                  subtitle: Text(list[index].message),
-                  onTap: () {
-                    print(list[index].chatId);
-                  },
-                );
-              },
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border(
+          right: BorderSide(width: 0.25),
+        )),
+        child: Row(
+          children: [
+            SizedBox(
+              width: _width,
+              child: ListView.builder(
+                itemCount: list.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(list[index].chatName),
+                    subtitle: Text(list[index].message),
+                    hoverColor: Colors.grey,
+                    onTap: () async {
+                      chatBloc.add(OpenChat(chatDto: list[index]));
+                      // var jsonResponse = await hubConnection.invoke(
+                      //     'getChatMessages',
+                      //     args: [list[index].chatId]) as List<dynamic>;
+                      // List<MessageDto> messages = jsonResponse
+                      //     .map((json) => MessageDto.fromJson(json))
+                      //     .toList();
+                      // print(messages);
+                      // await hubConnection.invoke('getChatMessages', args: [list[index].chatId]).then((value) => print(value));
+                    },
+                  );
+                },
+              ),
             ),
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                setState(() {
-                  _width = (_width + details.delta.dx).clamp(
-                      _minWidth, MediaQuery.of(context).size.width * 0.7);
-                });
-              },
-              child: MouseRegion(
-                cursor: SystemMouseCursors.resizeUpLeftDownRight,
-                child: SizedBox(
-                  width: 4,
+            SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: GestureDetector(
+                onPanUpdate: (details) {
+                  setState(() {
+                    _width = (_width + details.delta.dx).clamp(
+                        _minWidth, MediaQuery.of(context).size.width * 0.7);
+                  });
+                },
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.resizeUpLeftDownRight,
+                  child: SizedBox(
+                    width: 4,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
