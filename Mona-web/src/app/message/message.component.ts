@@ -14,6 +14,8 @@ import { MessageActionsComponent } from './message-actions/message-actions.compo
 import { ContactsComponent } from './contacts/contacts.component';
 import { NewGroupComponent } from './new-group/new-group.component';
 import { GroupActionsComponent } from './group-actions/group-actions.component';
+import { DeleteGroupComponent } from './delete-group/delete-group.component';
+
 
 @Component({
   selector: 'app-message',
@@ -39,6 +41,9 @@ message: MessageModel;
     groupMessage: new FormControl(''),
     groupFile:new FormControl('')
   })
+
+
+
 
   selectedFiles?:any[]
   chatConnection?: HubConnection
@@ -99,16 +104,14 @@ message: MessageModel;
 
   sendMessage() {
     let message = this.inputGroup.get('message')?.value;
-    let gmessage = this.inputGroup.get('groupMessage')?.value;
     let replyId: string | undefined = this.repliedMessage ? this.repliedMessage.id : undefined;
     let forwardId: string | undefined = this.forwardedMessage ? this.forwardedMessage.id : undefined;
     const messageRequest: MessageRequest = {
-      text: message||gmessage,
+      text: message?message:'',
       receiverId: this.selectedChat?.id||this.selectedGroup.id,
       createdAt: new Date(),
       replyId: replyId,
       forwardId: forwardId,
-
     };
     console.log(messageRequest);
 
@@ -198,6 +201,23 @@ message: MessageModel;
   pinMessage(message:MessageModel){
     this.chatConnection?.send('PinMessage',message)
   }
+
+
+  openDeleteGroup(){
+    const dialogRef = this.dialog.open(DeleteGroupComponent, {
+      width: '400px',
+      data:
+       {
+        group:this.selectedGroup,
+        deleteGroups:this.deleteGroup.bind(this),
+        leaveGroups:this.leaveGroup.bind(this),
+        },
+    });
+    dialogRef.afterClosed().subscribe(() => {
+    });
+  }
+
+
 
   openMessageActions(message:MessageModel){
     const dialogRef = this.dialog.open(MessageActionsComponent, {
@@ -303,6 +323,12 @@ message: MessageModel;
     this.selectedGroup=undefined
   }
 
+
+  leaveGroup(group:GroupModel){
+    this.groupConnection?.send('leaveGroup',group.id)
+    this.groups=this.groups.filter(g=>g.id!==group.id)
+    this.selectedGroup=undefined
+  }
 
 
 

@@ -17,6 +17,9 @@ import { GroupActionsComponent } from './group-actions/group-actions.component';
 import {MatMenuTrigger, MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import { DeleteGroupComponent } from './delete-group/delete-group.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 
 @NgModule({
@@ -30,6 +33,7 @@ import {MatIconModule} from '@angular/material/icon';
     NewGroupComponent,
     AddMembersComponent,
     GroupActionsComponent,
+    DeleteGroupComponent,
 
   ],
   imports: [
@@ -42,8 +46,9 @@ import {MatIconModule} from '@angular/material/icon';
     MatDialogContent,
     MatButtonModule,
     MatMenuModule,
-    MatIconModule
-
+    MatIconModule,
+    MatTooltipModule,
+    MatCheckboxModule,
 
   ],
 })
