@@ -48,14 +48,6 @@ class _ChatListState extends State<ChatList> {
                     hoverColor: Colors.grey,
                     onTap: () async {
                       chatBloc.add(OpenChat(chatDto: list[index]));
-                      // var jsonResponse = await hubConnection.invoke(
-                      //     'getChatMessages',
-                      //     args: [list[index].chatId]) as List<dynamic>;
-                      // List<MessageDto> messages = jsonResponse
-                      //     .map((json) => MessageDto.fromJson(json))
-                      //     .toList();
-                      // print(messages);
-                      // await hubConnection.invoke('getChatMessages', args: [list[index].chatId]).then((value) => print(value));
                     },
                   );
                 },
