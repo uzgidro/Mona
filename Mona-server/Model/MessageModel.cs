@@ -6,12 +6,8 @@ public class MessageModel
     public string? Text { get; set; }
     public string SenderId { get; set; }
     public UserModel Sender { get; set; }
-    public string? DirectReceiverId { get; set; }
-    public UserModel? DirectReceiver { get; set; }
-    public string? GroupReceiverId { get; set; }
-    public GroupModel? GroupReceiver { get; set; }
-    public string? ChatId { get; set; }
-    public ChatModel? Chat { get; set; }
+    public string ChatId { get; set; }
+    public ChatModel Chat { get; set; }
     public string? ReplyId { get; set; }
     public MessageModel? RepliedMessage { get; set; }
     public string? ForwardId { get; set; }

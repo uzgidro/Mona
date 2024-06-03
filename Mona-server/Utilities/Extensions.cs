@@ -15,14 +15,14 @@ public static class Extensions
         {
             Text = request.ForwardId.IsNullOrEmpty() ? request.Text : null,
             SenderId = senderId,
-            DirectReceiverId = request.ReceiverId != null && request.ReceiverId.StartsWith("g-")
-                ? null
-                : request.ReceiverId,
-            GroupReceiverId =
-                request.ReceiverId != null &&
-                (request.ReceiverId.StartsWith("g-") || request.ReceiverId.IsNullOrEmpty())
-                    ? request.ReceiverId
-                    : null,
+            // DirectReceiverId = request.ReceiverId != null && request.ReceiverId.StartsWith("g-")
+            //     ? null
+            //     : request.ReceiverId,
+            // GroupReceiverId =
+            //     request.ReceiverId != null &&
+            //     (request.ReceiverId.StartsWith("g-") || request.ReceiverId.IsNullOrEmpty())
+            //         ? request.ReceiverId
+            //         : null,
             ChatId = request.ChatId,
             CreatedAt = request.CreatedAt,
             ModifiedAt = request.CreatedAt,
@@ -75,7 +75,7 @@ public static class Extensions
                 }
             }
 
-            replied = new ReplyDto { RepliedMessage = replyText, ReplyTo = replyTo, Id = id};
+            replied = new ReplyDto { RepliedMessage = replyText, ReplyTo = replyTo, Id = id };
         }
         else if (model.ForwardedMessage != null)
         {

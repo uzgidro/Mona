@@ -19,18 +19,6 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
         base.OnModelCreating(builder);
 
         builder.Entity<MessageModel>()
-            .HasOne(m => m.DirectReceiver)
-            .WithMany()
-            .HasForeignKey(m => m.DirectReceiverId)
-            .IsRequired(false);
-
-        builder.Entity<MessageModel>()
-            .HasOne(m => m.GroupReceiver)
-            .WithMany()
-            .HasForeignKey(m => m.GroupReceiverId)
-            .IsRequired(false);
-
-        builder.Entity<MessageModel>()
             .HasOne(m => m.Sender)
             .WithMany(u => u.SentMessages)
             .HasForeignKey(m => m.SenderId)

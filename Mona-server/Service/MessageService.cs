@@ -14,23 +14,56 @@ public class MessageService(ApplicationContext context) : IMessageService
 {
     private static readonly JsonSerializerOptions? Options = new() { PropertyNameCaseInsensitive = true };
 
-    public async Task<MessageModel> CreateMessage(MessageModel message)
+    public async Task<MessageModel> CreateMessage(MessageRequest message, string senderId)
     {
         if (string.IsNullOrEmpty(message.Text)) return new MessageModel();
-        var entityEntry = context.Messages.Add(message);
+
+        if (string.IsNullOrEmpty(message.ChatId) && !string.IsNullOrEmpty(message.ReceiverId))
+        {
+            var commonChat = await context.Chats
+                .Where(chat => chat.ChatUsers.Any(cu => cu.ClientId == senderId) &&
+                               chat.ChatUsers.Any(cu => cu.ClientId == message.ReceiverId))
+                .FirstOrDefaultAsync();
+            if (commonChat != null)
+            {
+                message.ChatId = commonChat.Id;
+            }
+            else
+            {
+                string id;
+                // Group
+                if (message.ReceiverId.StartsWith("g-"))
+                {
+                    id = "g-" + Guid.NewGuid();
+                }
+                // Channel
+                else if (message.ReceiverId.StartsWith("c-"))
+                {
+                    id = "c-" + Guid.NewGuid();
+                }
+                // Direct
+                else
+                {
+                    id = Guid.NewGuid().ToString();
+                }
+
+                var entry = context.Chats.Add(new ChatModel { Id = id });
+                context.ChatClients.Add(new ChatClientModel { ChatId = entry.Entity.Id, ClientId = senderId });
+                context.ChatClients.Add(new ChatClientModel
+                    { ChatId = entry.Entity.Id, ClientId = message.ReceiverId });
+                message.ChatId = entry.Entity.Id;
+            }
+        }
+
+        var entity = message.ToMessageModel(senderId);
+        var entityEntry = context.Messages.Add(entity);
         await context.SaveChangesAsync();
-        await AddNavigation(entityEntry.Entity);
         return entityEntry.Entity;
     }
 
     public async Task<MessageModel> CreateMessage(MultipartReader multipartReader, string senderId)
     {
         var section = await multipartReader.ReadNextSectionAsync();
-        // var userChats = await context.ChatClients
-        //     .Where(m => string.Equals(m.ChatId, senderId))
-        //     .Include(m => m.Chat)
-        //     .Select(m => m.Chat)
-        //     .ToListAsync();
 
         while (section != null)
         {
@@ -40,7 +73,7 @@ public class MessageService(ApplicationContext context) : IMessageService
                 var messageJson = await reader.ReadToEndAsync();
                 var message = JsonSerializer.Deserialize<MessageRequest>(messageJson, Options);
 
-                if (string.IsNullOrEmpty(message.ChatId))
+                if (string.IsNullOrEmpty(message.ChatId) && !string.IsNullOrEmpty(message.ReceiverId))
                 {
                     var commonChat = await context.Chats
                         .Where(chat => chat.ChatUsers.Any(cu => cu.ClientId == senderId) &&
@@ -52,10 +85,26 @@ public class MessageService(ApplicationContext context) : IMessageService
                     }
                     else
                     {
-                        var entry = context.Chats.Add(new ChatModel());
-                        context.ChatClients.Add(new ChatClientModel()
-                            { ChatId = entry.Entity.Id, ClientId = senderId });
-                        context.ChatClients.Add(new ChatClientModel()
+                        string id;
+                        // Group
+                        if (message.ReceiverId.StartsWith("g-"))
+                        {
+                            id = "g-" + Guid.NewGuid();
+                        }
+                        // Channel
+                        else if (message.ReceiverId.StartsWith("c-"))
+                        {
+                            id = "c-" + Guid.NewGuid();
+                        }
+                        // Direct
+                        else
+                        {
+                            id = Guid.NewGuid().ToString();
+                        }
+
+                        var entry = context.Chats.Add(new ChatModel { Id = id });
+                        context.ChatClients.Add(new ChatClientModel { ChatId = entry.Entity.Id, ClientId = senderId });
+                        context.ChatClients.Add(new ChatClientModel
                             { ChatId = entry.Entity.Id, ClientId = message.ReceiverId });
                         message.ChatId = entry.Entity.Id;
                     }
@@ -106,68 +155,79 @@ public class MessageService(ApplicationContext context) : IMessageService
 
     public async Task<MessageModel> DeleteMessageForMyself(string caller, string messageId)
     {
-        var entity = await RetrieveMessage(messageId);
-
-        if (string.Equals(entity.SenderId, caller))
+        try
         {
-            entity.IsSenderDeleted = true;
-        }
-        else if (string.Equals(entity.DirectReceiverId, caller))
-        {
-            entity.IsReceiverDeleted = true;
-        }
-        // if receiver not found or receiver type is group model
-        else throw new UnauthorizedAccessException("Access denied: You cannot delete this message");
+            var entity = await RetrieveMessage(messageId);
+            // Check if user and message in same chat 
+            await context.ChatClients.FirstAsync(m =>
+                string.Equals(m.ClientId, caller) && string.Equals(m.ChatId, entity.ChatId));
 
-        entity.ModifiedAt = DateTime.Now;
-        await context.SaveChangesAsync();
-        await AddNavigation(entity);
-        return entity;
+            if (string.Equals(entity.SenderId, caller))
+            {
+                entity.IsSenderDeleted = true;
+            }
+            else if (!entity.ChatId.StartsWith("g-") && !entity.ChatId.StartsWith("c-"))
+            {
+                entity.IsReceiverDeleted = true;
+            }
+
+            entity.ModifiedAt = DateTime.Now;
+            await context.SaveChangesAsync();
+            await AddNavigation(entity);
+            return entity;
+        }
+        catch (Exception e)
+        {
+            throw new UnauthorizedAccessException("Access denied: You cannot delete this message");
+        }
     }
 
     public async Task<MessageModel> DeleteMessageForEveryone(string caller, string messageId)
     {
-        var entity = await RetrieveMessage(messageId);
-        // if in DM not sender or receiver, or in GM not sender
-        if ((string.IsNullOrEmpty(entity.DirectReceiverId) ||
-             (!string.Equals(entity.SenderId, caller) &&
-              !string.Equals(entity.DirectReceiverId, caller))) &&
-            (string.IsNullOrEmpty(entity.GroupReceiverId) ||
-             !string.Equals(entity.SenderId, caller)))
-            throw new UnauthorizedAccessException("You cannot delete this message");
+        try
+        {
+            var entity = await RetrieveMessage(messageId);
+            // Check if user and message in same chat 
+            await context.ChatClients.FirstAsync(m =>
+                string.Equals(m.ClientId, caller) && string.Equals(m.ChatId, entity.ChatId));
+            // if in DM not sender or receiver, or in GM not sender
+            if ((entity.ChatId.StartsWith("g-") || entity.ChatId.StartsWith("c-")) &&
+                !string.Equals(entity.SenderId, caller)) throw new Exception();
 
-        entity.IsReceiverDeleted = true;
-        entity.IsSenderDeleted = true;
-        entity.ModifiedAt = DateTime.Now;
-        await context.SaveChangesAsync();
-        await AddNavigation(entity);
-        return entity;
+
+            entity.IsReceiverDeleted = true;
+            entity.IsSenderDeleted = true;
+            entity.ModifiedAt = DateTime.Now;
+            await context.SaveChangesAsync();
+            await AddNavigation(entity);
+            return entity;
+        }
+        catch (Exception e)
+        {
+            throw new UnauthorizedAccessException("Access denied: You cannot delete this message");
+        }
     }
 
-    public async Task<IEnumerable<MessageModel>> GetMessages(string caller)
-    {
-        var userGroups = await context.UserGroup.AsNoTracking().Where(item => string.Equals(item.UserId, caller))
-            .Select(m => m.GroupId).ToListAsync();
-
-        var messages = await context.Messages.AsNoTracking()
-            .Include(m => m.Sender)
-            .Include(m => m.DirectReceiver)
-            .Include(m => m.GroupReceiver)
-            .Include(m => m.Files)
-            .Include(m => m.ForwardedMessage)
-            .Include(m => m.RepliedMessage)
-            .Where(item =>
-                (string.Equals(caller, item.DirectReceiverId) && !item.IsReceiverDeleted) ||
-                (string.Equals(caller, item.SenderId) && !item.IsSenderDeleted) ||
-                userGroups.Contains(item.GroupReceiverId))
-            .Where(item => item.IsSent)
-            .OrderBy(item => item.CreatedAt)
-            .ToListAsync();
-
-        foreach (var message in messages) await IncludeFiles(message);
-
-        return messages;
-    }
+    // @Deprecated
+    // public async Task<IEnumerable<MessageModel>> GetMessages(string caller)
+    // {
+    //     var userGroups = await context.UserGroup.AsNoTracking().Where(item => string.Equals(item.UserId, caller))
+    //         .Select(m => m.GroupId).ToListAsync();
+    //
+    //     var messages = await context.Messages.AsNoTracking()
+    //         .Include(m => m.Sender)
+    //         .Include(m => m.Files)
+    //         .Include(m => m.ForwardedMessage)
+    //         .Include(m => m.RepliedMessage)
+    //         .Where(item => string.Equals(caller, item.SenderId) && !item.IsSenderDeleted)
+    //         .Where(item => item.IsSent)
+    //         .OrderBy(item => item.CreatedAt)
+    //         .ToListAsync();
+    //
+    //     foreach (var message in messages) await IncludeFiles(message);
+    //
+    //     return messages;
+    // }
 
     public async Task<List<ChatResponse>> GetChats(string caller)
     {
@@ -236,8 +296,6 @@ public class MessageService(ApplicationContext context) : IMessageService
     private async Task AddNavigation(MessageModel entity)
     {
         await context.Entry(entity).Reference(m => m.Sender).LoadAsync();
-        await context.Entry(entity).Reference(m => m.DirectReceiver).LoadAsync();
-        await context.Entry(entity).Reference(m => m.GroupReceiver).LoadAsync();
         await context.Entry(entity).Reference(m => m.RepliedMessage).LoadAsync();
         await context.Entry(entity).Reference(m => m.Chat).LoadAsync();
         await context.Entry(entity).Collection(m => m.Files).LoadAsync();
