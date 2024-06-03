@@ -66,7 +66,7 @@
 
 <!-- Sidenav -->
 
-<mat-drawer-container class="example-container w-full h-full" [hasBackdrop]="true">
+<mat-drawer-container class="example-container w-full h-full absolute" [hasBackdrop]="true">
   <mat-drawer #drawer mode="over" style="overflow:hidden;">
      <div class="w-64">
     <!-- User -->
@@ -539,85 +539,65 @@
               <!-- MESSAGING COMPONENT  -->
 
               <div class="flex-1 p:2 sm:p-6 justify-between flex flex-col h-screen">
-                <!-- <div class="flex sm:items-center justify-between py-3 border-b-2 border-gray-200 bg-green-400">
-               <div class="relative flex items-center space-x-4  bg-yellow-200">
-                <div class="relative">
-               <span class="absolute text-green-500 right-0 bottom-0">
-               <svg width="20" height="20">
-               <circle cx="8" cy="8" r="8" fill="currentColor"></circle>
-              </svg>
-               </span>
-              <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="" class="w-10 sm:w-16 h-10 sm:h-16 rounded-full">
-              </div>
-              <div class="flex flex-col leading-tight">
-               <div class="text-2xl mt-1 flex items-center">
-               <span class="text-gray-700 mr-3">{{selectedGroup?.name}}</span>
-               </div>
-                <span class="text-lg text-gray-600">{{selectedGroup.users.length}} members</span>
-               </div>
-                </div>
-                </div> -->
                        <!-- Header -->
                        <div class="py-2 px-3 bg-grey-lighter flex flex-row justify-between items-center  border-b-2 border-gray-200">
                         <div class="flex items-center">
-                          <div class="relative">
+                         <div class="relative">
                             <span class="absolute text-green-500 right-0 bottom-0">
                             <svg width="20" height="20">
                             <circle cx="8" cy="8" r="8" fill="currentColor"></circle>
                            </svg>
                             </span>
                            <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="" class="w-10 sm:w-16 h-10 sm:h-16 rounded-full">
-                           </div>
-
-                            <div class="ml-4">
-                                <p class="text-grey-darkest">
-                                   {{selectedGroup.name}}
-                                </p>
-                                <p class="text-grey-darker text-xs mt-1 inline" >
-                                  {{selectedGroup.users.length}}  members
-                                </p>
-                            </div>
                         </div>
-
+                         <div class="ml-4">
+                        <p class="text-grey-darkest">
+                        {{selectedGroup.name}}
+                        </p>
+                        <p class="text-grey-darker text-xs mt-1 inline" >
+                        {{selectedGroup.users.length}}  members
+                        </p>
+                        </div>
+                        </div>
                         <div class="flex items-center">
-                            <div>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#263238" fill-opacity=".5" d="M15.9 14.3H15l-.3-.3c1-1.1 1.6-2.7 1.6-4.3 0-3.7-3-6.7-6.7-6.7S3 6 3 9.7s3 6.7 6.7 6.7c1.6 0 3.2-.6 4.3-1.6l.3.3v.8l5.1 5.1 1.5-1.5-5-5.2zm-6.2 0c-2.6 0-4.6-2.1-4.6-4.6s2.1-4.6 4.6-4.6 4.6 2.1 4.6 4.6-2 4.6-4.6 4.6z"></path></svg>
-                            </div>
-                            <div class="ml-6">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#263238" fill-opacity=".5" d="M1.816 15.556v.002c0 1.502.584 2.912 1.646 3.972s2.472 1.647 3.974 1.647a5.58 5.58 0 0 0 3.972-1.645l9.547-9.548c.769-.768 1.147-1.767 1.058-2.817-.079-.968-.548-1.927-1.319-2.698-1.594-1.592-4.068-1.711-5.517-.262l-7.916 7.915c-.881.881-.792 2.25.214 3.261.959.958 2.423 1.053 3.263.215l5.511-5.512c.28-.28.267-.722.053-.936l-.244-.244c-.191-.191-.567-.349-.957.04l-5.506 5.506c-.18.18-.635.127-.976-.214-.098-.097-.576-.613-.213-.973l7.915-7.917c.818-.817 2.267-.699 3.23.262.5.501.802 1.1.849 1.685.051.573-.156 1.111-.589 1.543l-9.547 9.549a3.97 3.97 0 0 1-2.829 1.171 3.975 3.975 0 0 1-2.83-1.173 3.973 3.973 0 0 1-1.172-2.828c0-1.071.415-2.076 1.172-2.83l7.209-7.211c.157-.157.264-.579.028-.814L11.5 4.36a.572.572 0 0 0-.834.018l-7.205 7.207a5.577 5.577 0 0 0-1.645 3.971z"></path></svg>
-                            </div>
-                            <div class="ml-6 cursor-pointer"  >
+                        <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#263238" fill-opacity=".5" d="M15.9 14.3H15l-.3-.3c1-1.1 1.6-2.7 1.6-4.3 0-3.7-3-6.7-6.7-6.7S3 6 3 9.7s3 6.7 6.7 6.7c1.6 0 3.2-.6 4.3-1.6l.3.3v.8l5.1 5.1 1.5-1.5-5-5.2zm-6.2 0c-2.6 0-4.6-2.1-4.6-4.6s2.1-4.6 4.6-4.6 4.6 2.1 4.6 4.6-2 4.6-4.6 4.6z"></path></svg>
+                        </div>
+                        <div class="ml-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#263238" fill-opacity=".5" d="M1.816 15.556v.002c0 1.502.584 2.912 1.646 3.972s2.472 1.647 3.974 1.647a5.58 5.58 0 0 0 3.972-1.645l9.547-9.548c.769-.768 1.147-1.767 1.058-2.817-.079-.968-.548-1.927-1.319-2.698-1.594-1.592-4.068-1.711-5.517-.262l-7.916 7.915c-.881.881-.792 2.25.214 3.261.959.958 2.423 1.053 3.263.215l5.511-5.512c.28-.28.267-.722.053-.936l-.244-.244c-.191-.191-.567-.349-.957.04l-5.506 5.506c-.18.18-.635.127-.976-.214-.098-.097-.576-.613-.213-.973l7.915-7.917c.818-.817 2.267-.699 3.23.262.5.501.802 1.1.849 1.685.051.573-.156 1.111-.589 1.543l-9.547 9.549a3.97 3.97 0 0 1-2.829 1.171 3.975 3.975 0 0 1-2.83-1.173 3.973 3.973 0 0 1-1.172-2.828c0-1.071.415-2.076 1.172-2.83l7.209-7.211c.157-.157.264-.579.028-.814L11.5 4.36a.572.572 0 0 0-.834.018l-7.205 7.207a5.577 5.577 0 0 0-1.645 3.971z"></path></svg>
+                        </div>
+                         <div class="ml-6 cursor-pointer"  >
                                 <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#263238" fill-opacity=".6" d="M12 7a2 2 0 1 0-.001-4.001A2 2 0 0 0 12 7zm0 2a2 2 0 1 0-.001 3.999A2 2 0 0 0 12 9zm0 6a2 2 0 1 0-.001 3.999A2 2 0 0 0 12 15z"></path></svg> -->
-                                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                         <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
                                   <mat-icon>more_vert</mat-icon>
-                                </button>
-                                <mat-menu class="w-full" #menu="matMenu">
-                                    <button  class="w-full"  mat-menu-item
-                                    >
-                                      <div class="w-full flex gap-2 items-center">
-                                        <svg class="w-6 h-6 ml-3" version="1.1" id="Uploaded to svgrepo.com" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                         viewBox="0 0 32 32" xml:space="preserve">
-                                     <path class="linesandangles_een" d="M21,15.242l2-2V27l-8.598-5.159l1.458-1.458L21,23.468V15.242z M27.707,5.707l-22,22
-                                       l-1.414-1.414L9.586,21H8V11h5l10-6v2.586l3.293-3.293L27.707,5.707z M21,9.586V8.532L13.554,13H10v6h1.586L21,9.586z"/>
-                                     </svg>
-                                          <span class="text-sm">Mute notifications</span>
-                                      </div>
-                                  </button>
-                                  <button  class="w-full"  mat-menu-item>
-                                    <div class="w-full flex gap-2 items-center">
-                                      <svg class="w-5 h-5 ml-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V11C12.75 10.5858 12.4142 10.25 12 10.25C11.5858 10.25 11.25 10.5858 11.25 11V17C11.25 17.4142 11.5858 17.75 12 17.75Z" fill="#1C274C"/>
-                                        <path d="M12 7C12.5523 7 13 7.44772 13 8C13 8.55228 12.5523 9 12 9C11.4477 9 11 8.55228 11 8C11 7.44772 11.4477 7 12 7Z" fill="#1C274C"/>
-                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12ZM12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 17.1086 6.89137 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75Z" fill="#1C274C"/>
-                                        </svg>
-                                        <span class="text-sm">View group info</span>
-                                    </div>
-                                </button>
-                                  <button  class="w-full"  mat-menu-item>
-                                    <div class="w-full flex gap-2 items-center">
-                                      <svg class="w-6 h-6 ml-3" version="1.1" id="Uploaded to svgrepo.com" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                    viewBox="0 0 32 32" xml:space="preserve">
-                                   <path class="feather_een" d="M7,8.05V5.5C7,5.224,6.776,5,6.5,5S6,5.224,6,5.5v2.55C4.306,8.295,3,9.738,3,11.5s1.306,3.205,3,3.45
+                         </button>
+                         <mat-menu class="w-full" #menu="matMenu">
+                         <button  class="w-full"  mat-menu-item
+                          >
+                        <div class="w-full flex gap-2 items-center">
+                         <svg class="w-6 h-6 ml-3" version="1.1" id="Uploaded to svgrepo.com" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                       viewBox="0 0 32 32" xml:space="preserve">
+                      <path class="linesandangles_een" d="M21,15.242l2-2V27l-8.598-5.159l1.458-1.458L21,23.468V15.242z M27.707,5.707l-22,22
+                       l-1.414-1.414L9.586,21H8V11h5l10-6v2.586l3.293-3.293L27.707,5.707z M21,9.586V8.532L13.554,13H10v6h1.586L21,9.586z"/>
+                      </svg>
+                      <span class="text-sm">Mute notifications</span>
+                      </div>
+                      </button>
+                       <button  class="w-full"  mat-menu-item>
+                      <div class="w-full flex gap-2 items-center">
+                      <svg class="w-5 h-5 ml-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V11C12.75 10.5858 12.4142 10.25 12 10.25C11.5858 10.25 11.25 10.5858 11.25 11V17C11.25 17.4142 11.5858 17.75 12 17.75Z" fill="#1C274C"/>
+                      <path d="M12 7C12.5523 7 13 7.44772 13 8C13 8.55228 12.5523 9 12 9C11.4477 9 11 8.55228 11 8C11 7.44772 11.4477 7 12 7Z" fill="#1C274C"/>
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12ZM12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 17.1086 6.89137 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75Z" fill="#1C274C"/>
+                      </svg>
+                     <span class="text-sm">View group info</span>
+                     </div>
+                     </button>
+                     <button  class="w-full"  mat-menu-item>
+                     <div class="w-full flex gap-2 items-center">
+                    <svg class="w-6 h-6 ml-3" version="1.1" id="Uploaded to svgrepo.com" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                     viewBox="0 0 32 32" xml:space="preserve">
+                                    <path class="feather_een" d="M7,8.05V5.5C7,5.224,6.776,5,6.5,5S6,5.224,6,5.5v2.55C4.306,8.295,3,9.738,3,11.5s1.306,3.205,3,3.45
                                      V26.5C6,26.776,6.224,27,6.5,27S7,26.776,7,26.5V14.95c1.694-0.245,3-1.688,3-3.45S8.694,8.295,7,8.05z M6.5,14
                                      C5.122,14,4,12.878,4,11.5C4,10.121,5.122,9,6.5,9S9,10.121,9,11.5C9,12.878,7.878,14,6.5,14z M16,17.05V5.5
                                      C16,5.224,15.776,5,15.5,5S15,5.224,15,5.5v11.55c-1.694,0.245-3,1.688-3,3.45s1.306,3.205,3,3.45v2.55c0,0.276,0.224,0.5,0.5,0.5
@@ -626,21 +606,21 @@
                                      C25,5.224,24.776,5,24.5,5S24,5.224,24,5.5v5.55c-1.694,0.245-3,1.688-3,3.45s1.306,3.205,3,3.45v8.55c0,0.276,0.224,0.5,0.5,0.5
                                      s0.5-0.224,0.5-0.5v-8.55C26.694,17.705,28,16.262,28,14.5z M24.5,17c-1.378,0-2.5-1.122-2.5-2.5c0-1.379,1.122-2.5,2.5-2.5
                                      s2.5,1.121,2.5,2.5C27,15.878,25.878,17,24.5,17z"/>
-                                   </svg>
-                                        <span class="text-sm">Manage Group</span>
-                                    </div>
-                                </button>
-                                <button  class="w-full"  mat-menu-item>
-                                  <div class="w-full flex gap-2 items-center">
-                                    <svg class="w-6 h-6 ml-3"  viewBox="0 0 24 24"
+                    </svg>
+                    <span class="text-sm">Manage Group</span>
+                    </div>
+                    </button>
+                   <button  class="w-full"  mat-menu-item>
+                    <div class="w-full flex gap-2 items-center">
+                     <svg class="w-6 h-6 ml-3"  viewBox="0 0 24 24"
                                        xmlns="http://www.w3.org/2000/svg">
-                                      <path d="M7 11h7v2H7zm0-4h10.97v2H7zm0 8h13v2H7zM4 4h2v16H4z"/></svg>
-                                      <span class="text-sm">Create Pol</span>
-                                  </div>
-                              </button>
-                              <button  class="w-full"  mat-menu-item>
-                                <div class="w-full flex gap-2 items-center">
-                                  <svg fill="#000000" class="w-6 h-6 ml-3" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                     <path d="M7 11h7v2H7zm0-4h10.97v2H7zm0 8h13v2H7zM4 4h2v16H4z"/></svg>
+                    <span class="text-sm">Create Pol</span>
+                    </div>
+                    </button>
+                    <button  class="w-full"  mat-menu-item>
+                    <div class="w-full flex gap-2 items-center">
+                     <svg fill="#000000" class="w-6 h-6 ml-3" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                    xmlns:xlink="http://www.w3.org/1999/xlink"
                                  viewBox="0 0 576.61 576.609"
                                   xml:space="preserve">
@@ -655,13 +635,11 @@
                                      l156.385,19.125l42.83-63.753l-18.895,66.68l41.205,5.039c0,0,48.5-95.797,55.596-159.407l-62.338-12.125L301.721,400.258z"/>
                                  </g>
                                </g>
-                               </svg>
-                                    <span class="text-sm">Clear History</span>
-                                </div>
-                            </button>
-
-
-                            <button  class="w-full"  (click)="openDeleteGroup()"  mat-menu-item>
+                    </svg>
+                     <span class="text-sm">Clear History</span>
+                    </div>
+                    </button>
+                    <button  class="w-full"  (click)="openDeleteGroup()"  mat-menu-item>
                               <div class="w-full flex gap-2 items-center">
                                 <svg class="w-6 h-6 ml-3 text-red-600" viewBox="0 0 24 24" fill="#ffff" xmlns="http://www.w3.org/2000/svg">
                                   <path d="M4 7H20" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -670,12 +648,10 @@
                                   </svg>
                                   <span class="text-sm text-red-600">Delete and Leave</span>
                               </div>
-                          </button>
-
-                                </mat-menu>
-
-                            </div>
-                        </div>
+                    </button>
+                    </mat-menu>
+                    </div>
+                    </div>
                     </div>
                 <!-- MESSAGES -->
             <!-- Messages -->
@@ -689,53 +665,48 @@
                      <h5 class="text-gray-900 text-sm font-semibold leading-snug pb-1" *ngIf="message.sender.id!==currentUser.id">{{message.sender.firstName}} {{message.sender.lastName}}</h5>
                      <div *ngIf="!message.forwardedMessage" class="w-full max-w-xs grid " >
                       <!-- REGULAR MESSAGE -->
-                       <div (contextmenu)="openMessageActions(message)"  (dblclick)="replyMessage(message)"    [ngClass]="{'bg-blue-700': message.sender.id===currentUser.id,'bg-gray-200': message.sender.id!==currentUser.id}"   class="px-3.5 py-2  rounded flex flex-col gap-2 w-full hover:cursor-pointer" >
-                         <h5 class="text-sm font-normal"  [ngClass]="{'text-white': message.sender.id===currentUser.id,'text-gray-900': message.sender.id!==currentUser.id}">{{message.text}}</h5>
-                         <h5 class="text-sm font-normal" *ngIf="message.forwardedMessage" [ngClass]="{'text-white': message.sender.id===currentUser.id,'text-gray-900': message.sender.id!==currentUser.id}">{{message.text}}</h5>
-                         <span *ngIf="message.files.length">
-                          <small *ngIf="message.forwardedMessage?.files" class=" text-blue-800 ml-2">from {{message.sender?.firstName?.slice(0,5)}}</small>
-                          <small class="text-sm font-normal" [ngClass]="{'text-white': message.sender.id===currentUser.id,'text-gray-900': message.sender.id!==currentUser.id}"
-                         *ngFor="let file of message?.files"
-                         (click)="downloadFile(file)"
-                         class=" cursor-pointer hover:text-red-900 hover:outline-red-900  hover:outline-2 hover:border-b-2 hover:border-b-slate-950 ">
-                        {{file.name}}
-                        </small>
-                        </span>
-                       </div>
-                       <div class="justify-end items-center inline-flex mb-2.5">
-                         <h6 class="text-gray-500 text-xs font-normal leading-4 py-1"> <small *ngIf="message.isEdited">edited</small> {{ message.createdAt | date:'HH:mm' }}</h6>
-                       </div>
-                     </div>
-                      <!-- REGULAR MESSAGE END -->
-
-                     <!-- FORWARD MESSAGE -->
-                     <div *ngIf="message.forwardedMessage"  class="w-full max-w-xs grid bg-green" >
-                      <div  (contextmenu)="openMessageActions(message)" (dblclick)="replyMessage(message)"     class="  text-gray-900 bg-gray-200 px-3.5 py-2  rounded flex flex-col gap-2 w-full hover:cursor-pointer" >
-                        <small class="text-sm font-normal" >from {{message.forwardedMessage.sender.firstName}} {{message.forwardedMessage.sender.lastName}}</small>
-                        <h5 class="text-sm font-normal"  [id]="message.forwardedMessage.id">{{message.forwardedMessage.text}}</h5>
-                        <span *ngIf="message.forwardedMessage.files.length">
-                          <small *ngFor="let file of message.forwardedMessage.files" >
-                             <span (click)="downloadFile(file)"  class=" cursor-pointer hover:text-red-900 hover:outline-red-900  hover:outline-2 hover:border-b-2 hover:border-b-slate-950 ">
-                              {{file?.name}}
-                             </span>
-                          </small>
-                        </span>
-                      </div>
-                      <div class="justify-end items-center inline-flex mb-2.5">
-                        <h6 class="text-gray-500 text-xs font-normal leading-4 py-1"> <small *ngIf="message.isEdited">edited</small> {{ message.createdAt | date:'HH:mm' }}</h6>
-                      </div>
-
+                  <div (contextmenu)="openMessageActions(message)"  (dblclick)="replyMessage(message)"    [ngClass]="{'bg-blue-700': message.sender.id===currentUser.id,'bg-gray-200': message.sender.id!==currentUser.id}"   class="px-3.5 py-2  rounded flex flex-col gap-2 w-full hover:cursor-pointer" >
+                    <h5 class="text-sm font-normal"  [ngClass]="{'text-white': message.sender.id===currentUser.id,'text-gray-900': message.sender.id!==currentUser.id}">{{message.text}}</h5>
+                    <h5 class="text-sm font-normal" *ngIf="message.forwardedMessage" [ngClass]="{'text-white': message.sender.id===currentUser.id,'text-gray-900': message.sender.id!==currentUser.id}">{{message.text}}</h5>
+                    <span *ngIf="message.files.length">
+                    <small *ngIf="message.forwardedMessage?.files" class=" text-blue-800 ml-2">from {{message.sender?.firstName?.slice(0,5)}}</small>
+                     <small class="text-sm font-normal" [ngClass]="{'text-white': message.sender.id===currentUser.id,'text-gray-900': message.sender.id!==currentUser.id}"
+                     *ngFor="let file of message?.files"
+                     (click)="downloadFile(file)"
+                     class=" cursor-pointer hover:text-red-900 hover:outline-red-900  hover:outline-2 hover:border-b-2 hover:border-b-slate-950 ">
+                     {{file.name}}
+                    </small>
+                    </span>
                     </div>
-                     <!-- FORWARD MESSAGE END -->
-
+                    <div class="justify-end items-center inline-flex mb-2.5">
+                     <h6 class="text-gray-500 text-xs font-normal leading-4 py-1"> <small *ngIf="message.isEdited">edited</small> {{ message.createdAt | date:'HH:mm' }}</h6>
+                    </div>
+                    </div>
+                   <!-- REGULAR MESSAGE END -->
+                  <!-- FORWARD MESSAGE -->
+                  <div *ngIf="message.forwardedMessage"  class="w-full max-w-xs grid bg-green" >
+                  <div  (contextmenu)="openMessageActions(message)" (dblclick)="replyMessage(message)"     class="  text-gray-900 bg-gray-200 px-3.5 py-2  rounded flex flex-col gap-2 w-full hover:cursor-pointer" >
+                  <small class="text-sm font-normal" >from {{message.forwardedMessage.sender.firstName}} {{message.forwardedMessage.sender.lastName}}</small>
+                  <h5 class="text-sm font-normal"  [id]="message.forwardedMessage.id">{{message.forwardedMessage.text}}</h5>
+                  <span *ngIf="message.forwardedMessage.files.length">
+                  <small *ngFor="let file of message.forwardedMessage.files" >
+                  <span (click)="downloadFile(file)"  class=" cursor-pointer hover:text-red-900 hover:outline-red-900  hover:outline-2 hover:border-b-2 hover:border-b-slate-950 ">
+                  {{file?.name}}
+                  </span>
+                  </small>
+                  </span>
+                  </div>
+                   <div class="justify-end items-center inline-flex mb-2.5">
+                  <h6 class="text-gray-500 text-xs font-normal leading-4 py-1"> <small *ngIf="message.isEdited">edited</small> {{ message.createdAt | date:'HH:mm' }}</h6>
+                  </div>
+                  </div>
+                  <!-- FORWARD MESSAGE END -->
                    </div>
                   </div>
                   </div>
-              </div>
-                   </div>
+                  </div>
+                  </div>
                 <!-- MESSAGES END -->
-
-
                 <!--MESSAGE SENDING  -->
                  <div class="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0 ">
                   <small *ngIf="repliedMessage">Reply to {{repliedMessage.text||repliedMessage.forwardedMessage.text}}</small>
@@ -778,7 +749,6 @@
                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
                </svg>
               </button>
-
               <!-- EDIT BUTTON -->
                 <button *ngIf="editingMessage"
                 (click)="editMessage()"
@@ -794,10 +764,9 @@
               <!-- EDIT BUTTON END-->
                 </div>
                 </form>
-                </div>
+                 </div>
                 <!--MESSAGE SENDING END  -->
                </div>
-
             <!-- MESSAGING COMPONENT 2 -->
             </ng-container>
 
@@ -811,12 +780,9 @@
               </div>
             </ng-container>
           <!-- SELECT A CHAT END-->
-
           </div>
           <!-- RIGHT BLOCK END -->
     </div>
-
-
  <!-- Main content end -->
 
     </div>
