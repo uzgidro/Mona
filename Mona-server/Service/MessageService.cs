@@ -16,49 +16,7 @@ public class MessageService(ApplicationContext context) : IMessageService
 
     public async Task<MessageModel> CreateMessage(MessageRequest message, string senderId)
     {
-        if (string.IsNullOrEmpty(message.Text)) return new MessageModel();
-
-        if (string.IsNullOrEmpty(message.ChatId) && !string.IsNullOrEmpty(message.ReceiverId))
-        {
-            var commonChat = await context.Chats
-                .Where(chat => chat.ChatUsers.Any(cu => cu.ClientId == senderId) &&
-                               chat.ChatUsers.Any(cu => cu.ClientId == message.ReceiverId))
-                .FirstOrDefaultAsync();
-            if (commonChat != null)
-            {
-                message.ChatId = commonChat.Id;
-            }
-            else
-            {
-                string id;
-                // Group
-                if (message.ReceiverId.StartsWith("g-"))
-                {
-                    id = "g-" + Guid.NewGuid();
-                }
-                // Channel
-                else if (message.ReceiverId.StartsWith("c-"))
-                {
-                    id = "c-" + Guid.NewGuid();
-                }
-                // Direct
-                else
-                {
-                    id = Guid.NewGuid().ToString();
-                }
-
-                var entry = context.Chats.Add(new ChatModel { Id = id });
-                context.ChatClients.Add(new ChatClientModel { ChatId = entry.Entity.Id, ClientId = senderId });
-                context.ChatClients.Add(new ChatClientModel
-                    { ChatId = entry.Entity.Id, ClientId = message.ReceiverId });
-                message.ChatId = entry.Entity.Id;
-            }
-        }
-
-        var entity = message.ToMessageModel(senderId);
-        var entityEntry = context.Messages.Add(entity);
-        await context.SaveChangesAsync();
-        return entityEntry.Entity;
+        return await SaveMessage(message, senderId);
     }
 
     public async Task<MessageModel> CreateMessage(MultipartReader multipartReader, string senderId)
@@ -73,47 +31,7 @@ public class MessageService(ApplicationContext context) : IMessageService
                 var messageJson = await reader.ReadToEndAsync();
                 var message = JsonSerializer.Deserialize<MessageRequest>(messageJson, Options);
 
-                if (string.IsNullOrEmpty(message.ChatId) && !string.IsNullOrEmpty(message.ReceiverId))
-                {
-                    var commonChat = await context.Chats
-                        .Where(chat => chat.ChatUsers.Any(cu => cu.ClientId == senderId) &&
-                                       chat.ChatUsers.Any(cu => cu.ClientId == message.ReceiverId))
-                        .FirstOrDefaultAsync();
-                    if (commonChat != null)
-                    {
-                        message.ChatId = commonChat.Id;
-                    }
-                    else
-                    {
-                        string id;
-                        // Group
-                        if (message.ReceiverId.StartsWith("g-"))
-                        {
-                            id = "g-" + Guid.NewGuid();
-                        }
-                        // Channel
-                        else if (message.ReceiverId.StartsWith("c-"))
-                        {
-                            id = "c-" + Guid.NewGuid();
-                        }
-                        // Direct
-                        else
-                        {
-                            id = Guid.NewGuid().ToString();
-                        }
-
-                        var entry = context.Chats.Add(new ChatModel { Id = id });
-                        context.ChatClients.Add(new ChatClientModel { ChatId = entry.Entity.Id, ClientId = senderId });
-                        context.ChatClients.Add(new ChatClientModel
-                            { ChatId = entry.Entity.Id, ClientId = message.ReceiverId });
-                        message.ChatId = entry.Entity.Id;
-                    }
-                }
-
-                var entity = message.ToMessageModel(senderId);
-                var entityEntry = context.Messages.Add(entity);
-                await context.SaveChangesAsync();
-                return entityEntry.Entity;
+                return await SaveMessage(message, senderId, false);
             }
 
             section = await multipartReader.ReadNextSectionAsync();
@@ -298,6 +216,7 @@ public class MessageService(ApplicationContext context) : IMessageService
         await context.Entry(entity).Reference(m => m.Sender).LoadAsync();
         await context.Entry(entity).Reference(m => m.RepliedMessage).LoadAsync();
         await context.Entry(entity).Reference(m => m.Chat).LoadAsync();
+        await context.Entry(entity).Collection(m => m.Chat.ChatUsers).LoadAsync();
         await context.Entry(entity).Collection(m => m.Files).LoadAsync();
         await context.Entry(entity).Reference(m => m.ForwardedMessage).LoadAsync();
         await IncludeFiles(entity);
@@ -315,5 +234,76 @@ public class MessageService(ApplicationContext context) : IMessageService
 
         if (message?.RepliedMessage != null)
             await AddNavigation(message.RepliedMessage);
+    }
+
+    private async Task<MessageModel> SaveMessage(MessageRequest message, string senderId, bool isHub = true)
+    {
+        if (isHub && string.IsNullOrWhiteSpace(message.Text) && string.IsNullOrWhiteSpace(message.ForwardId))
+        {
+            return new MessageModel();
+        }
+
+        message = await ProvideChatId(senderId, message);
+
+        // Parse nested forward and get the origin forwarded message
+        // If you forward forwarded message => origin message will be forwarded
+        if (!string.IsNullOrEmpty(message.ForwardId))
+        {
+            var forward = message.ForwardId;
+            do
+            {
+                var nestedForward = await context.Messages.FirstAsync(m => string.Equals(m.Id, forward));
+                if (string.IsNullOrEmpty(nestedForward.ForwardId)) break;
+                forward = nestedForward.ForwardId;
+            } while (true);
+
+            message.ForwardId = forward;
+        }
+
+
+        var entity = message.ToMessageModel(senderId);
+        var entityEntry = context.Messages.Add(entity);
+        await context.SaveChangesAsync();
+        return entityEntry.Entity;
+    }
+
+    private async Task<MessageRequest> ProvideChatId(string senderId, MessageRequest message)
+    {
+        if (!string.IsNullOrWhiteSpace(message.ChatId) || string.IsNullOrWhiteSpace(message.ReceiverId)) return message;
+        var commonChat = await context.Chats
+            .Where(chat => chat.ChatUsers.Any(cu => cu.ClientId == senderId) &&
+                           chat.ChatUsers.Any(cu => cu.ClientId == message.ReceiverId))
+            .FirstOrDefaultAsync();
+        if (commonChat != null)
+        {
+            message.ChatId = commonChat.Id;
+            return message;
+        }
+        else
+        {
+            string id;
+            // Group
+            if (message.ReceiverId.StartsWith("g-"))
+            {
+                id = "g-" + Guid.NewGuid();
+            }
+            // Channel
+            else if (message.ReceiverId.StartsWith("c-"))
+            {
+                id = "c-" + Guid.NewGuid();
+            }
+            // Direct
+            else
+            {
+                id = Guid.NewGuid().ToString();
+            }
+
+            var entry = context.Chats.Add(new ChatModel { Id = id });
+            context.ChatClients.Add(new ChatClientModel { ChatId = entry.Entity.Id, ClientId = senderId });
+            context.ChatClients.Add(new ChatClientModel
+                { ChatId = entry.Entity.Id, ClientId = message.ReceiverId });
+            message.ChatId = entry.Entity.Id;
+            return message;
+        }
     }
 }
