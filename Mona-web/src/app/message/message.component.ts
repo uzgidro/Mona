@@ -15,6 +15,7 @@ import { ContactsComponent } from './contacts/contacts.component';
 import { NewGroupComponent } from './new-group/new-group.component';
 import { GroupActionsComponent } from './group-actions/group-actions.component';
 import { DeleteGroupComponent } from './delete-group/delete-group.component';
+import { ViewGroupInfoComponent } from './view-group-info/view-group-info.component';
 
 
 @Component({
@@ -92,7 +93,7 @@ message: MessageModel;
 
   }
 
-  selectChat(chat: any) {
+  selectChat(chat: UserModel) {
     this.selectedChat = chat
     this.selectedGroup=undefined
   }
@@ -314,6 +315,21 @@ message: MessageModel;
         },
 
     });
+  }
+  viewGroupInfo(){
+    const dialogRef = this.dialog.open(ViewGroupInfoComponent, {
+      width: '400px',
+      data:
+       {
+        group:this.selectedGroup,
+        deleteGroups:this.deleteGroup.bind(this),
+        leaveGroups:this.leaveGroup.bind(this),
+        selectChat:this.selectChat.bind(this)
+        },
+    });
+    dialogRef.afterClosed().subscribe(() => {
+    });
+
   }
 
   deleteGroup(group:GroupModel){

@@ -20,6 +20,8 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { DeleteGroupComponent } from './delete-group/delete-group.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { ViewGroupInfoComponent } from './view-group-info/view-group-info.component';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 
 @NgModule({
@@ -34,6 +36,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     AddMembersComponent,
     GroupActionsComponent,
     DeleteGroupComponent,
+    ViewGroupInfoComponent,
 
   ],
   imports: [
@@ -49,6 +52,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     MatIconModule,
     MatTooltipModule,
     MatCheckboxModule,
+    MatSlideToggleModule
 
   ],
 })
