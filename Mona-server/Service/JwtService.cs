@@ -27,7 +27,7 @@ public class JwtService(IConfiguration configuration) : IJwtService
             issuer: "Server",
             audience: "Client",
             claims: accessClaims.Claims,
-            expires: DateTime.UtcNow.AddDays(1),
+            expires: DateTime.MaxValue,
             signingCredentials: credentials
         );
 
@@ -42,7 +42,7 @@ public class JwtService(IConfiguration configuration) : IJwtService
             issuer: "Server",
             audience: "Client",
             claims: refreshClaims.Claims,
-            expires: DateTime.UtcNow.AddMonths(1),
+            expires: DateTime.MaxValue,
             signingCredentials: credentials
         );
 

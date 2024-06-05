@@ -2,7 +2,6 @@
 using Mona.Model;
 using Mona.Model.Dto;
 using Mona.Service.Interface;
-using Mona.Utilities;
 
 namespace Mona.Hub;
 
@@ -14,7 +13,7 @@ public class ChatHub(IMessageService service, IUserService userService)
     {
         try
         {
-            var messageItem = await service.CreateMessage(message.ToMessageModel(GetSender()));
+            var messageItem = await service.CreateMessage(message, GetSender());
             var activeMessage = await service.ActiveMessage(messageItem.Id);
             await SetRoute(activeMessage).ReceiveMessage(activeMessage);
         }
@@ -75,9 +74,19 @@ public class ChatHub(IMessageService service, IUserService userService)
         return userManagerUsers;
     }
 
-    public async Task<IEnumerable<MessageModel>> GetHistory()
+    // public async Task<IEnumerable<MessageModel>> GetHistory()
+    // {
+    //     var messages = await service.GetMessages(GetSender());
+    //     return messages;
+    // }
+
+    public async Task<IEnumerable<ChatResponse>> GetChats()
     {
-        var messages = await service.GetMessages(GetSender());
-        return messages;
+        return await service.GetChats(GetSender());
+    }
+
+    public async Task<IEnumerable<MessageDto>> GetChatMessages(string chatId)
+    {
+        return await service.GetChatMessages(GetSender(), chatId);
     }
 }

@@ -1,6 +1,6 @@
-        <p *ngIf="message?.repliedMessage">Replied to <span [ngClass]="{'text-red-500':message?.directReceiverId===selectedChat?.id}">{{message?.repliedMessage?.text ||message?.repliedMessage?.forwardedMessage?.text}}</span>👇</p>
+        <!-- <p *ngIf="message?.repliedMessage">Replied to <span [ngClass]="{'text-red-500':message?.directReceiverId===selectedChat?.id}">{{message?.repliedMessage?.text ||message?.repliedMessage?.forwardedMessage?.text}}</span>👇</p>
 
-        <!-- MY MESSAGES -->
+
          <span
           [ngClass]="{'bg-blue-700 text-white':message?.directReceiverId===selectedChat?.id}"
            class="w-full bg-green-500 text-white">
@@ -17,24 +17,51 @@
              </span>
             from {{message.forwardedMessage.sender.firstName}}
           </span>
-      </span>
-      <!-- FILES -->
+        </span>
+
           <span *ngIf="message?.files?.length">
             <small *ngIf="message.forwardedMessage?.files" class=" text-blue-800 ml-2">from {{message.sender?.firstName?.slice(0,5)}}</small>
             <small *ngFor="let file of message?.files"  (click)="downloadFileEventEmitter(file)"    class=" cursor-pointer hover:text-red-900 hover:outline-red-900  hover:outline-2 hover:border-b-2 hover:border-b-slate-950 ">{{file.name}}</small>
           </span>
-          <!-- EDITED -->
-          <small *ngIf="message?.isEdited">edited</small>
-          <!-- DATE -->
-          <small>{{message?.createdAt |date:'HH:mm'}}</small>
-          <!-- EDIT -->
-          <button *ngIf="selectedChat?.id!==message?.senderId&&!message.forwardedMessage" (click)="editMessageEventEmitter()">📝</button>
-          <!-- DELETE FOR MYSELF -->
-          <button class="hover:scale-110 active:scale-95" (click)="deleteMessageForMyselfEventEmitter()">🚫</button>
-          <!-- DELETE FOR EVERYONE -->
-          <button class="hover:scale-110 active:scale-95" (click)="deleteMessageForEveryoneEventEmitter()">❎</button>
-          <!-- RELPY MESSAGE -->
-          <button (click)="replyMessageEventEmitter()">↩️</button>
-          <!-- FORWARD MESSAGE -->
-          <button (click)="forwardMessageEventEmitter()">🔃</button>
 
+          <small *ngIf="message?.isEdited">edited</small>
+
+          <small>{{message?.createdAt |date:'HH:mm'}}</small>
+
+          <button *ngIf="selectedChat?.id!==message?.senderId&&!message.forwardedMessage" (click)="editMessageEventEmitter()">📝</button>
+
+          <button class="hover:scale-110 active:scale-95" (click)="deleteMessageForMyselfEventEmitter()">🚫</button>
+
+          <button class="hover:scale-110 active:scale-95" (click)="deleteMessageForEveryoneEventEmitter()">❎</button>
+
+          <button (click)="replyMessageEventEmitter()">↩️</button>
+
+          <button (click)="forwardMessageEventEmitter()">🔃</button> -->
+         <!-- Messages -->
+           <div class="flex flex-col h-full overflow-y-auto">
+              <div class="grid grid-cols-12 gap-y-2  mt-1 "  *ngFor="let message of income">
+               <div class="col-start-1 col-end-8 p-3 rounded-lg" >
+                  <div class="flex flex-row items-center" >
+                  <div
+                    class="flex items-center justify-center h-10 w-10 rounded-full  flex-shrink-0"
+                    [ngClass]="{'bg-indigo-500 text-white':selectedChat?.id!==message?.senderId, 'bg-orange-300 ':selectedChat?.id==message?.senderId}"
+                  >
+                    {{message.sender.firstName.slice(0,1)}}
+                   </div>
+                    <div
+                    class="relative ml-3 text-sm  py-2 px-4 shadow rounded-xl "
+                    (click)="openModal(message)"
+                   [ngClass]="{' bg-indigo-500 text-white': selectedChat?.id!==message?.senderId, 'bg-white text-black':selectedChat?.id==message?.senderId}"
+                   >
+                   <div>{{message.text}}</div>
+                   <div *ngIf="message.forwardedMessage">{{message.forwardedMessage.text}}</div>
+                    </div>
+                  </div>
+              </div>
+              </div>
+           </div>
+          <!-- Send Message -->
+           <app-send-message
+            [selectedChat]="selectedChat"
+            >
+          </app-send-message>

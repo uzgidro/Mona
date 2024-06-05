@@ -33,37 +33,43 @@ public class MessageController(
 
             var messageModel = await messageService.CreateMessage(multipartReader, userId);
 
+            // Cannot append files to forward
             if (string.IsNullOrEmpty(messageModel.ForwardId))
                 await fileService.UploadFileAsync(multipartReader, messageModel);
 
             var activeMessage = await messageService.ActiveMessage(messageModel.Id);
-            if (!string.IsNullOrEmpty(activeMessage.DirectReceiverId))
+            await hubContext.Clients.Groups(activeMessage.ChatId)
+                .ReceiveMessage(activeMessage);
+
+            if (activeMessage.ChatId.StartsWith("g-") || activeMessage.ChatId.StartsWith("c-"))
             {
-                await hubContext.Clients.Users(activeMessage.DirectReceiverId, activeMessage.SenderId)
-                    .ReceiveMessage(activeMessage);
-            }
-            else if (!string.IsNullOrEmpty(activeMessage.GroupReceiverId))
-            {
-                await hubContext.Clients.Groups(activeMessage.GroupReceiverId)
+                await hubContext.Clients.Group(activeMessage.ChatId)
                     .ReceiveMessage(activeMessage);
             }
             else
             {
-                return BadRequest("Message did not sent");
+                await hubContext.Clients
+                    .Users(
+                        activeMessage.Chat.ChatUsers.First(m => !Equals(m.ClientId, activeMessage.SenderId)).ClientId,
+                        activeMessage.SenderId)
+                    .ReceiveMessage(activeMessage);
             }
 
-            return Created(nameof(Post), activeMessage);
+            return Created(nameof(Post), messageModel);
         }
         catch (NullReferenceException e)
         {
+            await hubContext.Clients.User(GetUserId()).ReceiveException(e);
             return BadRequest(e.Message);
         }
         catch (ArgumentNullException e)
         {
+            await hubContext.Clients.User(GetUserId()).ReceiveException(e);
             return NotFound(e.Message);
         }
         catch (Exception e)
         {
+            await hubContext.Clients.User(GetUserId()).ReceiveException(e);
             return BadRequest(e.Message);
         }
     }
@@ -71,7 +77,7 @@ public class MessageController(
     [HttpGet("history")]
     public async Task<IActionResult> GetMessages()
     {
-        return Ok(await messageService.GetMessages(GetUserId()));
+        return Ok(await messageService.GetChats(GetUserId()));
     }
 
     private static string GetBoundary(MediaTypeHeaderValue contentType)

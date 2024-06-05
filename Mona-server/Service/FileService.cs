@@ -39,6 +39,12 @@ public class FileService(ApplicationContext context) : IFileService
             section = await multipartReader.ReadNextSectionAsync();
         }
 
+        // Missing files and empty text are not permitted.
+        if (fileCount == 0 && string.IsNullOrEmpty(message.Text))
+        {
+            context.Messages.Remove(message);
+        }
+
         return new FileUploadSummary
         {
             Message = message,

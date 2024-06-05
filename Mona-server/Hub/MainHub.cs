@@ -13,16 +13,14 @@ public abstract class MainHub : Hub<IHubInterfaces>
 
     protected IHubInterfaces SetRoute(MessageModel message)
     {
-        if (!string.IsNullOrEmpty(message.DirectReceiverId))
+        if (message.ChatId.StartsWith("g-") || message.ChatId.StartsWith("c-"))
         {
-            return Clients.Users(message.DirectReceiverId, message.SenderId);
+            return Clients.Group(message.ChatId);
         }
-
-        if (!string.IsNullOrEmpty(message.GroupReceiverId))
+        else
         {
-            return Clients.Group(message.GroupReceiverId);
+            return Clients.Users(message.Chat.ChatUsers.First(m => !Equals(m.ClientId, message.SenderId)).ClientId,
+                message.SenderId);
         }
-
-        throw new ArgumentException("Invalid message: No direct or group receiver specified.");
     }
 }

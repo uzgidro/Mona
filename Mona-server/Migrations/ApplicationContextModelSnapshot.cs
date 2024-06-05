@@ -145,6 +145,36 @@ namespace Mona.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Mona.Model.ChatClientModel", b =>
+                {
+                    b.Property<string>("ClientId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ChatId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserModelId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ClientId", "ChatId");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("UserModelId");
+
+                    b.ToTable("ChatClients");
+                });
+
+            modelBuilder.Entity("Mona.Model.ChatModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Chats");
+                });
+
             modelBuilder.Entity("Mona.Model.FileModel", b =>
                 {
                     b.Property<string>("Id")
@@ -200,16 +230,14 @@ namespace Mona.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("ChatId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("DirectReceiverId")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("ForwardId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("GroupReceiverId")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsEdited")
@@ -240,17 +268,20 @@ namespace Mona.Migrations
                     b.Property<string>("Text")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("UserModelId")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("DirectReceiverId");
+                    b.HasIndex("ChatId");
 
                     b.HasIndex("ForwardId");
-
-                    b.HasIndex("GroupReceiverId");
 
                     b.HasIndex("ReplyId");
 
                     b.HasIndex("SenderId");
+
+                    b.HasIndex("UserModelId");
 
                     b.ToTable("Messages");
                 });
@@ -393,6 +424,21 @@ namespace Mona.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Mona.Model.ChatClientModel", b =>
+                {
+                    b.HasOne("Mona.Model.ChatModel", "Chat")
+                        .WithMany("ChatUsers")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Mona.Model.UserModel", null)
+                        .WithMany("ChatClients")
+                        .HasForeignKey("UserModelId");
+
+                    b.Navigation("Chat");
+                });
+
             modelBuilder.Entity("Mona.Model.FileModel", b =>
                 {
                     b.HasOne("Mona.Model.MessageModel", null)
@@ -404,33 +450,33 @@ namespace Mona.Migrations
 
             modelBuilder.Entity("Mona.Model.MessageModel", b =>
                 {
-                    b.HasOne("Mona.Model.UserModel", "DirectReceiver")
-                        .WithMany()
-                        .HasForeignKey("DirectReceiverId");
+                    b.HasOne("Mona.Model.ChatModel", "Chat")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Mona.Model.MessageModel", "ForwardedMessage")
                         .WithMany()
                         .HasForeignKey("ForwardId");
-
-                    b.HasOne("Mona.Model.GroupModel", "GroupReceiver")
-                        .WithMany()
-                        .HasForeignKey("GroupReceiverId");
 
                     b.HasOne("Mona.Model.MessageModel", "RepliedMessage")
                         .WithMany()
                         .HasForeignKey("ReplyId");
 
                     b.HasOne("Mona.Model.UserModel", "Sender")
-                        .WithMany()
+                        .WithMany("SentMessages")
                         .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("DirectReceiver");
+                    b.HasOne("Mona.Model.UserModel", null)
+                        .WithMany("ReceivedMessages")
+                        .HasForeignKey("UserModelId");
+
+                    b.Navigation("Chat");
 
                     b.Navigation("ForwardedMessage");
-
-                    b.Navigation("GroupReceiver");
 
                     b.Navigation("RepliedMessage");
 
@@ -456,6 +502,13 @@ namespace Mona.Migrations
                     b.Navigation("UserModel");
                 });
 
+            modelBuilder.Entity("Mona.Model.ChatModel", b =>
+                {
+                    b.Navigation("ChatUsers");
+
+                    b.Navigation("Messages");
+                });
+
             modelBuilder.Entity("Mona.Model.GroupModel", b =>
                 {
                     b.Navigation("UserGroups");
@@ -468,6 +521,12 @@ namespace Mona.Migrations
 
             modelBuilder.Entity("Mona.Model.UserModel", b =>
                 {
+                    b.Navigation("ChatClients");
+
+                    b.Navigation("ReceivedMessages");
+
+                    b.Navigation("SentMessages");
+
                     b.Navigation("UserGroups");
                 });
 #pragma warning restore 612, 618

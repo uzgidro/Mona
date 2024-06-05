@@ -11,26 +11,16 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
     public DbSet<GroupModel> Groups => Set<GroupModel>();
     public DbSet<UserGroup> UserGroup => Set<UserGroup>();
     public DbSet<FileModel> Files => Set<FileModel>();
+    public DbSet<ChatModel> Chats => Set<ChatModel>();
+    public DbSet<ChatClientModel> ChatClients => Set<ChatClientModel>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
 
         builder.Entity<MessageModel>()
-            .HasOne(m => m.DirectReceiver)
-            .WithMany()
-            .HasForeignKey(m => m.DirectReceiverId)
-            .IsRequired(false);
-
-        builder.Entity<MessageModel>()
-            .HasOne(m => m.GroupReceiver)
-            .WithMany()
-            .HasForeignKey(m => m.GroupReceiverId)
-            .IsRequired(false);
-
-        builder.Entity<MessageModel>()
             .HasOne(m => m.Sender)
-            .WithMany()
+            .WithMany(u => u.SentMessages)
             .HasForeignKey(m => m.SenderId)
             .IsRequired();
 
@@ -57,6 +47,25 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
             entity.HasIndex(e => e.ForwardId);
             entity.HasIndex(e => e.ReplyId);
         });
+
+        builder.Entity<ChatClientModel>()
+            .HasKey(cu => new { cu.ClientId, cu.ChatId });
+
+        builder.Entity<ChatClientModel>()
+            .HasOne(cu => cu.Chat)
+            .WithMany(c => c.ChatUsers)
+            .HasForeignKey(cu => cu.ChatId);
+
+        builder.Entity<MessageModel>()
+            .HasOne(m => m.Chat)
+            .WithMany(c => c.Messages)
+            .HasForeignKey(m => m.ChatId);
+
+        builder.Entity<MessageModel>()
+            .HasOne(m => m.Sender)
+            .WithMany(u => u.SentMessages)
+            .HasForeignKey(m => m.SenderId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<UserModel>()
             .HasMany(e => e.Groups)

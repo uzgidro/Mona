@@ -1,6 +1,6 @@
 namespace Mona.Model.Dto;
 
-public class AppendMembersRequest
+public struct AppendMembersRequest
 {
     public required IEnumerable<string> Members { get; init; }
 }
