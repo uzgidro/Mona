@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mona_desktop/core/di/injections.dart';
 import 'package:mona_desktop/features/auth/bloc/auth_bloc.dart';
 import 'package:mona_desktop/features/home/presentation/chat_list.dart';
+import 'package:mona_desktop/features/home/presentation/drawer.dart';
 import 'package:mona_desktop/features/home/presentation/side_menu.dart';
 import 'package:mona_desktop/features/service/service_export.dart';
 import 'package:signalr_netcore/signalr_client.dart';
@@ -20,9 +21,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final hubBloc = getIt<HubBloc>();
   final hubConnection = getIt<HubConnection>();
 
-  double _width = 240;
-  double _minWidth = 140;
-
   @override
   void initState() {
     super.initState();
@@ -32,36 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: Drawer(
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      await hubConnection
-                          .invoke('getChats')
-                          .then((value) => print(value));
-                    },
-                    child: Text('Тест'),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      authBloc.add(SignOutEvent());
-                    },
-                    child: Text('Выход'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        drawer: DrawerComponent(),
         body: MultiBlocListener(
           listeners: [
             BlocListener<HubBloc, HubState>(

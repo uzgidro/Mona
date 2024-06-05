@@ -39,6 +39,7 @@ abstract class InjectableModule {
       .withUrl("http://127.0.0.1:5031/chat",
           options: HttpConnectionOptions(
               accessTokenFactory: () async => await service.getAccessToken()))
+      .withAutomaticReconnect()
       .build();
 
   @lazySingleton
