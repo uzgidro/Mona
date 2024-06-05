@@ -1,9 +1,10 @@
-import { UserModel } from "./user";
+import {UserModel} from "./user";
 
 export interface MessageRequest{
   text?:string
   senderId?:string
-  receiverId:string|number|undefined
+  receiverId: string
+  chatId?: string
   replyId?: string
   forwardId?: string
   createdAt:Date

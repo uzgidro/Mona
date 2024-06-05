@@ -1,6 +1,6 @@
-import { GroupModel, GroupRequest } from './../models/group';
-import { ForwardMessageComponent } from './message-actions/forward-message/forward-message.component';
-import { UserModel } from './../models/user';
+import {GroupModel, GroupRequest} from '../models/group';
+import {ForwardMessageComponent} from './message-actions/forward-message/forward-message.component';
+import {UserModel} from '../models/user';
 import {File, MessageModel, MessageRequest} from '../models/message';
 import {Component, OnInit, ViewChild} from '@angular/core';
 import * as signalR from '@microsoft/signalr';
@@ -9,13 +9,15 @@ import {JwtService} from "../services/jwt.service";
 import {FormControl, FormGroup} from "@angular/forms";
 import {ApiService} from '../services/api.service';
 import {MatDialog} from '@angular/material/dialog'
-import { MatDrawer, MatSidenav } from '@angular/material/sidenav';
-import { MessageActionsComponent } from './message-actions/message-actions.component';
-import { ContactsComponent } from './contacts/contacts.component';
-import { NewGroupComponent } from './new-group/new-group.component';
-import { GroupActionsComponent } from './group-actions/group-actions.component';
-import { DeleteGroupComponent } from './delete-group/delete-group.component';
-import { ViewGroupInfoComponent } from './view-group-info/view-group-info.component';
+import {MatDrawer, MatSidenav} from '@angular/material/sidenav';
+import {MessageActionsComponent} from './message-actions/message-actions.component';
+import {ContactsComponent} from './contacts/contacts.component';
+import {NewGroupComponent} from './new-group/new-group.component';
+import {GroupActionsComponent} from './group-actions/group-actions.component';
+import {DeleteGroupComponent} from './delete-group/delete-group.component';
+import {ViewGroupInfoComponent} from './view-group-info/view-group-info.component';
+import {HubMethods} from "../models/hub-methods";
+import {HubListeners} from "../models/hub-listeners";
 
 
 @Component({
@@ -26,7 +28,7 @@ import { ViewGroupInfoComponent } from './view-group-info/view-group-info.compon
 export class MessageComponent implements OnInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   @ViewChild('drawer') drawer: MatDrawer;
-message: MessageModel;
+  message: MessageModel;
 
   toggleSidenav() {
     this.sidenav.toggle();
@@ -35,25 +37,23 @@ message: MessageModel;
   users: UserModel[] = []
   groups: GroupModel[] = []
   selectedChat?: UserModel
-  selectedGroup?:GroupModel
+  selectedGroup?: GroupModel
   inputGroup = new FormGroup({
     message: new FormControl(''),
     file: new FormControl(''),
     groupMessage: new FormControl(''),
-    groupFile:new FormControl('')
+    groupFile: new FormControl('')
   })
 
 
-
-
-  selectedFiles?:any[]
+  selectedFiles?: any[]
   chatConnection?: HubConnection
   groupConnection?: HubConnection
   private _income: MessageModel[] = []
   editingMessage?: MessageModel
   repliedMessage?: MessageModel
   forwardedMessage?: MessageModel
-  currentUser:UserModel
+  currentUser: UserModel
   currentDate: Date = new Date();
 
   get income(): MessageModel[] {
@@ -67,7 +67,7 @@ message: MessageModel;
       message: new FormControl(''),
       file: new FormControl(''),
       groupMessage: new FormControl(''),
-      groupFile:new FormControl('')
+      groupFile: new FormControl('')
     })
 
 
@@ -78,7 +78,7 @@ message: MessageModel;
     let accessToken = this.jwtService.getAccessToken()
     this.setChatConnection(accessToken)
     this.setGroupConnection(accessToken)
-    let id=this.jwtService.getIdFromJwt()
+    let id = this.jwtService.getIdFromJwt()
     this.apiService.getUserInfo(id).subscribe({
       next: (value: UserModel) => {
         this.currentUser = value; // Assigning value to currentUser
@@ -93,23 +93,26 @@ message: MessageModel;
 
   }
 
-  selectChat(chat: UserModel) {
-    this.selectedChat = chat
-    this.selectedGroup=undefined
-  }
+  // TODO()-3: On Chat select
+  // selectChat(chat: UserModel) {
+  //   this.selectedChat = chat
+  //   this.selectedGroup = undefined
+  // }
+  //
+  // selectGroup(group: GroupModel) {
+  //   this.selectedGroup = group
+  //   this.selectedChat = undefined
+  // }
 
-  selectGroup(group:GroupModel){
-    this.selectedGroup=group
-    this.selectedChat=undefined
-  }
-
+  // TODO()-4: If new chat - use receiverId, else use chatId
   sendMessage() {
     let message = this.inputGroup.get('message')?.value;
     let replyId: string | undefined = this.repliedMessage ? this.repliedMessage.id : undefined;
     let forwardId: string | undefined = this.forwardedMessage ? this.forwardedMessage.id : undefined;
+    // TODO()-5: use chatId in messageRequest
     const messageRequest: MessageRequest = {
-      text: message?message:'',
-      receiverId: this.selectedChat?.id||this.selectedGroup.id,
+      text: message ? message : '',
+      receiverId: this.selectedChat?.id || this.selectedGroup.id,
       createdAt: new Date(),
       replyId: replyId,
       forwardId: forwardId,
@@ -136,10 +139,10 @@ message: MessageModel;
       this.apiService.sendMessage(formData)
       this.inputGroup.get('file')?.setValue('')
     } else {
-      this.chatConnection.send("sendMessage", messageRequest)
+      this.chatConnection.send(HubMethods.SendMessage, messageRequest)
     }
     this.inputGroup.get('message')?.setValue('')
-    this.repliedMessage=undefined
+    this.repliedMessage = undefined
   }
 
   forwardMessage(eventMessage: MessageModel) {
@@ -156,7 +159,7 @@ message: MessageModel;
 
   editMessage() {
     const inputValue = this.inputGroup.get('message')?.value || ''
-    this.chatConnection?.send('editMessage', {...this.editingMessage, text: inputValue});
+    this.chatConnection?.send(HubMethods.EditMessage, {...this.editingMessage, text: inputValue});
     //CLEARING INPUT AND EDITINGMESSAGE AFTER EDITNG MESSAGE SUCCESSFULLY
     this.inputGroup.get('message')?.setValue('');
     this.editingMessage = undefined;
@@ -172,11 +175,11 @@ message: MessageModel;
   }
 
   deleteMessageForMyself(eventMessageId: string) {
-    this.chatConnection?.send("deleteMessageForMyself", eventMessageId)
+    this.chatConnection?.send(HubMethods.DeleteMessageForMyself, eventMessageId)
   }
 
   deleteMessageForEveryone(eventMessageId: string) {
-    this.chatConnection?.send("deleteMessageForEveryone", eventMessageId)
+    this.chatConnection?.send(HubMethods.DeleteMessageForEveryone, eventMessageId)
   }
 
   replyMessage(eventMessage: MessageModel) {
@@ -195,23 +198,23 @@ message: MessageModel;
 
   onFileSelected(event: any) {
     console.log(event.target.files.length);
-    this.selectedFiles=event.target.files
+    this.selectedFiles = event.target.files
     console.log(this.selectedFiles);
   }
 
-  pinMessage(message:MessageModel){
-    this.chatConnection?.send('PinMessage',message)
+  pinMessage(message: MessageModel) {
+    this.chatConnection?.send(HubMethods.PinMessage, message)
   }
 
 
-  openDeleteGroup(){
+  openDeleteGroup() {
     const dialogRef = this.dialog.open(DeleteGroupComponent, {
       width: '400px',
       data:
-       {
-        group:this.selectedGroup,
-        deleteGroups:this.deleteGroup.bind(this),
-        leaveGroups:this.leaveGroup.bind(this),
+        {
+          group: this.selectedGroup,
+          deleteGroups: this.deleteGroup.bind(this),
+          leaveGroups: this.leaveGroup.bind(this),
         },
     });
     dialogRef.afterClosed().subscribe(() => {
@@ -219,112 +222,111 @@ message: MessageModel;
   }
 
 
-
-  openMessageActions(message:MessageModel){
+  openMessageActions(message: MessageModel) {
     const dialogRef = this.dialog.open(MessageActionsComponent, {
       width: '400px',
       data:
-       {
-        message:message,
-        forwardedMessage: this.forwardedMessage,
-        users: this.users,
-        deleteMessageForMyself: this.deleteMessageForMyself.bind(this),
-        deleteMessageForEveryone: this.deleteMessageForEveryone.bind(this),
-        editMessage: this.onSelectEditingMessage.bind(this),
-        currentUser:this.currentUser,
-        replyMessage:this.replyMessage.bind(this),
-        pinMessage:this.pinMessage.bind(this),
+        {
+          message: message,
+          forwardedMessage: this.forwardedMessage,
+          users: this.users,
+          deleteMessageForMyself: this.deleteMessageForMyself.bind(this),
+          deleteMessageForEveryone: this.deleteMessageForEveryone.bind(this),
+          editMessage: this.onSelectEditingMessage.bind(this),
+          currentUser: this.currentUser,
+          replyMessage: this.replyMessage.bind(this),
+          pinMessage: this.pinMessage.bind(this),
         },
 
     });
     dialogRef.afterClosed().subscribe(() => {
 
 
-
     });
 
 
-
   }
-  openGroupActions(){
+
+  openGroupActions() {
     const dialogRef = this.dialog.open(GroupActionsComponent, {
       width: '400px',
       data:
-       {
-        group:this.selectedGroup,
+        {
+          group: this.selectedGroup,
 
-        deleteGroups:this.deleteGroup.bind(this),
+          deleteGroups: this.deleteGroup.bind(this),
         },
 
     });
     dialogRef.afterClosed().subscribe(() => {
 
 
-
     });
 
 
-
   }
 
 
-  openDrawer(){
+  openDrawer() {
     this.drawer.open()
   }
 
-  onDrawerClosed(){
+  onDrawerClosed() {
     this.dialog.open(ContactsComponent);
 
   }
 
-  openContacts(){
+  openContacts() {
     this.drawer.close()
     this.dialog.open(ContactsComponent, {
       width: '400px',
       data:
-       {
-        users: this.users,
-        selectChat:this.selectChat.bind(this),
+        {
+          users: this.users,
+          // TODO()-6.1: Think something
+          // selectChat: this.selectChat.bind(this),
         },
 
     });
   }
 
-  createGroups(groupRequest:GroupRequest){
+  createGroups(groupRequest: GroupRequest) {
     console.log(groupRequest);
-    this.groupConnection?.send('createGroup',groupRequest)
+    this.groupConnection?.send(HubMethods.CreateGroup, groupRequest)
     console.log(this.groups);
 
   }
 
 
-  addMemberstoGroup(groupId:string,users:string[]){
-    this.groupConnection?.send('appendMembers',groupId,users)
+  addMemberstoGroup(groupId: string, users: string[]) {
+    this.groupConnection?.send(HubMethods.AppendMembers, groupId, users)
   }
 
 
-  newGroup(){
+  newGroup() {
     this.drawer.close()
     this.dialog.open(NewGroupComponent, {
       width: '400px',
       data:
-       {
-        users:this.users,
-        createGroup:this.createGroups.bind(this),
-        addMemberstoGroup:this.addMemberstoGroup.bind(this)
+        {
+          users: this.users,
+          createGroup: this.createGroups.bind(this),
+          addMemberstoGroup: this.addMemberstoGroup.bind(this)
         },
 
     });
   }
-  viewGroupInfo(){
+
+  viewGroupInfo() {
     const dialogRef = this.dialog.open(ViewGroupInfoComponent, {
       width: '400px',
       data:
-       {
-        group:this.selectedGroup,
-        deleteGroups:this.deleteGroup.bind(this),
-        leaveGroups:this.leaveGroup.bind(this),
-        selectChat:this.selectChat.bind(this)
+        {
+          group: this.selectedGroup,
+          deleteGroups: this.deleteGroup.bind(this),
+          leaveGroups: this.leaveGroup.bind(this),
+          // TODO()-6.2: Think something
+          // selectChat: this.selectChat.bind(this)
         },
     });
     dialogRef.afterClosed().subscribe(() => {
@@ -332,22 +334,19 @@ message: MessageModel;
 
   }
 
-  deleteGroup(group:GroupModel){
+  deleteGroup(group: GroupModel) {
     console.log(group);
-    this.groupConnection?.send('deleteGroup',group.id)
-    this.groups=this.groups.filter(g=>g.id!==group.id)
-    this.selectedGroup=undefined
+    this.groupConnection?.send(HubMethods.DeleteGroup, group.id)
+    this.groups = this.groups.filter(g => g.id !== group.id)
+    this.selectedGroup = undefined
   }
 
 
-  leaveGroup(group:GroupModel){
-    this.groupConnection?.send('leaveGroup',group.id)
-    this.groups=this.groups.filter(g=>g.id!==group.id)
-    this.selectedGroup=undefined
+  leaveGroup(group: GroupModel) {
+    this.groupConnection?.send(HubMethods.LeaveGroup, group.id)
+    this.groups = this.groups.filter(g => g.id !== group.id)
+    this.selectedGroup = undefined
   }
-
-
-
 
 
   private setChatConnection(accessToken: string) {
@@ -359,21 +358,21 @@ message: MessageModel;
       })
       .build();
     this.chatConnection = chatConnection
-    chatConnection.on("ReceiveMessage", (message: MessageModel) => {
+    chatConnection.on(HubListeners.ReceiveMessage, (message: MessageModel) => {
       this._income.push(message)
       console.log(this.income);
     });
-    chatConnection.on("ModifyMessage", (modifiedMessage: MessageModel) => {
+    chatConnection.on(HubListeners.ModifyMessage, (modifiedMessage: MessageModel) => {
       const index = this._income.findIndex(item => item.id === modifiedMessage.id);
       this._income[index] = modifiedMessage;
     });
-    chatConnection.on("DeleteMessage", (deletedMessageId: string) => {
+    chatConnection.on(HubListeners.DeleteMessage, (deletedMessageId: string) => {
       this._income = this._income.filter(item => item.id !== deletedMessageId);
     });
-    chatConnection.on("PinMessage", (pinnedMessage: MessageModel) => {
+    chatConnection.on(HubListeners.PinMessage, (pinnedMessage: MessageModel) => {
       console.log(pinnedMessage)
     });
-    chatConnection.on("ReceiveException", (exception: any) => {
+    chatConnection.on(HubListeners.ReceiveException, (exception: any) => {
       console.log(exception)
     });
     chatConnection.start()
@@ -382,11 +381,13 @@ message: MessageModel;
       })
       .then(() => {
         if (chatConnection) {
-          chatConnection.invoke('getUsers').then((users: UserModel[]) => this.users = users)
-          chatConnection.invoke('getHistory').then((messages: MessageModel[]) => {
-            this._income = messages
-            console.log(this._income);
-          })
+          // TODO()-1: Create new model(Chat), implement, store and display
+          chatConnection.invoke(HubMethods.GetChats).then((chats) => console.log(chats))
+          // chatConnection.invoke('getUsers').then((users: UserModel[]) => this.users = users)
+          // chatConnection.invoke('getHistory').then((messages: MessageModel[]) => {
+          //   this._income = messages
+          //   console.log(this._income);
+          // })
         }
       })
   }
@@ -400,48 +401,45 @@ message: MessageModel;
       })
       .build();
     this.groupConnection = groupConnection
-    groupConnection.on("EditGroup", (updatedGroup: GroupModel) => {
-      // TODO()
-
+    groupConnection.on(HubListeners.EditGroup, (updatedGroup: GroupModel) => {
       // Update the existing group in this.groups
-     const groupIndex = this.groups.findIndex(group => group.id === updatedGroup.id);
-     if (groupIndex !== -1) {
-      this.groups[groupIndex] = updatedGroup;
-      console.log("Group updated:", updatedGroup);
+      const groupIndex = this.groups.findIndex(group => group.id === updatedGroup.id);
+      if (groupIndex !== -1) {
+        this.groups[groupIndex] = updatedGroup;
+        console.log("Group updated:", updatedGroup);
       }
-      });
-    groupConnection.on("AppendMember", (newGroup: GroupModel) => {
-       // TODO()
-       // Add the new group to this.groups if it doesn't already exist
-       if (!this.groups.some(group => group.id === newGroup.id)) {
-       this.groups.push(newGroup);
-       console.log("New group added:", newGroup);
-     }
     });
-    groupConnection.on("RemoveMember", (groupWithRemovedMember: GroupModel) => {
-      // TODO()
-        // Update the group to remove the member
-        const groupIndex = this.groups.findIndex(group => group.id === groupWithRemovedMember.id);
-        if (groupIndex !== -1) {
-          this.groups[groupIndex] = groupWithRemovedMember;
-          console.log("Member removed from group:", groupWithRemovedMember);
-        }
+    groupConnection.on(HubListeners.AppendMember, (newGroup: GroupModel) => {
+      // Add the new group to this.groups if it doesn't already exist
+      if (!this.groups.some(group => group.id === newGroup.id)) {
+        this.groups.push(newGroup);
+        console.log("New group added:", newGroup);
+      }
     });
-    groupConnection.on("ReceiveException", (exception: any) => {
+    groupConnection.on(HubListeners.RemoveMember, (groupWithRemovedMember: GroupModel) => {
+      // Update the group to remove the member
+      const groupIndex = this.groups.findIndex(group => group.id === groupWithRemovedMember.id);
+      if (groupIndex !== -1) {
+        this.groups[groupIndex] = groupWithRemovedMember;
+        console.log("Member removed from group:", groupWithRemovedMember);
+      }
+    });
+    groupConnection.on(HubListeners.ReceiveException, (exception: any) => {
       console.log(exception)
     });
     groupConnection.start()
       .catch((err) => {
         console.log(err)
       })
-      .then(() => {
-        if (groupConnection) {
-          groupConnection.invoke('getUserGroupList').then((groups: GroupModel[]) => {
-            this.groups = groups
-            console.log(this.groups);
-          })
-        }
-      })
+    // TODO(): Not necessary, may be removed
+    // .then(() => {
+    //   if (groupConnection) {
+    //     groupConnection.invoke('getUserGroupList').then((groups: GroupModel[]) => {
+    //       this.groups = groups
+    //       console.log(this.groups);
+    //     })
+    //   }
+    // })
   }
 }
 

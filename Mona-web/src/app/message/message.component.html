@@ -175,8 +175,8 @@
           <!-- Settings-->
             <li>
                <button href="#" class="w-full  flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                <svg fill="currentColor"  class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" viewBox="0 0 20 20"   version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-	              viewBox="0 0 455 455" xml:space="preserve">
+                <svg fill="currentColor"  class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" viewBox="0 0 20 20"   version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 455 455" xml:space="preserve">
                 <path d="M455,257v-70h-63.174c-4.423-20.802-12.706-40.174-24.066-57.334l42.32-42.32l-49.498-49.498l-42.756,42.756
               	C299.911,69.199,279.682,61.104,258,57.183V0h-70v59.319c-21.306,5.221-41.009,14.515-58.24,27.014L88.346,44.92L38.849,94.417
 	              l43.979,43.979C72.59,156.135,65.513,175.926,62.359,197H0v70h66.623c5.396,19.392,14.195,37.364,25.711,53.24L45.92,366.654
@@ -343,30 +343,30 @@
           <!-- SEARCH BAR END-->
 
 
-
+          <!--          TODO()-2: Display chats with last message-->
           <!-- USER MESSAGES -->
-          <div class="overflow-y-auto h-screen p-3 mb-9 pb-20 mt-14" >
-            <!-- USER MESSAGE BOX -->
-              <div class="flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md" *ngFor="let group of groups" (click)="selectGroup(group)"  >
-              <div class="w-12 h-12 bg-gray-300 rounded-full mr-3">
-                <img src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato" alt="User Avatar" class="w-12 h-12 rounded-full">
-              </div>
-              <div class="flex-1">
-                <h2 class="text-lg font-semibold">{{group.name?.length>6?group.name.slice(0,6):group.name}}</h2>
-                <p class="text-gray-600 ">Hi Steve</p>
-              </div>
-             </div>
-             <div class="flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md" *ngFor="let user of users"  (click)="selectChat(user)">
-              <div class="w-12 h-12 bg-gray-300 rounded-full mr-3">
-                <img src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato" alt="User Avatar" class="w-12 h-12 rounded-full">
-              </div>
-              <div class="flex-1">
-                <h2 class="text-lg font-semibold">{{user.firstName}}</h2>
-                <p class="text-gray-600 ">Hi Steve</p>
-              </div>
-             </div>
+          <!--          <div class="overflow-y-auto h-screen p-3 mb-9 pb-20 mt-14" >-->
+          <!--            &lt;!&ndash; USER MESSAGE BOX &ndash;&gt;-->
+          <!--              <div class="flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md" *ngFor="let group of groups" (click)="selectGroup(group)"  >-->
+          <!--              <div class="w-12 h-12 bg-gray-300 rounded-full mr-3">-->
+          <!--                <img src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato" alt="User Avatar" class="w-12 h-12 rounded-full">-->
+          <!--              </div>-->
+          <!--              <div class="flex-1">-->
+          <!--                <h2 class="text-lg font-semibold">{{group.name?.length>6?group.name.slice(0,6):group.name}}</h2>-->
+          <!--                <p class="text-gray-600 ">Hi Steve</p>-->
+          <!--              </div>-->
+          <!--             </div>-->
+          <!--             <div class="flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md" *ngFor="let user of users"  (click)="selectChat(user)">-->
+          <!--              <div class="w-12 h-12 bg-gray-300 rounded-full mr-3">-->
+          <!--                <img src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato" alt="User Avatar" class="w-12 h-12 rounded-full">-->
+          <!--              </div>-->
+          <!--              <div class="flex-1">-->
+          <!--                <h2 class="text-lg font-semibold">{{user.firstName}}</h2>-->
+          <!--                <p class="text-gray-600 ">Hi Steve</p>-->
+          <!--              </div>-->
+          <!--             </div>-->
 
-          </div>
+          <!--          </div>-->
           <!-- USER MESSAGES END-->
 
 
@@ -575,8 +575,8 @@
                          <button  class="w-full"  mat-menu-item
                           >
                         <div class="w-full flex gap-2 items-center">
-                         <svg class="w-6 h-6 ml-3" version="1.1" id="Uploaded to svgrepo.com" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                       viewBox="0 0 32 32" xml:space="preserve">
+                         <svg class="w-6 h-6 ml-3" version="1.1" id="Uploaded to svgrepo.com" xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 32 32" xml:space="preserve">
                       <path class="linesandangles_een" d="M21,15.242l2-2V27l-8.598-5.159l1.458-1.458L21,23.468V15.242z M27.707,5.707l-22,22
                        l-1.414-1.414L9.586,21H8V11h5l10-6v2.586l3.293-3.293L27.707,5.707z M21,9.586V8.532L13.554,13H10v6h1.586L21,9.586z"/>
                       </svg>
@@ -595,8 +595,8 @@
                      </button>
                      <button  class="w-full"  mat-menu-item>
                      <div class="w-full flex gap-2 items-center">
-                    <svg class="w-6 h-6 ml-3" version="1.1" id="Uploaded to svgrepo.com" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                     viewBox="0 0 32 32" xml:space="preserve">
+                    <svg class="w-6 h-6 ml-3" version="1.1" id="Uploaded to svgrepo.com" xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 32 32" xml:space="preserve">
                                     <path class="feather_een" d="M7,8.05V5.5C7,5.224,6.776,5,6.5,5S6,5.224,6,5.5v2.55C4.306,8.295,3,9.738,3,11.5s1.306,3.205,3,3.45
                                      V26.5C6,26.776,6.224,27,6.5,27S7,26.776,7,26.5V14.95c1.694-0.245,3-1.688,3-3.45S8.694,8.295,7,8.05z M6.5,14
                                      C5.122,14,4,12.878,4,11.5C4,10.121,5.122,9,6.5,9S9,10.121,9,11.5C9,12.878,7.878,14,6.5,14z M16,17.05V5.5
@@ -620,10 +620,10 @@
                     </button>
                     <button  class="w-full"  mat-menu-item>
                     <div class="w-full flex gap-2 items-center">
-                     <svg fill="#000000" class="w-6 h-6 ml-3" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
-                                   xmlns:xlink="http://www.w3.org/1999/xlink"
-                                 viewBox="0 0 576.61 576.609"
-                                  xml:space="preserve">
+                      <svg fill="#000000" class="w-6 h-6 ml-3" version="1.1" id="Capa_1"
+                           xmlns="http://www.w3.org/2000/svg"
+                           viewBox="0 0 576.61 576.609"
+                           xml:space="preserve">
                                <g>
                                  <g>
                                    <path d="M460.17,2.065l-4.494-1.635C454.883,0.144,454.051,0,453.219,0c-3.002,0-5.719,1.894-6.742,4.714L324.891,338.102
