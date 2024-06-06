@@ -27,18 +27,16 @@ class _ChatState extends State<Chat> {
                 setState(() {
                   chat = state.chatDto;
                 });
-                hubBloc.add(GetChatMessages(chatId: state.chatDto.chatId));
+              }
+              if (state is ChatLoaded) {
+                setState(() {
+                  messages = state.messages;
+                });
               }
             }),
         BlocListener(
           bloc: hubBloc,
-          listener: (context, state) {
-            if (state is ChatLoaded) {
-              setState(() {
-                messages = state.messages;
-              });
-            }
-          },
+          listener: (context, state) {},
         )
       ],
       child: chat == null

@@ -17,11 +17,11 @@ final class HubStarted extends HubState {
   List<Object?> get props => chatList;
 }
 
-final class ChatLoaded extends HubState {
-  final List<MessageDto> messages;
+final class ContactsLoaded extends HubState {
+  final List<UserDto> contacts;
 
-  ChatLoaded({required this.messages});
+  ContactsLoaded({required this.contacts});
 
   @override
-  List<Object?> get props => messages;
+  List<Object?> get props => [contacts];
 }

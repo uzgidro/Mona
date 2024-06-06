@@ -2,3 +2,4 @@
 export 'sign_in_request.dart';
 export 'sign_up_request.dart';
 export 'token_pair_dto.dart';
+export 'user_dto.dart';

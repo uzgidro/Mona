@@ -68,7 +68,7 @@ public class ChatHub(IMessageService service, IUserService userService)
         await SetRoute(deleted).DeleteMessage(deleted.Id);
     }
 
-    public async Task<IEnumerable<UserModel>> GetUsers()
+    public async Task<IEnumerable<UserDto>> GetUsers()
     {
         var userManagerUsers = await userService.GetUsersExceptCaller(GetSender());
         return userManagerUsers;

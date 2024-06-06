@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
 import 'package:mona_desktop/core/dto/dto_export.dart';
-import 'package:mona_desktop/core/dto/message_dto.dart';
 import 'package:mona_desktop/core/middleware/jwt_service.dart';
 import 'package:mona_desktop/repository/repository_export.dart';
 import 'package:signalr_netcore/signalr_client.dart';
@@ -31,15 +30,16 @@ class HubBloc extends Bloc<HubEvent, HubState> {
       }
     });
 
-    on<GetChatMessages>((event, emit) async {
+    on<LoadContacts>((event, emit) async {
       try {
-        var jsonResponse = await hubConnection
-            .invoke('getChatMessages', args: [event.chatId]) as List<dynamic>;
-        List<MessageDto> messages =
-            jsonResponse.map((json) => MessageDto.fromJson(json)).toList();
+        var jsonResponse =
+            await hubConnection.invoke('getUsers') as List<dynamic>;
+
+        List<UserDto> users =
+            jsonResponse.map((json) => UserDto.fromJson(json)).toList();
 
         // TODO(): Add loading until emitted
-        emit(ChatLoaded(messages: messages));
+        emit(ContactsLoaded(contacts: users));
       } catch (e, st) {
         talker.handle(e, st);
       }
