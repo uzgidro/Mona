@@ -1,6 +1,6 @@
 namespace Mona.Model.Dto;
 
-public struct ChatResponse
+public struct ChatDto
 {
     public string ChatId { get; init; }
     public string ChatName { get; init; }

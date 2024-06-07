@@ -14,12 +14,12 @@ public class MessageService(ApplicationContext context) : IMessageService
 {
     private static readonly JsonSerializerOptions? Options = new() { PropertyNameCaseInsensitive = true };
 
-    public async Task<MessageModel> CreateMessage(MessageRequest message, string senderId)
+    public async Task<MessageDto> CreateMessage(MessageRequest message, string senderId)
     {
         return await SaveMessage(message, senderId);
     }
 
-    public async Task<MessageModel> CreateMessage(MultipartReader multipartReader, string senderId)
+    public async Task<MessageDto> CreateMessage(MultipartReader multipartReader, string senderId)
     {
         var section = await multipartReader.ReadNextSectionAsync();
 
@@ -40,17 +40,17 @@ public class MessageService(ApplicationContext context) : IMessageService
         throw new NullReferenceException("Message named form data is expected, but not found");
     }
 
-    public async Task<MessageModel> ActiveMessage(string messageId)
+    public async Task<MessageDto> ActiveMessage(string messageId)
     {
         var entity = await RetrieveMessage(messageId);
 
         entity.IsSent = true;
         await context.SaveChangesAsync();
         await AddNavigation(entity);
-        return entity;
+        return entity.ToDto();
     }
 
-    public async Task<MessageModel> EditMessage(string caller, MessageModel message)
+    public async Task<MessageDto> EditMessage(string caller, MessageModel message)
     {
         var entity = await RetrieveMessage(message.Id);
 
@@ -59,7 +59,7 @@ public class MessageService(ApplicationContext context) : IMessageService
         if (string.Equals(message.Text, entity.Text) || string.IsNullOrEmpty(message.Text))
         {
             await AddNavigation(entity);
-            return entity;
+            return entity.ToDto();
         }
 
         entity.Text = message.Text;
@@ -68,10 +68,10 @@ public class MessageService(ApplicationContext context) : IMessageService
         var entityEntry = context.Messages.Update(entity);
         await context.SaveChangesAsync();
         await AddNavigation(entity);
-        return entityEntry.Entity;
+        return entityEntry.Entity.ToDto();
     }
 
-    public async Task<MessageModel> DeleteMessageForMyself(string caller, string messageId)
+    public async Task<MessageDto> DeleteMessageForMyself(string caller, string messageId)
     {
         try
         {
@@ -92,7 +92,7 @@ public class MessageService(ApplicationContext context) : IMessageService
             entity.ModifiedAt = DateTime.Now;
             await context.SaveChangesAsync();
             await AddNavigation(entity);
-            return entity;
+            return entity.ToDto();
         }
         catch (Exception e)
         {
@@ -100,7 +100,7 @@ public class MessageService(ApplicationContext context) : IMessageService
         }
     }
 
-    public async Task<MessageModel> DeleteMessageForEveryone(string caller, string messageId)
+    public async Task<MessageDto> DeleteMessageForEveryone(string caller, string messageId)
     {
         try
         {
@@ -118,7 +118,7 @@ public class MessageService(ApplicationContext context) : IMessageService
             entity.ModifiedAt = DateTime.Now;
             await context.SaveChangesAsync();
             await AddNavigation(entity);
-            return entity;
+            return entity.ToDto();
         }
         catch (Exception e)
         {
@@ -147,7 +147,7 @@ public class MessageService(ApplicationContext context) : IMessageService
     //     return messages;
     // }
 
-    public async Task<List<ChatResponse>> GetChats(string caller)
+    public async Task<List<ChatDto>> GetChats(string caller)
     {
         var userChats = await context.ChatClients
             .Where(cu => string.Equals(cu.ClientId, caller))
@@ -160,7 +160,7 @@ public class MessageService(ApplicationContext context) : IMessageService
                 LastMessage = cu.Chat.Messages.OrderByDescending(m => m.CreatedAt).FirstOrDefault()
             })
             .ToListAsync();
-        return userChats.Select(m => new ChatResponse
+        return userChats.Select(m => new ChatDto
         {
             ChatId = m.ChatId,
             Message = m.LastMessage.Text,
@@ -203,13 +203,13 @@ public class MessageService(ApplicationContext context) : IMessageService
         }
     }
 
-    public async Task<MessageModel> PinMessage(string messageId)
+    public async Task<MessageDto> PinMessage(string messageId)
     {
         var entity = await RetrieveMessage(messageId);
         entity.IsPinned = !entity.IsPinned;
         await context.SaveChangesAsync();
         await AddNavigation(entity);
-        return entity;
+        return entity.ToDto();
     }
 
     private async Task AddNavigation(MessageModel entity)
@@ -254,11 +254,11 @@ public class MessageService(ApplicationContext context) : IMessageService
             await AddNavigation(message.RepliedMessage);
     }
 
-    private async Task<MessageModel> SaveMessage(MessageRequest message, string senderId, bool isHub = true)
+    private async Task<MessageDto> SaveMessage(MessageRequest message, string senderId, bool isHub = true)
     {
         if (isHub && string.IsNullOrWhiteSpace(message.Text) && string.IsNullOrWhiteSpace(message.ForwardId))
         {
-            return new MessageModel();
+            return new MessageDto();
         }
 
         message = await ProvideChatId(senderId, message);
@@ -282,7 +282,7 @@ public class MessageService(ApplicationContext context) : IMessageService
         var entity = message.ToMessageModel(senderId);
         var entityEntry = context.Messages.Add(entity);
         await context.SaveChangesAsync();
-        return entityEntry.Entity;
+        return entityEntry.Entity.ToDto();
     }
 
     private async Task<MessageRequest> ProvideChatId(string senderId, MessageRequest message)
