@@ -8,7 +8,7 @@ public class MessageModel
     public UserModel Sender { get; set; }
     public string ChatId { get; set; }
     public ChatModel Chat { get; set; }
-    public string? ReceiverId { get; set; }
+    public string ReceiverId { get; set; }
     public string? ReplyId { get; set; }
     public MessageModel? RepliedMessage { get; set; }
     public string? ForwardId { get; set; }
