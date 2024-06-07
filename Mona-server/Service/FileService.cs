@@ -12,7 +12,7 @@ public class FileService(ApplicationContext context) : IFileService
 {
     private const string UploadsSubDirectory = "FilesUploaded";
 
-    public async Task<FileUploadSummary> UploadFileAsync(MultipartReader multipartReader, MessageModel message)
+    public async Task<FileUploadSummary> UploadFileAsync(MultipartReader multipartReader, MessageDto message)
     {
         var fileCount = 0;
         long totalSizeInBytes = 0;
@@ -40,9 +40,9 @@ public class FileService(ApplicationContext context) : IFileService
         }
 
         // Missing files and empty text are not permitted.
-        if (fileCount == 0 && string.IsNullOrEmpty(message.Text))
+        if (fileCount == 0 && string.IsNullOrEmpty(message.Message))
         {
-            context.Messages.Remove(message);
+            context.Messages.Remove(context.Messages.First(m => string.Equals(m.Id, message.Id)));
         }
 
         return new FileUploadSummary

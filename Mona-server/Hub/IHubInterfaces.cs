@@ -1,13 +1,14 @@
 ﻿using Mona.Model;
+using Mona.Model.Dto;
 
 namespace Mona.Hub;
 
 public interface IHubInterfaces
 {
-    Task ReceiveMessage(MessageModel message);
-    Task ModifyMessage(MessageModel message);
+    Task ReceiveMessage(MessageDto message);
+    Task ModifyMessage(MessageDto message);
     Task DeleteMessage(string messageId);
-    Task PinMessage(MessageModel message);
+    Task PinMessage(MessageDto message);
     Task ReceiveException(Exception e);
     Task EditGroup(GroupModel group);
     Task AppendMember(GroupModel group);

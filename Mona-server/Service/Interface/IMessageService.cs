@@ -6,17 +6,17 @@ namespace Mona.Service.Interface;
 
 public interface IMessageService
 {
-    Task<MessageModel> CreateMessage(MessageRequest message, string senderId);
-    Task<MessageModel> CreateMessage(MultipartReader multipartReader, string senderId);
-    Task<MessageModel> ActiveMessage(string messageId);
-    Task<MessageModel> EditMessage(string caller, MessageModel message);
-    Task<MessageModel> DeleteMessageForMyself(string caller, string messageId);
+    Task<MessageDto> CreateMessage(MessageRequest message, string senderId);
+    Task<MessageDto> CreateMessage(MultipartReader multipartReader, string senderId);
+    Task<MessageDto> ActiveMessage(string messageId);
+    Task<MessageDto> EditMessage(string caller, MessageModel message);
+    Task<MessageDto> DeleteMessageForMyself(string caller, string messageId);
 
-    Task<MessageModel> DeleteMessageForEveryone(string caller, string messageId);
+    Task<MessageDto> DeleteMessageForEveryone(string caller, string messageId);
 
     // Task<IEnumerable<MessageModel>> GetMessages(string caller);
-    Task<List<ChatResponse>> GetChats(string caller);
+    Task<List<ChatDto>> GetChats(string caller);
     Task<List<MessageDto>> GetMessagesByChatId(string caller, string chatId);
     Task<List<MessageDto>> GetMessagesByUserId(string caller, string userId);
-    Task<MessageModel> PinMessage(string messageId);
+    Task<MessageDto> PinMessage(string messageId);
 }

@@ -34,7 +34,7 @@ public class MessageController(
             var messageModel = await messageService.CreateMessage(multipartReader, userId);
 
             // Cannot append files to forward
-            if (string.IsNullOrEmpty(messageModel.ForwardId))
+            if (messageModel.Forward == null)
                 await fileService.UploadFileAsync(multipartReader, messageModel);
 
             var activeMessage = await messageService.ActiveMessage(messageModel.Id);
@@ -50,7 +50,7 @@ public class MessageController(
             {
                 await hubContext.Clients
                     .Users(
-                        activeMessage.Chat.ChatUsers.First(m => !Equals(m.ClientId, activeMessage.SenderId)).ClientId,
+                        activeMessage.ReceiverId,
                         activeMessage.SenderId)
                     .ReceiveMessage(activeMessage);
             }

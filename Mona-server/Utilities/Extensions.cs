@@ -15,15 +15,10 @@ public static class Extensions
         {
             Text = request.ForwardId.IsNullOrEmpty() ? request.Text : null,
             SenderId = senderId,
-            // DirectReceiverId = request.ReceiverId != null && request.ReceiverId.StartsWith("g-")
-            //     ? null
-            //     : request.ReceiverId,
-            // GroupReceiverId =
-            //     request.ReceiverId != null &&
-            //     (request.ReceiverId.StartsWith("g-") || request.ReceiverId.IsNullOrEmpty())
-            //         ? request.ReceiverId
-            //         : null,
             ChatId = request.ChatId,
+            ReceiverId = request.ReceiverId.StartsWith("g-") || request.ReceiverId.StartsWith("c-")
+                ? null
+                : request.ReceiverId,
             CreatedAt = request.CreatedAt,
             ModifiedAt = request.CreatedAt,
             ReplyId = request.ReplyId,
@@ -113,6 +108,7 @@ public static class Extensions
             SenderId = senderId,
             SenderName = sender,
             ChatId = model.ChatId,
+            ReceiverId = model.ReceiverId,
             Message = text,
             Files = files,
             Reply = replied,
