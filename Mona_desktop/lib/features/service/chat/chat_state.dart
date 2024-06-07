@@ -9,12 +9,15 @@ final class ChatInitial extends ChatState {
 }
 
 final class ChatOpened extends ChatState {
-  final ChatDto chatDto;
+  final String chatName;
+  final String receiverId;
+  final String? chatId;
 
-  ChatOpened({required this.chatDto});
+  ChatOpened(
+      {required this.chatName, required this.receiverId, required this.chatId});
 
   @override
-  List<Object?> get props => [chatDto];
+  List<Object?> get props => [chatName, chatId, receiverId];
 }
 
 final class ChatLoaded extends ChatState {
