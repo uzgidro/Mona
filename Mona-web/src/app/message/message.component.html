@@ -1,4 +1,6 @@
 
+
+<!-- Users -->
 <!-- <div class="users">
 
   <ul>
@@ -23,9 +25,14 @@
     </li>
   </ul>
 
-</div>
+</div> -->
 
-<div class="chat bg-slate-300">
+<!-- Users end -->
+
+
+
+<!-- Chats -->
+<!-- <div class="chat bg-slate-300">
   <h2 class="text-green-700">{{ selectedChat?.firstName }} {{selectedChat?.lastName}}</h2>
   <form *ngIf="selectedChat"   [formGroup]="inputGroup">
     <p *ngIf="repliedMessage">{{repliedMessage.text||repliedMessage.forwardedMessage.text}}</p>
@@ -52,79 +59,736 @@
     </ul>
   </form>
 </div> -->
-
-<!-- component -->
-<div class="flex h-screen antialiased text-gray-800">
-  <div class="flex flex-row h-full w-full overflow-x-hidden">
-    <div class="flex flex-col py-8 pl-6 pr-2 w-64 bg-white flex-shrink-0">
+<!-- Chats end -->
 
 
-      <div class="flex flex-col mt-8">
-        <div class="flex flex-row items-center justify-between text-xs">
-          <span class="font-bold">Active Conversations</span>
-          <span
-            class="flex items-center justify-center bg-gray-300 h-4 w-4 rounded-full"
-            >
-            {{users.length}}
-            </span
-          >
-        </div>
-        <div class="flex flex-col space-y-1 mt-4 -mx-2 h-48 overflow-y-auto" >
-          <button *ngFor="let user of users"
-          (click)="selectChat(user)"
-            class="flex flex-row bg-slate-300 items-center hover:bg-blue-400 hover:text-slate-50 rounded-xl p-2"
-            [ngClass]="{'bg-blue-500 text-slate-50':selectedChat==user}"
-          >
-            <div
-              class="flex items-center justify-center h-8 w-8 bg-gray-200 rounded-full hover:bg-slate-50 hover:text-blue-500'"
-              [ngClass]="{'bg-slate-50 text-blue-500': selectedChat==user}"
-            >
-              {{user.firstName.slice(0,1)}}
-            </div>
-            <div class="ml-2 text-sm font-semibold"
-             [ngClass]="{' text-blue-600': selectedChat==user}"
-             >
-             {{user.firstName}} {{user.lastName}}
-            </div>
-            <div
-              class="flex items-center justify-center ml-auto text-xs text-white bg-red-500 h-4 w-4 rounded leading-none"
-            >
-              2
-            </div>
-          </button>
 
-        </div>
 
+<!-- Sidenav -->
+
+<mat-drawer-container class="example-container w-full h-full absolute" [hasBackdrop]="true">
+  <mat-drawer #drawer mode="over" style="overflow:hidden;">
+     <div class="w-64">
+    <!-- User -->
+      <section class="flex flex-col justify-center antialiased h-32 w-full p-4 border-b border-b-neutral-300">
+      <div class="flex flex-col h-full">
+        <!-- Card top -->
+       <div class="flex-grow p-5">
+       <div class="flex justify-between items-start">
+       <!-- Image + name -->
+      <header>
+      <div class="flex mb-2 flex-col">
+       <a class="relative inline-flex items-start mr-5" href="#0">
+      <img class="rounded-full" src="https://preview.cruip.com/mosaic/images/user-64-01.jpg" width="45" height="45" alt="User 01" />
+      </a>
+       <h1 class="mt-1 text-black text-md">{{currentUser?.firstName}} {{currentUser?.lastName}}</h1>
+       <small class="text-blue-400">Set Emoji status</small>
       </div>
-    </div>
-    <div class="flex flex-col flex-auto h-full p-6  bg-slate-100">
-      <!-- Message item component -->
+      </header>
+      </div>
+      </div>
+      </div>
+     </section>
+    <!-- User end -->
+       <aside  class="fixed top-40 left-0 z-40 w-64 h-screen ">
+      <div class="h-full px-3 py-4 overflow-y-auto bg-white dark:bg-gray-800">
+         <ul class="space-y-2 font-medium">
+          <!-- New Group -->
+            <li>
+               <button (click)="newGroup()"  class="flex w-full items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                  <svg class="w-5 h-5  transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
+                    <circle cx="9" cy="6" r="4" stroke="#1C274C" stroke-width="1.5"/>
+                    <path d="M15 9C16.6569 9 18 7.65685 18 6C18 4.34315 16.6569 3 15 3" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"/>
+                    <ellipse cx="9" cy="17" rx="7" ry="4" stroke="#1C274C" stroke-width="1.5"/>
+                    <path d="M18 14C19.7542 14.3847 21 15.3589 21 16.5C21 17.5293 19.9863 18.4229 18.5 18.8704" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                  <span class="ms-3">New group</span>
+               </button>
+            </li>
+          <!-- New Group end-->
 
-      <ng-container class="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4 " *ngIf="selectedChat; else selectChatMessage">
-          <app-message-item
-            class="flex flex-col h-full overflow-x-auto mb-4"
-            [income]="income"
-            [selectedChat]="selectedChat"
-            [editingMessage]="editingMessage"
-            (editMessageEvent)="onSelectEditingMessage($event)"
-            (deleteMessageForMyselfEvent)="deleteMessageForMyself($event)"
-            (deleteMessageForEveryoneEvent)="deleteMessageForEveryone($event)"
-            (replyMessageEvent)="replyMessage($event)"
-            (forwardMessageEvent)="forwardMessage($event)"
-            (downloadFileEvent)="downloadFile($event)"
-          >
+          <!-- New Channel -->
+            <li>
+               <button type="button" class="flex w-full items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
+                <svg class="w-5 h-5  transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
+                  <circle cx="9" cy="6" r="4" stroke="#1C274C" stroke-width="1.5"/>
+                  <path d="M15 9C16.6569 9 18 7.65685 18 6C18 4.34315 16.6569 3 15 3" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"/>
+                  <ellipse cx="9" cy="17" rx="7" ry="4" stroke="#1C274C" stroke-width="1.5"/>
+                  <path d="M18 14C19.7542 14.3847 21 15.3589 21 16.5C21 17.5293 19.9863 18.4229 18.5 18.8704" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                     <span class=" ms-3 text-left rtl:text-right whitespace-nowrap">New Channel</span>
+               </button>
+            </li>
+          <!-- New Channel end-->
+          <!-- My stories -->
+            <li>
+               <button href="#" class="flex w-full items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                  <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
+                     <path d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z"/>
+                  </svg>
+                  <span class=" ms-3 whitespace-nowrap">My Stories</span>
+                  <!-- <span class="inline px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Pro</span> -->
+               </button>
+            </li>
+          <!-- My stories end-->
+          <!-- Wallet -->
+            <li>
+               <button href="#" class="flex w-full items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                  <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                     <path d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z"/>
+                  </svg>
+                  <span class=" ms-3 whitespace-nowrap">Wallet</span>
+                  <!-- <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span> -->
+               </button>
+            </li>
+          <!-- Wallet end-->
+          <!-- Contacts -->
+            <li >
+               <button (click)="openContacts()" href="#" class="flex w-full items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                  <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                     <path d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z"/>
+                  </svg>
+                  <span class=" ms-3 whitespace-nowrap">Contacts</span>
+               </button>
+            </li>
+          <!-- Contacts end-->
+          <!-- Calls -->
+            <li>
+               <button href="#" class="w-full  flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                  <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                     <path d="M17 5.923A1 1 0 0 0 16 5h-3V4a4 4 0 1 0-8 0v1H2a1 1 0 0 0-1 .923L.086 17.846A2 2 0 0 0 2.08 20h13.84a2 2 0 0 0 1.994-2.153L17 5.923ZM7 9a1 1 0 0 1-2 0V7h2v2Zm0-5a2 2 0 1 1 4 0v1H7V4Zm6 5a1 1 0 1 1-2 0V7h2v2Z"/>
+                  </svg>
+                  <span class="ms-3 whitespace-nowrap">Calls</span>
+               </button>
+            </li>
+          <!-- Calls end-->
+          <!-- Saved Messages -->
+            <li>
+               <button href="#" class="flex w-full items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                  <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
+                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"/>
+                  </svg>
+                  <span class="ms-3 whitespace-nowrap">Saved Messages</span>
+               </button>
+            </li>
+          <!-- Saved Messages end-->
+          <!-- Settings-->
+            <li>
+               <button href="#" class="w-full  flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                <svg fill="currentColor"  class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" viewBox="0 0 20 20"   version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 455 455" xml:space="preserve">
+                <path d="M455,257v-70h-63.174c-4.423-20.802-12.706-40.174-24.066-57.334l42.32-42.32l-49.498-49.498l-42.756,42.756
+              	C299.911,69.199,279.682,61.104,258,57.183V0h-70v59.319c-21.306,5.221-41.009,14.515-58.24,27.014L88.346,44.92L38.849,94.417
+	              l43.979,43.979C72.59,156.135,65.513,175.926,62.359,197H0v70h66.623c5.396,19.392,14.195,37.364,25.711,53.24L45.92,366.654
+	              l49.497,49.498l48.979-48.979c16.329,9.424,34.397,16.171,53.604,19.645V455h70v-70.319c18.91-4.634,36.557-12.476,52.334-22.92
+              	l47.32,47.32l49.498-49.498l-47.756-47.756c10.524-16.531,18.223-35.033,22.431-54.827H455z M228,309.5
+	              c-48.248,0-87.5-39.252-87.5-87.5s39.252-87.5,87.5-87.5s87.5,39.252,87.5,87.5S276.248,309.5,228,309.5z"/>
+              </svg>
 
-        </app-message-item>
-      </ng-container>
 
-       <ng-template #selectChatMessage>
-          <div class="w-full h-full bg-transparent flex items-center justify-center  bg-gray-100"  >
-            <button  class="text-white bg-slate-400 cursor-not-allowed font-medium rounded-lg text-sm px-5 py-2.5 text-center">Select a chat to start messaging</button>
+
+                  <span class=" ms-3 whitespace-nowrap">Settings</span>
+               </button>
+            </li>
+          <!-- Settings end-->
+          <!-- Night Mode-->
+            <li>
+              <button href="#" class="w-full flex items-center p-2  text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                 <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.96 2.96 0 0 0 .13 5H5Z"/>
+                    <path d="M6.737 11.061a2.961 2.961 0 0 1 .81-1.515l6.117-6.116A4.839 4.839 0 0 1 16 2.141V2a1.97 1.97 0 0 0-1.933-2H7v5a2 2 0 0 1-2 2H0v11a1.969 1.969 0 0 0 1.933 2h12.134A1.97 1.97 0 0 0 16 18v-3.093l-1.546 1.546c-.413.413-.94.695-1.513.81l-3.4.679a2.947 2.947 0 0 1-1.85-.227 2.96 2.96 0 0 1-1.635-3.257l.681-3.397Z"/>
+                    <path d="M8.961 16a.93.93 0 0 0 .189-.019l3.4-.679a.961.961 0 0 0 .49-.263l6.118-6.117a2.884 2.884 0 0 0-4.079-4.078l-6.117 6.117a.96.96 0 0 0-.263.491l-.679 3.4A.961.961 0 0 0 8.961 16Zm7.477-9.8a.958.958 0 0 1 .68-.281.961.961 0 0 1 .682 1.644l-.315.315-1.36-1.36.313-.318Zm-5.911 5.911 4.236-4.236 1.359 1.359-4.236 4.237-1.7.339.341-1.699Z"/>
+                 </svg>
+                 <span class="ms-3 whitespace-nowrap">Night Mode</span>
+              </button>
+           </li>
+          <!-- Night Mode end-->
+         </ul>
+      </div>
+      </aside>
+     </div>
+  </mat-drawer>
+   <mat-drawer-content style="overflow:hidden;">
+     <div class="w-full h-full">
+      <!-- Folders abd Toggle -->
+      <div class="bg-white w-20 h-full fixed top-0 left-0">
+
+    <!-- Toggle button -->
+       <div class="flex justify-center items-center h-20">
+      <button (click)="openDrawer()" >
+        <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+           </svg>
+     </button>
+       </div>
+       <!-- Toggle button end -->
+      <!-- All Chats folder -->
+       <div class="flex justify-center items-center h-20">
+      <button class="flex flex-col items-center" >
+        <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 12C9 12.5523 8.55228 13 8 13C7.44772 13 7 12.5523 7 12C7 11.4477 7.44772 11 8 11C8.55228 11 9 11.4477 9 12Z" fill="#1C274C"/>
+          <path d="M13 12C13 12.5523 12.5523 13 12 13C11.4477 13 11 12.5523 11 12C11 11.4477 11.4477 11 12 11C12.5523 11 13 11.4477 13 12Z" fill="#1C274C"/>
+          <path d="M17 12C17 12.5523 16.5523 13 16 13C15.4477 13 15 12.5523 15 12C15 11.4477 15.4477 11 16 11C16.5523 11 17 11.4477 17 12Z" fill="#1C274C"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M22.75 12C22.75 6.06294 17.9371 1.25 12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 13.7183 1.65371 15.3445 2.37213 16.7869C2.47933 17.0021 2.50208 17.2219 2.4526 17.4068L1.857 19.6328C1.44927 21.1566 2.84337 22.5507 4.3672 22.143L6.59324 21.5474C6.77814 21.4979 6.99791 21.5207 7.21315 21.6279C8.65553 22.3463 10.2817 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12ZM12 2.75C17.1086 2.75 21.25 6.89137 21.25 12C21.25 17.1086 17.1086 21.25 12 21.25C10.5189 21.25 9.12121 20.9025 7.88191 20.2852C7.38451 20.0375 6.78973 19.9421 6.20553 20.0984L3.97949 20.694C3.57066 20.8034 3.19663 20.4293 3.30602 20.0205L3.90163 17.7945C4.05794 17.2103 3.96254 16.6155 3.7148 16.1181C3.09752 14.8788 2.75 13.4811 2.75 12C2.75 6.89137 6.89137 2.75 12 2.75Z" fill="#1C274C"/>
+        </svg>
+        <small>All Chats</small>
+     </button>
+        </div>
+      <!-- All Chats folder end -->
+       <!-- Private folder -->
+         <div class=" flex justify-center items-center h-20">
+      <button  class="flex flex-col items-center" >
+        <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 8.2C3 7.07989 3 6.51984 3.21799 6.09202C3.40973 5.71569 3.71569 5.40973 4.09202 5.21799C4.51984 5 5.0799 5 6.2 5H9.67452C10.1637 5 10.4083 5 10.6385 5.05526C10.8425 5.10425 11.0376 5.18506 11.2166 5.29472C11.4184 5.4184 11.5914 5.59135 11.9373 5.93726L12.0627 6.06274C12.4086 6.40865 12.5816 6.5816 12.7834 6.70528C12.9624 6.81494 13.1575 6.89575 13.3615 6.94474C13.5917 7 13.8363 7 14.3255 7H17.8C18.9201 7 19.4802 7 19.908 7.21799C20.2843 7.40973 20.5903 7.71569 20.782 8.09202C21 8.51984 21 9.0799 21 10.2V15.8C21 16.9201 21 17.4802 20.782 17.908C20.5903 18.2843 20.2843 18.5903 19.908 18.782C19.4802 19 18.9201 19 17.8 19H6.2C5.07989 19 4.51984 19 4.09202 18.782C3.71569 18.5903 3.40973 18.2843 3.21799 17.908C3 17.4802 3 16.9201 3 15.8V8.2Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <small>Private</small>
+     </button>
+        </div>
+       <!-- Private folder end -->
+      <!-- Family folder -->
+        <div class=" flex justify-center items-center h-20">
+        <button  class="flex flex-col items-center" >
+          <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 8.2C3 7.07989 3 6.51984 3.21799 6.09202C3.40973 5.71569 3.71569 5.40973 4.09202 5.21799C4.51984 5 5.0799 5 6.2 5H9.67452C10.1637 5 10.4083 5 10.6385 5.05526C10.8425 5.10425 11.0376 5.18506 11.2166 5.29472C11.4184 5.4184 11.5914 5.59135 11.9373 5.93726L12.0627 6.06274C12.4086 6.40865 12.5816 6.5816 12.7834 6.70528C12.9624 6.81494 13.1575 6.89575 13.3615 6.94474C13.5917 7 13.8363 7 14.3255 7H17.8C18.9201 7 19.4802 7 19.908 7.21799C20.2843 7.40973 20.5903 7.71569 20.782 8.09202C21 8.51984 21 9.0799 21 10.2V15.8C21 16.9201 21 17.4802 20.782 17.908C20.5903 18.2843 20.2843 18.5903 19.908 18.782C19.4802 19 18.9201 19 17.8 19H6.2C5.07989 19 4.51984 19 4.09202 18.782C3.71569 18.5903 3.40973 18.2843 3.21799 17.908C3 17.4802 3 16.9201 3 15.8V8.2Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <small>Family</small>
+       </button>
+        </div>
+       <!-- Family folder end -->
+        <!-- Football folder -->
+         <div class=" flex justify-center items-center h-20">
+      <button  class="flex flex-col items-center" >
+        <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 8.2C3 7.07989 3 6.51984 3.21799 6.09202C3.40973 5.71569 3.71569 5.40973 4.09202 5.21799C4.51984 5 5.0799 5 6.2 5H9.67452C10.1637 5 10.4083 5 10.6385 5.05526C10.8425 5.10425 11.0376 5.18506 11.2166 5.29472C11.4184 5.4184 11.5914 5.59135 11.9373 5.93726L12.0627 6.06274C12.4086 6.40865 12.5816 6.5816 12.7834 6.70528C12.9624 6.81494 13.1575 6.89575 13.3615 6.94474C13.5917 7 13.8363 7 14.3255 7H17.8C18.9201 7 19.4802 7 19.908 7.21799C20.2843 7.40973 20.5903 7.71569 20.782 8.09202C21 8.51984 21 9.0799 21 10.2V15.8C21 16.9201 21 17.4802 20.782 17.908C20.5903 18.2843 20.2843 18.5903 19.908 18.782C19.4802 19 18.9201 19 17.8 19H6.2C5.07989 19 4.51984 19 4.09202 18.782C3.71569 18.5903 3.40973 18.2843 3.21799 17.908C3 17.4802 3 16.9201 3 15.8V8.2Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <small>Football</small>
+     </button>
+        </div>
+       <!-- Football folder end -->
+      <!-- Job folder -->
+        <div class=" flex justify-center items-center h-20">
+        <button  class="flex flex-col items-center" >
+          <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 8.2C3 7.07989 3 6.51984 3.21799 6.09202C3.40973 5.71569 3.71569 5.40973 4.09202 5.21799C4.51984 5 5.0799 5 6.2 5H9.67452C10.1637 5 10.4083 5 10.6385 5.05526C10.8425 5.10425 11.0376 5.18506 11.2166 5.29472C11.4184 5.4184 11.5914 5.59135 11.9373 5.93726L12.0627 6.06274C12.4086 6.40865 12.5816 6.5816 12.7834 6.70528C12.9624 6.81494 13.1575 6.89575 13.3615 6.94474C13.5917 7 13.8363 7 14.3255 7H17.8C18.9201 7 19.4802 7 19.908 7.21799C20.2843 7.40973 20.5903 7.71569 20.782 8.09202C21 8.51984 21 9.0799 21 10.2V15.8C21 16.9201 21 17.4802 20.782 17.908C20.5903 18.2843 20.2843 18.5903 19.908 18.782C19.4802 19 18.9201 19 17.8 19H6.2C5.07989 19 4.51984 19 4.09202 18.782C3.71569 18.5903 3.40973 18.2843 3.21799 17.908C3 17.4802 3 16.9201 3 15.8V8.2Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <small>Job</small>
+       </button>
+        </div>
+       <!-- Jobs folder end -->
+
+      <!-- Bots folder -->
+          <div class=" flex justify-center items-center h-20">
+        <button  class="flex flex-col items-center" >
+          <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21.928 11.607c-.202-.488-.635-.605-.928-.633V8c0-1.103-.897-2-2-2h-6V4.61c.305-.274.5-.668.5-1.11a1.5 1.5 0 0 0-3 0c0 .442.195.836.5 1.11V6H5c-1.103 0-2 .897-2 2v2.997l-.082.006A1 1 0 0 0 1.99 12v2a1 1 0 0 0 1 1H3v5c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2v-5a1 1 0 0 0 1-1v-1.938a1.006 1.006 0 0 0-.072-.455zM5 20V8h14l.001 3.996L19 12v2l.001.005.001 5.995H5z"/><ellipse cx="8.5" cy="12" rx="1.5" ry="2"/><ellipse cx="15.5" cy="12" rx="1.5" ry="2"/><path d="M8 16h8v2H8z"/>
+          </svg>
+          <small>Bots</small>
+       </button>
           </div>
-      </ng-template>
+       <!-- Bots folder end -->
+        <!-- Groups folder -->
+          <div class=" flex justify-center items-center h-20">
+      <button  class="flex flex-col items-center" >
+        <svg class=" w-5 h-5 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+          <path d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z"/>
+       </svg>
+        <small>Groups</small>
+       </button>
+         </div>
+       <!-- Groups folder end -->
+        <!-- Unread messages folder -->
+          <div class="flex justify-center items-center h-20">
+          <button class="flex flex-col items-center" >
+            <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 12C9 12.5523 8.55228 13 8 13C7.44772 13 7 12.5523 7 12C7 11.4477 7.44772 11 8 11C8.55228 11 9 11.4477 9 12Z" fill="#1C274C"/>
+              <path d="M13 12C13 12.5523 12.5523 13 12 13C11.4477 13 11 12.5523 11 12C11 11.4477 11.4477 11 12 11C12.5523 11 13 11.4477 13 12Z" fill="#1C274C"/>
+              <path d="M17 12C17 12.5523 16.5523 13 16 13C15.4477 13 15 12.5523 15 12C15 11.4477 15.4477 11 16 11C16.5523 11 17 11.4477 17 12Z" fill="#1C274C"/>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M22.75 12C22.75 6.06294 17.9371 1.25 12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 13.7183 1.65371 15.3445 2.37213 16.7869C2.47933 17.0021 2.50208 17.2219 2.4526 17.4068L1.857 19.6328C1.44927 21.1566 2.84337 22.5507 4.3672 22.143L6.59324 21.5474C6.77814 21.4979 6.99791 21.5207 7.21315 21.6279C8.65553 22.3463 10.2817 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12ZM12 2.75C17.1086 2.75 21.25 6.89137 21.25 12C21.25 17.1086 17.1086 21.25 12 21.25C10.5189 21.25 9.12121 20.9025 7.88191 20.2852C7.38451 20.0375 6.78973 19.9421 6.20553 20.0984L3.97949 20.694C3.57066 20.8034 3.19663 20.4293 3.30602 20.0205L3.90163 17.7945C4.05794 17.2103 3.96254 16.6155 3.7148 16.1181C3.09752 14.8788 2.75 13.4811 2.75 12C2.75 6.89137 6.89137 2.75 12 2.75Z" fill="#1C274C"/>
+            </svg>
+            <small>Unread</small>
+         </button>
+         </div>
+        <!-- Unread messages folder  end-->
+           <!-- Edit -->
+         <div class=" flex justify-center items-center h-20">
+        <button  class="flex flex-col items-center" >
+          <svg class="w-8 h-8" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 6.75H12M5 17.25H12M5 12H6.75M17.25 6.75H19M17.25 6.75C17.25 7.7165 16.4665 8.5 15.5 8.5C14.5335 8.5 13.75 7.7165 13.75 6.75C13.75 5.7835 14.5335 5 15.5 5C16.4665 5 17.25 5.7835 17.25 6.75ZM17.25 17.25H19M17.25 17.25C17.25 18.2165 16.4665 19 15.5 19C14.5335 19 13.75 18.2165 13.75 17.25C13.75 16.2835 14.5335 15.5 15.5 15.5C16.4665 15.5 17.25 16.2835 17.25 17.25ZM12 12H19M12 12C12 12.9665 11.2165 13.75 10.25 13.75C9.2835 13.75 8.5 12.9665 8.5 12C8.5 11.0335 9.2835 10.25 10.25 10.25C11.2165 10.25 12 11.0335 12 12Z" stroke="#464455" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <small>Edit</small>
+       </button>
+         </div>
+       <!-- Edit end -->
+
+     </div>
+      <!-- Folders abd Toggle end -->
+
+    <!-- Main content -->
+     <div class="ml-20 grid grid-cols-6 gap-4  bg-slate-600">
+      <!-- LEFT BLOCK (USER MESSAGES AND USERS) -->
+        <div class="bg-white p-4 col-span-6 md:col-span-2">
+          <!-- SEARCH BAR -->
+          <div class="h-14 flex items-center fixed top-2 z-50  w-auto">
+            <div class="bg-slate-100   flex px-4 py-2 rounded-full border-2 border-slate-300 overflow-hidden  max-w-full sm:w-full  lg:w-[300px]  font-[sans-serif]">
+              <input type="email" placeholder="Search Something..."
+                class="w-full outline-none bg-transparent text-gray-600 text-sm" />
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192.904 192.904" width="16px" class="fill-gray-600">
+                <path
+                  d="m190.707 180.101-47.078-47.077c11.702-14.072 18.752-32.142 18.752-51.831C162.381 36.423 125.959 0 81.191 0 36.422 0 0 36.423 0 81.193c0 44.767 36.422 81.187 81.191 81.187 19.688 0 37.759-7.049 51.831-18.751l47.079 47.078a7.474 7.474 0 0 0 5.303 2.197 7.498 7.498 0 0 0 5.303-12.803zM15 81.193C15 44.694 44.693 15 81.191 15c36.497 0 66.189 29.694 66.189 66.193 0 36.496-29.692 66.187-66.189 66.187C44.693 147.38 15 117.689 15 81.193z">
+                </path>
+              </svg>
+            </div>
+          </div>
+
+          <!-- SEARCH BAR END-->
+
+
+          <!--          TODO()-2: Display chats with last message-->
+          <!-- USER MESSAGES -->
+          <!--          <div class="overflow-y-auto h-screen p-3 mb-9 pb-20 mt-14" >-->
+          <!--            &lt;!&ndash; USER MESSAGE BOX &ndash;&gt;-->
+          <!--              <div class="flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md" *ngFor="let group of groups" (click)="selectGroup(group)"  >-->
+          <!--              <div class="w-12 h-12 bg-gray-300 rounded-full mr-3">-->
+          <!--                <img src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato" alt="User Avatar" class="w-12 h-12 rounded-full">-->
+          <!--              </div>-->
+          <!--              <div class="flex-1">-->
+          <!--                <h2 class="text-lg font-semibold">{{group.name?.length>6?group.name.slice(0,6):group.name}}</h2>-->
+          <!--                <p class="text-gray-600 ">Hi Steve</p>-->
+          <!--              </div>-->
+          <!--             </div>-->
+          <!--             <div class="flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md" *ngFor="let user of users"  (click)="selectChat(user)">-->
+          <!--              <div class="w-12 h-12 bg-gray-300 rounded-full mr-3">-->
+          <!--                <img src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato" alt="User Avatar" class="w-12 h-12 rounded-full">-->
+          <!--              </div>-->
+          <!--              <div class="flex-1">-->
+          <!--                <h2 class="text-lg font-semibold">{{user.firstName}}</h2>-->
+          <!--                <p class="text-gray-600 ">Hi Steve</p>-->
+          <!--              </div>-->
+          <!--             </div>-->
+
+          <!--          </div>-->
+          <!-- USER MESSAGES END-->
+
+
+
+
+
+
+        </div>
+
+
+
+
+        <!-- RIGHT BLOCK (MESSAGING)-->
+          <div class="bg-white p-4 hidden md:block col-span-4  h-full">
+            <!-- MESSAGING -->
+            <ng-container *ngIf="selectedChat" >
+
+
+              <!-- MESSAGING COMPONENT  -->
+
+                  <div class="flex-1 p:2 sm:p-6 justify-between flex flex-col h-screen">
+                  <div class="flex sm:items-center justify-between py-3 border-b-2 border-gray-200">
+                 <div class="relative flex items-center space-x-4">
+                  <div class="relative">
+                 <span class="absolute text-green-500 right-0 bottom-0">
+                 <svg width="20" height="20">
+                 <circle cx="8" cy="8" r="8" fill="currentColor"></circle>
+                </svg>
+                 </span>
+                <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="" class="w-10 sm:w-16 h-10 sm:h-16 rounded-full">
+                </div>
+                <div class="flex flex-col leading-tight">
+                 <div class="text-2xl mt-1 flex items-center">
+                 <span class="text-gray-700 mr-3">{{selectedChat?.firstName}} {{selectedChat?.lastName}}</span>
+                 </div>
+                  <span class="text-lg text-gray-600">User</span>
+                 </div>
+                  </div>
+                  </div>
+                  <!-- MESSAGES -->
+                   <div id="messages" class="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
+                 <!-- FILE MESSAGE -->
+                   <div class="grid pb-11" *ngFor="let message of income">
+                  <div class="flex gap-2.5 mb-4">
+                    <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="My profile" class="w-6 h-6 rounded-full">
+                   <div class="grid">
+                    <small  *ngIf="message.repliedMessage">{{message.repliedMessage.text||message.repliedMessage.forwardedMessage.text}}</small>
+                     <h5 class="text-gray-900 text-sm font-semibold leading-snug pb-1" *ngIf="message.sender.id!==currentUser.id">{{message.sender.firstName}} {{message.sender.lastName}}</h5>
+                     <div *ngIf="!message.forwardedMessage" class="w-full max-w-xs grid " >
+                      <!-- REGULAR MESSAGE -->
+                       <div (contextmenu)="openMessageActions(message)"  (dblclick)="replyMessage(message)"    [ngClass]="{'bg-blue-700': message.sender.id===currentUser.id,'bg-gray-200': message.sender.id!==currentUser.id}"   class="px-3.5 py-2  rounded flex flex-col gap-2 w-full hover:cursor-pointer" >
+                         <h5 class="text-sm font-normal"  [ngClass]="{'text-white': message.sender.id===currentUser.id,'text-gray-900': message.sender.id!==currentUser.id}">{{message.text}}</h5>
+                         <h5 class="text-sm font-normal" *ngIf="message.forwardedMessage" [ngClass]="{'text-white': message.sender.id===currentUser.id,'text-gray-900': message.sender.id!==currentUser.id}">{{message.text}}</h5>
+                         <span *ngIf="message.files.length">
+                          <small *ngIf="message.forwardedMessage?.files" class=" text-blue-800 ml-2">from {{message.sender?.firstName?.slice(0,5)}}</small>
+                          <small class="text-sm font-normal" [ngClass]="{'text-white': message.sender.id===currentUser.id,'text-gray-900': message.sender.id!==currentUser.id}"
+                         *ngFor="let file of message?.files"
+                         (click)="downloadFile(file)"
+                         class=" cursor-pointer hover:text-red-900 hover:outline-red-900  hover:outline-2 hover:border-b-2 hover:border-b-slate-950 ">
+                        {{file.name}}
+                        </small>
+                        </span>
+                       </div>
+                       <div class="justify-end items-center inline-flex mb-2.5">
+                         <h6 class="text-gray-500 text-xs font-normal leading-4 py-1"> <small *ngIf="message.isEdited">edited</small> {{ message.createdAt | date:'HH:mm' }}</h6>
+                       </div>
+                     </div>
+                      <!-- REGULAR MESSAGE END -->
+
+                     <!-- FORWARD MESSAGE -->
+                     <div *ngIf="message.forwardedMessage"  class="w-full max-w-xs grid bg-green" >
+                      <div  (contextmenu)="openMessageActions(message)" (dblclick)="replyMessage(message)"     class="  text-gray-900 bg-gray-200 px-3.5 py-2  rounded flex flex-col gap-2 w-full hover:cursor-pointer" >
+                        <small class="text-sm font-normal" >from {{message.forwardedMessage.sender.firstName}} {{message.forwardedMessage.sender.lastName}}</small>
+                        <h5 class="text-sm font-normal"  [id]="message.forwardedMessage.id">{{message.forwardedMessage.text}}</h5>
+                        <span *ngIf="message.forwardedMessage.files.length">
+                          <small *ngFor="let file of message.forwardedMessage.files" >
+                             <span (click)="downloadFile(file)"  class=" cursor-pointer hover:text-red-900 hover:outline-red-900  hover:outline-2 hover:border-b-2 hover:border-b-slate-950 ">
+                              {{file?.name}}
+                             </span>
+                          </small>
+                        </span>
+                      </div>
+                      <div class="justify-end items-center inline-flex mb-2.5">
+                        <h6 class="text-gray-500 text-xs font-normal leading-4 py-1"> <small *ngIf="message.isEdited">edited</small> {{ message.createdAt | date:'HH:mm' }}</h6>
+                      </div>
+
+                    </div>
+                     <!-- FORWARD MESSAGE END -->
+
+                   </div>
+                  </div>
+                  </div>
+                   </div>
+                  <!-- MESSAGES END -->
+
+
+                  <!--MESSAGE SENDING  -->
+                   <div class="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0 ">
+                    <small *ngIf="repliedMessage">Reply to {{repliedMessage.text||repliedMessage.forwardedMessage.text}}</small>
+                    <!-- <small *ngIf="repliedMessage.forwardedMessage">Reply to {{repliedMessage.forwardedMessage?.text}}</small> -->
+                   <form [formGroup]="inputGroup" class="relative flex">
+
+                     <span class="absolute inset-y-0 flex items-center">
+                     <button type="button" class="inline-flex items-center justify-center rounded-full h-12 w-12 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
+                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 text-gray-600">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                     </svg>
+                     </button>
+                     </span>
+                     <input  formControlName="message" type="text" [value]="this.inputGroup.value.message"   placeholder="Write your message!" class="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 bg-gray-200 rounded-md py-3">
+                      <div class="absolute right-0 items-center inset-y-0 hidden sm:flex">
+                    <label class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none cursor-pointer">
+                    <input  formControlName="file"  type="file"  (change)="onFileSelected($event)" multiple class="sr-only">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 text-gray-600">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+                    </svg>
+                     </label>
+                     <button type="button" class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 text-gray-600">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                   </svg>
+                   </button>
+                    <button type="button" class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 text-gray-600">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                   </svg>
+                  </button>
+                   <button
+                   *ngIf="!editingMessage"
+                    (click)="sendMessage()"
+                     class="inline-flex items-center justify-center rounded-lg px-4 py-3 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none"
+                      >
+                 <span class="font-bold">Send</span>
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-6 w-6 ml-2 transform rotate-90">
+                 <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
+                 </svg>
+                </button>
+
+                <!-- EDIT BUTTON -->
+                  <button *ngIf="editingMessage"
+                  (click)="editMessage()"
+                  class="inline-flex items-center justify-center rounded-lg px-4 py-3 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none"
+                 >
+                <span class="hidden md:inline-block">Edit</span>
+                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="w-6 h-6 ml-1">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                 </svg>
+                  </button>
+                <!-- EDIT BUTTON END-->
+                  </div>
+                  </form>
+                  </div>
+                  <!--MESSAGE SENDING END  -->
+                 </div>
+
+              <!-- MESSAGING COMPONENT 2 -->
+
+
+
+
+
+            </ng-container>
+          <!-- MESSAGING  END-->
+
+            <ng-container *ngIf="selectedGroup">
+
+              <!-- MESSAGING COMPONENT  -->
+
+              <div class="flex-1 p:2 sm:p-6 justify-between flex flex-col h-screen">
+                       <!-- Header -->
+                       <div class="py-2 px-3 bg-grey-lighter flex flex-row justify-between items-center  border-b-2 border-gray-200">
+                        <div class="flex items-center">
+                         <div class="relative ">
+                            <span class="absolute text-green-500 right-0 bottom-0">
+                            <svg width="20" height="20">
+                            <circle cx="8" cy="8" r="8" fill="currentColor"></circle>
+                           </svg>
+                            </span>
+                           <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="" class="w-10 sm:w-16 h-10 sm:h-16 rounded-full">
+                        </div>
+                         <div class="ml-4">
+                        <p class="text-grey-darkest">
+                        {{selectedGroup.name}}
+                        </p>
+                        <p class="text-grey-darker text-xs mt-1 inline" >
+                        {{selectedGroup.users.length}}  members
+                        </p>
+                        </div>
+                        </div>
+                        <div class="flex items-center">
+                        <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#263238" fill-opacity=".5" d="M15.9 14.3H15l-.3-.3c1-1.1 1.6-2.7 1.6-4.3 0-3.7-3-6.7-6.7-6.7S3 6 3 9.7s3 6.7 6.7 6.7c1.6 0 3.2-.6 4.3-1.6l.3.3v.8l5.1 5.1 1.5-1.5-5-5.2zm-6.2 0c-2.6 0-4.6-2.1-4.6-4.6s2.1-4.6 4.6-4.6 4.6 2.1 4.6 4.6-2 4.6-4.6 4.6z"></path></svg>
+                        </div>
+                        <div class="ml-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#263238" fill-opacity=".5" d="M1.816 15.556v.002c0 1.502.584 2.912 1.646 3.972s2.472 1.647 3.974 1.647a5.58 5.58 0 0 0 3.972-1.645l9.547-9.548c.769-.768 1.147-1.767 1.058-2.817-.079-.968-.548-1.927-1.319-2.698-1.594-1.592-4.068-1.711-5.517-.262l-7.916 7.915c-.881.881-.792 2.25.214 3.261.959.958 2.423 1.053 3.263.215l5.511-5.512c.28-.28.267-.722.053-.936l-.244-.244c-.191-.191-.567-.349-.957.04l-5.506 5.506c-.18.18-.635.127-.976-.214-.098-.097-.576-.613-.213-.973l7.915-7.917c.818-.817 2.267-.699 3.23.262.5.501.802 1.1.849 1.685.051.573-.156 1.111-.589 1.543l-9.547 9.549a3.97 3.97 0 0 1-2.829 1.171 3.975 3.975 0 0 1-2.83-1.173 3.973 3.973 0 0 1-1.172-2.828c0-1.071.415-2.076 1.172-2.83l7.209-7.211c.157-.157.264-.579.028-.814L11.5 4.36a.572.572 0 0 0-.834.018l-7.205 7.207a5.577 5.577 0 0 0-1.645 3.971z"></path></svg>
+                        </div>
+                         <div class="ml-6 cursor-pointer"  >
+                                <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#263238" fill-opacity=".6" d="M12 7a2 2 0 1 0-.001-4.001A2 2 0 0 0 12 7zm0 2a2 2 0 1 0-.001 3.999A2 2 0 0 0 12 9zm0 6a2 2 0 1 0-.001 3.999A2 2 0 0 0 12 15z"></path></svg> -->
+                         <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                                  <mat-icon>more_vert</mat-icon>
+                         </button>
+                         <mat-menu class="w-full" #menu="matMenu">
+                         <button  class="w-full"  mat-menu-item
+                          >
+                        <div class="w-full flex gap-2 items-center">
+                         <svg class="w-6 h-6 ml-3" version="1.1" id="Uploaded to svgrepo.com" xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 32 32" xml:space="preserve">
+                      <path class="linesandangles_een" d="M21,15.242l2-2V27l-8.598-5.159l1.458-1.458L21,23.468V15.242z M27.707,5.707l-22,22
+                       l-1.414-1.414L9.586,21H8V11h5l10-6v2.586l3.293-3.293L27.707,5.707z M21,9.586V8.532L13.554,13H10v6h1.586L21,9.586z"/>
+                      </svg>
+                      <span class="text-sm">Mute notifications</span>
+                      </div>
+                      </button>
+                       <button  class="w-full"  mat-menu-item>
+                      <div class="w-full flex gap-2 items-center">
+                      <svg class="w-5 h-5 ml-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V11C12.75 10.5858 12.4142 10.25 12 10.25C11.5858 10.25 11.25 10.5858 11.25 11V17C11.25 17.4142 11.5858 17.75 12 17.75Z" fill="#1C274C"/>
+                      <path d="M12 7C12.5523 7 13 7.44772 13 8C13 8.55228 12.5523 9 12 9C11.4477 9 11 8.55228 11 8C11 7.44772 11.4477 7 12 7Z" fill="#1C274C"/>
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12ZM12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 17.1086 6.89137 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75Z" fill="#1C274C"/>
+                      </svg>
+                     <span class="text-sm"  (click)="viewGroupInfo()" >View group info</span>
+                     </div>
+                     </button>
+                     <button  class="w-full"  mat-menu-item>
+                     <div class="w-full flex gap-2 items-center">
+                    <svg class="w-6 h-6 ml-3" version="1.1" id="Uploaded to svgrepo.com" xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 32 32" xml:space="preserve">
+                                    <path class="feather_een" d="M7,8.05V5.5C7,5.224,6.776,5,6.5,5S6,5.224,6,5.5v2.55C4.306,8.295,3,9.738,3,11.5s1.306,3.205,3,3.45
+                                     V26.5C6,26.776,6.224,27,6.5,27S7,26.776,7,26.5V14.95c1.694-0.245,3-1.688,3-3.45S8.694,8.295,7,8.05z M6.5,14
+                                     C5.122,14,4,12.878,4,11.5C4,10.121,5.122,9,6.5,9S9,10.121,9,11.5C9,12.878,7.878,14,6.5,14z M16,17.05V5.5
+                                     C16,5.224,15.776,5,15.5,5S15,5.224,15,5.5v11.55c-1.694,0.245-3,1.688-3,3.45s1.306,3.205,3,3.45v2.55c0,0.276,0.224,0.5,0.5,0.5
+                                     s0.5-0.224,0.5-0.5v-2.55c1.694-0.245,3-1.688,3-3.45S17.694,17.295,16,17.05z M15.5,23c-1.378,0-2.5-1.122-2.5-2.5
+                                     c0-1.379,1.122-2.5,2.5-2.5s2.5,1.121,2.5,2.5C18,21.878,16.878,23,15.5,23z M28,14.5c0-1.762-1.306-3.205-3-3.45V5.5
+                                     C25,5.224,24.776,5,24.5,5S24,5.224,24,5.5v5.55c-1.694,0.245-3,1.688-3,3.45s1.306,3.205,3,3.45v8.55c0,0.276,0.224,0.5,0.5,0.5
+                                     s0.5-0.224,0.5-0.5v-8.55C26.694,17.705,28,16.262,28,14.5z M24.5,17c-1.378,0-2.5-1.122-2.5-2.5c0-1.379,1.122-2.5,2.5-2.5
+                                     s2.5,1.121,2.5,2.5C27,15.878,25.878,17,24.5,17z"/>
+                    </svg>
+                    <span class="text-sm">Manage Group</span>
+                    </div>
+                    </button>
+                   <button  class="w-full"  mat-menu-item>
+                    <div class="w-full flex gap-2 items-center">
+                     <svg class="w-6 h-6 ml-3"  viewBox="0 0 24 24"
+                                       xmlns="http://www.w3.org/2000/svg">
+                     <path d="M7 11h7v2H7zm0-4h10.97v2H7zm0 8h13v2H7zM4 4h2v16H4z"/></svg>
+                    <span class="text-sm">Create Pol</span>
+                    </div>
+                    </button>
+                    <button  class="w-full"  mat-menu-item>
+                    <div class="w-full flex gap-2 items-center">
+                      <svg fill="#000000" class="w-6 h-6 ml-3" version="1.1" id="Capa_1"
+                           xmlns="http://www.w3.org/2000/svg"
+                           viewBox="0 0 576.61 576.609"
+                           xml:space="preserve">
+                               <g>
+                                 <g>
+                                   <path d="M460.17,2.065l-4.494-1.635C454.883,0.144,454.051,0,453.219,0c-3.002,0-5.719,1.894-6.742,4.714L324.891,338.102
+                                     c-1.627-0.201-3.271-0.354-4.916-0.479c-1.654-0.124-3.328-0.191-5.001-0.229c-26.02-0.641-53.751,8.874-74.138,31.537
+                                     l58.485,11.37l4.752,0.928l4.752,0.928l19.011,3.7l4.753,0.928l4.752,0.928l52.25,10.155c-0.115-2.113-0.287-4.16-0.555-6.13
+                                     c-2.793-20.626-17.107-36.558-36.5-45.708c-1.434-0.68-2.889-1.339-4.379-1.941c-1.473-0.593-2.975-1.129-4.486-1.654
+                                     L464.456,11.265C465.803,7.545,463.881,3.424,460.17,2.065z"/>
+                                   <path d="M301.721,400.258L228.3,385.98c-26.88,43.061-36.625,96.639-60.798,123.691c-9.008,10.089-27.091,34.989-55.778,39.847
+                                     l156.385,19.125l42.83-63.753l-18.895,66.68l41.205,5.039c0,0,48.5-95.797,55.596-159.407l-62.338-12.125L301.721,400.258z"/>
+                                 </g>
+                               </g>
+                    </svg>
+                     <span class="text-sm">Clear History</span>
+                    </div>
+                    </button>
+                    <button  class="w-full"  (click)="openDeleteGroup()"  mat-menu-item>
+                              <div class="w-full flex gap-2 items-center">
+                                <svg class="w-6 h-6 ml-3 text-red-600" viewBox="0 0 24 24" fill="#ffff" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M4 7H20" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M6 7V18C6 19.6569 7.34315 21 9 21H15C16.6569 21 18 19.6569 18 18V7" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                  </svg>
+                                  <span class="text-sm text-red-600">Delete and Leave</span>
+                              </div>
+                    </button>
+                        </mat-menu>
+                    </div>
+                    </div>
+                    </div>
+                <!-- MESSAGES -->
+            <!-- Messages -->
+                  <div class="flex-1 overflow-auto" style="background-color: #ffffff">
+                  <div class="py-2 px-3">
+                  <div class="grid pb-11" *ngFor="let message of income">
+                   <div class="flex gap-2.5 mb-4">
+                    <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="My profile" class="w-6 h-6 rounded-full">
+                   <div class="grid">
+                    <small  *ngIf="message.repliedMessage">{{message.repliedMessage.text||message.repliedMessage.forwardedMessage.text}}</small>
+                     <h5 class="text-gray-900 text-sm font-semibold leading-snug pb-1" *ngIf="message.sender.id!==currentUser.id">{{message.sender.firstName}} {{message.sender.lastName}}</h5>
+                     <div *ngIf="!message.forwardedMessage" class="w-full max-w-xs grid " >
+                      <!-- REGULAR MESSAGE -->
+                  <div (contextmenu)="openMessageActions(message)"  (dblclick)="replyMessage(message)"    [ngClass]="{'bg-blue-700': message.sender.id===currentUser.id,'bg-gray-200': message.sender.id!==currentUser.id}"   class="px-3.5 py-2  rounded flex flex-col gap-2 w-full hover:cursor-pointer" >
+                    <h5 class="text-sm font-normal"  [ngClass]="{'text-white': message.sender.id===currentUser.id,'text-gray-900': message.sender.id!==currentUser.id}">{{message.text}}</h5>
+                    <h5 class="text-sm font-normal" *ngIf="message.forwardedMessage" [ngClass]="{'text-white': message.sender.id===currentUser.id,'text-gray-900': message.sender.id!==currentUser.id}">{{message.text}}</h5>
+                    <span *ngIf="message.files.length">
+                    <small *ngIf="message.forwardedMessage?.files" class=" text-blue-800 ml-2">from {{message.sender?.firstName?.slice(0,5)}}</small>
+                     <small class="text-sm font-normal" [ngClass]="{'text-white': message.sender.id===currentUser.id,'text-gray-900': message.sender.id!==currentUser.id}"
+                     *ngFor="let file of message?.files"
+                     (click)="downloadFile(file)"
+                     class=" cursor-pointer hover:text-red-900 hover:outline-red-900  hover:outline-2 hover:border-b-2 hover:border-b-slate-950 ">
+                     {{file.name}}
+                    </small>
+                    </span>
+                    </div>
+                    <div class="justify-end items-center inline-flex mb-2.5">
+                     <h6 class="text-gray-500 text-xs font-normal leading-4 py-1"> <small *ngIf="message.isEdited">edited</small> {{ message.createdAt | date:'HH:mm' }}</h6>
+                    </div>
+                    </div>
+                   <!-- REGULAR MESSAGE END -->
+                  <!-- FORWARD MESSAGE -->
+                  <div *ngIf="message.forwardedMessage"  class="w-full max-w-xs grid bg-green" >
+                  <div  (contextmenu)="openMessageActions(message)" (dblclick)="replyMessage(message)"     class="  text-gray-900 bg-gray-200 px-3.5 py-2  rounded flex flex-col gap-2 w-full hover:cursor-pointer" >
+                  <small class="text-sm font-normal" >from {{message.forwardedMessage.sender.firstName}} {{message.forwardedMessage.sender.lastName}}</small>
+                  <h5 class="text-sm font-normal"  [id]="message.forwardedMessage.id">{{message.forwardedMessage.text}}</h5>
+                  <span *ngIf="message.forwardedMessage.files.length">
+                  <small *ngFor="let file of message.forwardedMessage.files" >
+                  <span (click)="downloadFile(file)"  class=" cursor-pointer hover:text-red-900 hover:outline-red-900  hover:outline-2 hover:border-b-2 hover:border-b-slate-950 ">
+                  {{file?.name}}
+                  </span>
+                  </small>
+                  </span>
+                  </div>
+                   <div class="justify-end items-center inline-flex mb-2.5">
+                  <h6 class="text-gray-500 text-xs font-normal leading-4 py-1"> <small *ngIf="message.isEdited">edited</small> {{ message.createdAt | date:'HH:mm' }}</h6>
+                  </div>
+                  </div>
+                  <!-- FORWARD MESSAGE END -->
+                   </div>
+                  </div>
+                  </div>
+                  </div>
+                  </div>
+                <!-- MESSAGES END -->
+                <!--MESSAGE SENDING  -->
+                 <div class="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0 ">
+                  <small *ngIf="repliedMessage">Reply to {{repliedMessage.text||repliedMessage.forwardedMessage.text}}</small>
+                  <!-- <small *ngIf="repliedMessage.forwardedMessage">Reply to {{repliedMessage.forwardedMessage?.text}}</small> -->
+                 <form [formGroup]="inputGroup" class="relative flex">
+
+                   <span class="absolute inset-y-0 flex items-center">
+                   <button type="button" class="inline-flex items-center justify-center rounded-full h-12 w-12 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
+                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 text-gray-600">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                   </svg>
+                   </button>
+                   </span>
+                   <input  formControlName="groupMessage" type="text" [value]="this.inputGroup.value.message"   placeholder="Write your message!" class="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 bg-gray-200 rounded-md py-3">
+                    <div class="absolute right-0 items-center inset-y-0 hidden sm:flex">
+                  <label class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none cursor-pointer">
+                  <input  formControlName="groupFile"  type="file"  (change)="onFileSelected($event)" multiple class="sr-only">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 text-gray-600">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+                  </svg>
+                   </label>
+                   <button type="button" class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 text-gray-600">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                 </svg>
+                 </button>
+                  <button type="button" class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 text-gray-600">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                 </svg>
+                </button>
+                 <button
+                 *ngIf="!editingMessage"
+                  (click)="sendMessage()"
+                   class="inline-flex items-center justify-center rounded-lg px-4 py-3 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none"
+                    >
+               <span class="font-bold">Send</span>
+               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-6 w-6 ml-2 transform rotate-90">
+               <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
+               </svg>
+              </button>
+              <!-- EDIT BUTTON -->
+                <button *ngIf="editingMessage"
+                (click)="editMessage()"
+                class="inline-flex items-center justify-center rounded-lg px-4 py-3 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none"
+               >
+              <span class="hidden md:inline-block">Edit</span>
+               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6 ml-1">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+               </svg>
+                </button>
+              <!-- EDIT BUTTON END-->
+                </div>
+                </form>
+                 </div>
+                <!--MESSAGE SENDING END  -->
+               </div>
+            <!-- MESSAGING COMPONENT 2 -->
+            </ng-container>
+
+
+            <!-- SELECT A CHAT -->
+            <ng-container *ngIf="!selectedChat && !selectedGroup">
+              <div class="w-full h-screen flex items-center justify-center">
+                <div class=" fixed bg-transparent flex items-center justify-center">
+                <h1 class="bg-slate-200 text-black p-3.5 border-red-50 rounded-full">Select a chat to start messaging</h1>
+               </div>
+              </div>
+            </ng-container>
+          <!-- SELECT A CHAT END-->
+          </div>
+          <!-- RIGHT BLOCK END -->
     </div>
-  </div>
-</div>
+ <!-- Main content end -->
+
+    </div>
+   </mat-drawer-content>
+</mat-drawer-container>
+<!-- Sidenav  end-->
 
 
 

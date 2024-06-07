@@ -1,18 +1,23 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Mona.Model;
+using Mona.Service.Interface;
 
 namespace Mona.Controller;
 
 [Authorize]
 [ApiController]
-[Route("/users")]
-public class UserController(UserManager<UserModel> userManager) : MainController
+[Route("[controller]")]
+public class UserController(IUserService userService) : MainController
 {
-    [HttpGet("list")]
-    public async Task<IResult> GetUserList()
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetUserInfo(string id)
     {
-        return Results.Json(userManager.Users);
+        return Ok(await userService.GetUserInfo(id));
     }
+
+    // [HttpGet("list")]
+    // public async Task<IResult> GetUserList()
+    // {
+    //     return Results.Json(userManager.Users);
+    // }
 }

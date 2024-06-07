@@ -28,6 +28,7 @@ public class GroupService(ApplicationContext context) : IGroupService
         return await context.UserGroup.AsNoTracking()
             .Where(m => string.Equals(m.UserId, caller))
             .Include(m => m.GroupModel)
+            .Include(m => m.GroupModel.Users)
             .Select(m => m.GroupModel)
             .ToListAsync();
     }
@@ -134,7 +135,7 @@ public class GroupService(ApplicationContext context) : IGroupService
         var userGroups = await context.UserGroup
             .Where(m => string.Equals(m.GroupId, groupId))
             .Include(m => m.GroupModel)
-            .Include(m => m.GroupModel)
+            .Include(m => m.UserModel)
             .ToListAsync();
         context.UserGroup.RemoveRange(userGroups);
         await context.SaveChangesAsync();

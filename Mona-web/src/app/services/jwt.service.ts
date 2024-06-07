@@ -41,4 +41,23 @@ export class JwtService {
   removeTokens(){
     this.cookieService.deleteAll()
   }
+  
+  getIdFromJwt(): string | null {
+    try {
+      const access = this.getAccessToken();
+      if (!access) {
+        throw new Error('Access token is missing');
+      }
+      const decodedToken: { id?: string } = jwtDecode(access);
+      const userId = decodedToken.id || null;
+      if (!userId) {
+        throw new Error('User ID is missing in the token');
+      }
+      return userId;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
+    }
+  }
+
 }

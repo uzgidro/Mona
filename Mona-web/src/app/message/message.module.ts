@@ -5,24 +5,55 @@ import {MessageRoutingModule} from './message-routing.module';
 import {MessageComponent} from './message.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { MessageItemComponent } from './message-item/message-item.component';
-import { ForwardMessageDialogComponent } from './dialog/dialog.component';
-import { SendMessageComponent } from './send-message/send-message.component';
-import { DeleteMessageComponent } from './delete-message/delete-message.component';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import { MessageActionsComponent } from './message-actions/message-actions.component';
+import { ForwardMessageComponent } from './message-actions/forward-message/forward-message.component';
+import { MatDialogContent } from '@angular/material/dialog';
+import { ContactsComponent } from './contacts/contacts.component';
+import { AddContactComponent } from './contacts/add-contact/add-contact.component';
+import { NewGroupComponent } from './new-group/new-group.component';
+import { AddMembersComponent } from './new-group/add-members/add-members.component';
+import { GroupActionsComponent } from './group-actions/group-actions.component';
+import {MatMenuTrigger, MatMenuModule} from '@angular/material/menu';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import { DeleteGroupComponent } from './delete-group/delete-group.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import { ViewGroupInfoComponent } from './view-group-info/view-group-info.component';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 
 @NgModule({
   declarations: [
     MessageComponent,
     MessageItemComponent,
-    ForwardMessageDialogComponent,
-    SendMessageComponent,
-    DeleteMessageComponent
+    MessageActionsComponent,
+    ForwardMessageComponent,
+    ContactsComponent,
+    AddContactComponent,
+    NewGroupComponent,
+    AddMembersComponent,
+    GroupActionsComponent,
+    DeleteGroupComponent,
+    ViewGroupInfoComponent,
+
   ],
   imports: [
     CommonModule,
     MessageRoutingModule,
     FormsModule,
-    ReactiveFormsModule
-  ]
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatDialogContent,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatCheckboxModule,
+    MatSlideToggleModule
+
+  ],
 })
 export class MessageModule { }

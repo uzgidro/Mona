@@ -1,0 +1,33 @@
+<mat-dialog-content>
+  <div class="w-full flex items-center" [formGroup]="myGroup">
+    <label class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500  cursor-pointer">
+      <input  formControlName="file"  type="file"   class="sr-only">
+      <svg class="w-30 h-30 "  viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+        <path  fill="#3b82f6" d="M512 128a384 384 0 1 0 0 768 384 384 0 0 0 0-768zm0-64a448 448 0 1 1 0 896 448 448 0 0 1 0-896z"/>
+        <path fill="#3b82f6"   d="M640 288q64 0 64 64t-64 64q-64 0-64-64t64-64zM214.656 790.656l-45.312-45.312 185.664-185.6a96 96 0 0 1 123.712-10.24l138.24 98.688a32 32 0 0 0 39.872-2.176L906.688 422.4l42.624 47.744L699.52 693.696a96 96 0 0 1-119.808 6.592l-138.24-98.752a32 32 0 0 0-41.152 3.456l-185.664 185.6z"/>
+        </svg>
+   </label>
+   <div>
+    <div class="relative group ml-4 " >
+      <label for="group-name" class="block text-xl font-medium text-gray-700 border-b-2 border-transparent group-focus-within:text-blue-500 transition duration-300">Group Name</label>
+      <input type="text"  placeholder="Enter your group name" formControlName="groupName"   class=" mt-2 block w-full  border-slate-400 outline-none  border-b-2  focus:border-blue-500 focus:ring-0 transition duration-300 py-2" >
+  </div>
+   </div>
+  </div>
+
+
+  <div class="flex justify-end w-full  mt-6">
+    <button type="button" (click)="cancel()"  class="bg-white text-blue-400 inline-flex w-full items-center rounded-md px-3 py-2 text-sm hover:bg-blue-100  outline-none border-none sm:ml-3 sm:w-auto" >
+      Cancel
+    </button>
+    <button type="button" (click)="addMembers()"   class="bg-white text-blue-400 inline-flex w-full items-center rounded-md px-3 py-2 text-sm hover:bg-blue-100  outline-none border-none sm:ml-3 sm:w-auto">
+      Next
+   </button>
+  </div>
+
+
+
+
+</mat-dialog-content>
+
+

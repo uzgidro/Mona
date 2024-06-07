@@ -59,6 +59,11 @@ export class ApiService {
     });
   }
 
+
+  getUserInfo(ID:string){
+    return this.http.get(BASE_URL+USERS+'/'+ID)
+  }
+
   private handleResponse(blob: Blob, filename: string) {
     const downloadLink = document.createElement('a');
     const url = window.URL.createObjectURL(blob);
@@ -72,12 +77,12 @@ export class ApiService {
 }
 
 
-const BASE_URL = 'http://localhost:5031'
+const BASE_URL = 'http://127.0.0.1:5031'
 const AUTH = '/auth'
 const SIGN_UP = '/sign-up'
 const SIGN_IN = '/sign-in'
 const REFRESH = '/refresh'
-const USERS='/users'
+const USERS='/user'
 const LIST='/list'
 const MESSAGE='/message'
 const SEND='/send'

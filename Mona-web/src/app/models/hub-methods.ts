@@ -1,0 +1,16 @@
+export enum HubMethods {
+  SendMessage = 'sendMessage',
+  EditMessage = 'editMessage',
+  PinMessage = 'pinMessage',
+  DeleteMessageForMyself = 'deleteMessageForMyself',
+  DeleteMessageForEveryone = 'deleteMessageForEveryone',
+  GetChats = 'getChats',
+  GetChatMessages = 'getChatMessages',
+  CreateGroup = 'createGroup',
+  EditGroup = 'editGroup',
+  AppendMembers = 'appendMembers',
+  RemoveMembers = 'removeMembers',
+  LeaveGroup = 'leaveGroup',
+  DeleteGroup = 'deleteGroup',
+  GetUserGroupList = 'getUserGroupList',
+}
