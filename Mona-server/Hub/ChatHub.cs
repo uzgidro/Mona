@@ -85,8 +85,29 @@ public class ChatHub(IMessageService service, IUserService userService)
         return await service.GetChats(GetSender());
     }
 
-    public async Task<IEnumerable<MessageDto>> GetChatMessages(string chatId)
+    public async Task<IEnumerable<MessageDto>> GetMessagesByChatId(string chatId)
     {
-        return await service.GetChatMessages(GetSender(), chatId);
+        try
+        {
+            return await service.GetMessagesByChatId(GetSender(), chatId);
+        }
+        catch (Exception e)
+        {
+            await Clients.Caller.ReceiveException(e);
+            return [];
+        }
+    }
+
+    public async Task<IEnumerable<MessageDto>> GetMessagesByUserId(string userId)
+    {
+        try
+        {
+            return await service.GetMessagesByUserId(GetSender(), userId);
+        }
+        catch (Exception e)
+        {
+            await Clients.Caller.ReceiveException(e);
+            return [];
+        }
     }
 }

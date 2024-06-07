@@ -112,6 +112,7 @@ public static class Extensions
             Id = model.Id,
             SenderId = senderId,
             SenderName = sender,
+            ChatId = model.ChatId,
             Message = text,
             Files = files,
             Reply = replied,

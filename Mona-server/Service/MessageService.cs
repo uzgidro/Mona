@@ -172,28 +172,29 @@ public class MessageService(ApplicationContext context) : IMessageService
         }).OrderBy(m => m.MessageTime).ToList();
     }
 
-    public async Task<List<MessageDto>> GetChatMessages(string caller, string chatId)
+    public async Task<List<MessageDto>> GetMessagesByChatId(string caller, string chatId)
     {
         try
         {
             await context.ChatClients.FirstAsync(m => string.Equals(m.ClientId, caller) &&
                                                       string.Equals(m.ChatId, chatId));
-            var chatModels = await context.Chats.Where(m => string.Equals(m.Id, chatId))
-                .Include(m => m.Messages)
-                .Select(m => m.Messages)
-                .FirstAsync();
+            return await FetchMessagesByChatId(chatId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 
-            foreach (var model in chatModels)
-            {
-                await AddNavigation(model);
-            }
+    public async Task<List<MessageDto>> GetMessagesByUserId(string caller, string userId)
+    {
+        try
+        {
+            var commonChatId = await GetCommonChatId(caller, userId);
+            if (string.IsNullOrEmpty(commonChatId)) return [];
 
-            var messageDtos = chatModels.Select(m => m.ToDto()).ToList();
-
-
-            // .Select(m => m.Messages.Select(n => n.ToDto())).FirstAsync();
-            Console.WriteLine(messageDtos);
-            return messageDtos;
+            return await FetchMessagesByChatId(commonChatId);
         }
         catch (Exception e)
         {
@@ -225,6 +226,23 @@ public class MessageService(ApplicationContext context) : IMessageService
     private async Task<MessageModel> RetrieveMessage(string messageId)
     {
         return await context.Messages.FirstAsync(m => string.Equals(m.Id, messageId));
+    }
+
+    private async Task<List<MessageDto>> FetchMessagesByChatId(string chatId)
+    {
+        var chatModels = await context.Chats.Where(m => string.Equals(m.Id, chatId))
+            .Include(m => m.Messages)
+            .Select(m => m.Messages)
+            .FirstAsync();
+
+        foreach (var model in chatModels)
+        {
+            await AddNavigation(model);
+        }
+
+        var messageDtos = chatModels.Select(m => m.ToDto()).ToList();
+
+        return messageDtos;
     }
 
     private async Task IncludeFiles(MessageModel? message)
@@ -270,13 +288,10 @@ public class MessageService(ApplicationContext context) : IMessageService
     private async Task<MessageRequest> ProvideChatId(string senderId, MessageRequest message)
     {
         if (!string.IsNullOrWhiteSpace(message.ChatId) || string.IsNullOrWhiteSpace(message.ReceiverId)) return message;
-        var commonChat = await context.Chats
-            .Where(chat => chat.ChatUsers.Any(cu => cu.ClientId == senderId) &&
-                           chat.ChatUsers.Any(cu => cu.ClientId == message.ReceiverId))
-            .FirstOrDefaultAsync();
-        if (commonChat != null)
+        var commonChatId = await GetCommonChatId(senderId, message.ReceiverId);
+        if (string.IsNullOrEmpty(commonChatId))
         {
-            message.ChatId = commonChat.Id;
+            message.ChatId = commonChatId;
             return message;
         }
         else
@@ -305,5 +320,14 @@ public class MessageService(ApplicationContext context) : IMessageService
             message.ChatId = entry.Entity.Id;
             return message;
         }
+    }
+
+    private async Task<string?> GetCommonChatId(string senderId, string receiverId)
+    {
+        return await context.Chats
+            .Where(chat => chat.ChatUsers.Any(cu => cu.ClientId == senderId) &&
+                           chat.ChatUsers.Any(cu => cu.ClientId == receiverId))
+            .Select(m => m.Id)
+            .FirstOrDefaultAsync();
     }
 }
