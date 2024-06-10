@@ -11,6 +11,7 @@ class DialogContactList extends StatefulWidget {
 
 class _DialogContactListState extends State<DialogContactList> {
   final hubBloc = getIt<HubBloc>();
+  final chatBloc = getIt<ChatBloc>();
   List<UserDto> users = [];
 
   @override
@@ -45,11 +46,19 @@ class _DialogContactListState extends State<DialogContactList> {
                 child: ListView.builder(
                     itemCount: users.length,
                     itemBuilder: (context, index) {
-                      return ListTile(title: Text(users[index].name));
+                      return TextButton(
+                          onPressed: () {
+                            chatBloc.add(OpenChat(
+                                receiverId: users[index].id,
+                                chatName: users[index].name,
+                                chatId: users[index].chatId));
+                          },
+                          child: ListTile(title: Text(users[index].name)));
+                      // return ListTile(title: Text(users[index].name));
                     }),
               ),
               TextButton(
-                onPressed: () {
+                onPressed: () async {
                   Navigator.pop(context);
                 },
                 child: const Text('Закрыть'),

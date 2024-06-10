@@ -9,6 +9,7 @@ part of '../chat_dto.dart';
 ChatDto _$ChatDtoFromJson(Map<String, dynamic> json) => ChatDto(
       chatId: json['chatId'] as String,
       chatName: json['chatName'] as String,
+      receiverId: json['receiverId'] as String,
       message: json['message'] as String,
       messageTime: DateTime.parse(json['messageTime'] as String),
     );
@@ -16,6 +17,7 @@ ChatDto _$ChatDtoFromJson(Map<String, dynamic> json) => ChatDto(
 Map<String, dynamic> _$ChatDtoToJson(ChatDto instance) => <String, dynamic>{
       'chatId': instance.chatId,
       'chatName': instance.chatName,
+      'receiverId': instance.receiverId,
       'message': instance.message,
       'messageTime': instance.messageTime.toIso8601String(),
     };
