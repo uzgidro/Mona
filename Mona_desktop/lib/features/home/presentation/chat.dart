@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mona_desktop/core/di/injections.dart';
-import 'package:mona_desktop/core/dto/dto_export.dart';
 import 'package:mona_desktop/core/dto/message_dto.dart';
 import 'package:mona_desktop/features/service/service_export.dart';
 
@@ -13,7 +12,9 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> {
   final chatBloc = getIt<ChatBloc>();
   final hubBloc = getIt<HubBloc>();
-  ChatDto? chat;
+  late String chatName;
+  late String? chatId;
+  late String receiverId;
   List<MessageDto> messages = [];
 
   @override
@@ -25,7 +26,9 @@ class _ChatState extends State<Chat> {
             listener: (context, state) {
               if (state is ChatOpened) {
                 setState(() {
-                  chat = state.chatDto;
+                  chatName = state.chatName;
+                  chatId = state.chatId;
+                  receiverId = state.receiverId;
                 });
               }
               if (state is ChatLoaded) {
@@ -39,7 +42,7 @@ class _ChatState extends State<Chat> {
           listener: (context, state) {},
         )
       ],
-      child: chat == null
+      child: messages.isEmpty
           ? BlankChat()
           : Expanded(
               child: Column(
@@ -54,7 +57,7 @@ class _ChatState extends State<Chat> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          chat!.chatName,
+                          chatName,
                           style: TextStyle(
                               fontWeight: FontWeight.w600, fontSize: 16),
                         ),

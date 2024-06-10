@@ -11,6 +11,7 @@ class MessageDto {
   final String id;
   final String senderId;
   final String senderName;
+  final String chatId;
   final String? message;
   final List<FileDto>? files;
   final ForwardDto? forward;
@@ -23,6 +24,7 @@ class MessageDto {
       {required this.id,
       required this.senderId,
       required this.senderName,
+      required this.chatId,
       required this.message,
       required this.files,
       required this.forward,

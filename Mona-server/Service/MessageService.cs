@@ -169,6 +169,7 @@ public class MessageService(ApplicationContext context) : IMessageService
                 ? context.Groups.Where(gm => string.Equals(gm.Id, m.CompanionId)).Select(m => m.Name).FirstOrDefault()
                 : context.Users.Where(gm => string.Equals(gm.Id, m.CompanionId))
                     .Select(m => m.FirstName + " " + m.LastName).FirstOrDefault(),
+            ReceiverId = m.CompanionId,
         }).OrderBy(m => m.MessageTime).ToList();
     }
 
@@ -217,7 +218,7 @@ public class MessageService(ApplicationContext context) : IMessageService
         await context.Entry(entity).Reference(m => m.Sender).LoadAsync();
         await context.Entry(entity).Reference(m => m.RepliedMessage).LoadAsync();
         await context.Entry(entity).Reference(m => m.Chat).LoadAsync();
-        await context.Entry(entity).Collection(m => m.Chat.ChatUsers).LoadAsync();
+        await context.Entry(entity.Chat).Collection(m => m.ChatUsers).LoadAsync();
         await context.Entry(entity).Collection(m => m.Files).LoadAsync();
         await context.Entry(entity).Reference(m => m.ForwardedMessage).LoadAsync();
         await IncludeFiles(entity);
@@ -289,29 +290,25 @@ public class MessageService(ApplicationContext context) : IMessageService
     {
         if (!string.IsNullOrWhiteSpace(message.ChatId) || string.IsNullOrWhiteSpace(message.ReceiverId)) return message;
         var commonChatId = await GetCommonChatId(senderId, message.ReceiverId);
-        if (string.IsNullOrEmpty(commonChatId))
+        if (!string.IsNullOrEmpty(commonChatId))
         {
+            if (message.ReceiverId.StartsWith("g-"))
+            {
+                var chatClientExists = await context.ChatClients.FirstOrDefaultAsync(m =>
+                    string.Equals(m.ChatId, commonChatId) && string.Equals(m.ClientId, senderId));
+                if (chatClientExists == null)
+                {
+                    context.ChatClients.Add(new ChatClientModel { ChatId = commonChatId, ClientId = senderId });
+                }
+            }
+
             message.ChatId = commonChatId;
             return message;
         }
         else
         {
-            string id;
-            // Group
-            if (message.ReceiverId.StartsWith("g-"))
-            {
-                id = "g-" + Guid.NewGuid();
-            }
-            // Channel
-            else if (message.ReceiverId.StartsWith("c-"))
-            {
-                id = "c-" + Guid.NewGuid();
-            }
-            // Direct
-            else
-            {
-                id = Guid.NewGuid().ToString();
-            }
+            var id =
+                message.ReceiverId.StartsWith("g-") ? message.ReceiverId : Guid.NewGuid().ToString();
 
             var entry = context.Chats.Add(new ChatModel { Id = id });
             context.ChatClients.Add(new ChatClientModel { ChatId = entry.Entity.Id, ClientId = senderId });
@@ -324,6 +321,13 @@ public class MessageService(ApplicationContext context) : IMessageService
 
     private async Task<string?> GetCommonChatId(string senderId, string receiverId)
     {
+        if (receiverId.StartsWith("g-"))
+        {
+            return await context.Chats
+                .Where(m => string.Equals(m.Id, receiverId)).Select(m => m.Id)
+                .FirstOrDefaultAsync();
+        }
+
         return await context.Chats
             .Where(chat => chat.ChatUsers.Any(cu => cu.ClientId == senderId) &&
                            chat.ChatUsers.Any(cu => cu.ClientId == receiverId))

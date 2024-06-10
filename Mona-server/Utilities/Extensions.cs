@@ -16,9 +16,7 @@ public static class Extensions
             Text = request.ForwardId.IsNullOrEmpty() ? request.Text : null,
             SenderId = senderId,
             ChatId = request.ChatId,
-            ReceiverId = request.ReceiverId.StartsWith("g-") || request.ReceiverId.StartsWith("c-")
-                ? null
-                : request.ReceiverId,
+            ReceiverId = request.ReceiverId,
             CreatedAt = request.CreatedAt,
             ModifiedAt = request.CreatedAt,
             ReplyId = request.ReplyId,

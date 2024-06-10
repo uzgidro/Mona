@@ -47,7 +47,10 @@ class _ChatListState extends State<ChatList> {
                     subtitle: Text(list[index].message),
                     hoverColor: Colors.grey,
                     onTap: () async {
-                      chatBloc.add(OpenChat(chatDto: list[index]));
+                      chatBloc.add(OpenChat(
+                          chatId: list[index].chatId,
+                          receiverId: list[index].receiverId,
+                          chatName: list[index].chatName));
                     },
                   );
                 },

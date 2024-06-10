@@ -11,6 +11,7 @@ MessageDto _$MessageDtoFromJson(Map<String, dynamic> json) => MessageDto(
       senderId: json['senderId'] as String,
       senderName: json['senderName'] as String,
       message: json['message'] as String?,
+      chatId: json['chatId'] as String,
       files: (json['files'] as List<dynamic>?)
           ?.map((e) => FileDto.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -30,6 +31,7 @@ Map<String, dynamic> _$MessageDtoToJson(MessageDto instance) =>
       'id': instance.id,
       'senderId': instance.senderId,
       'senderName': instance.senderName,
+      'chatId': instance.chatId,
       'message': instance.message,
       'files': instance.files,
       'forward': instance.forward,
