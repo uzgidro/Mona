@@ -12,6 +12,7 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> {
   final chatBloc = getIt<ChatBloc>();
   final hubBloc = getIt<HubBloc>();
+  bool isChatNotActive = true;
   late String chatName;
   late String? chatId;
   late String receiverId;
@@ -26,6 +27,7 @@ class _ChatState extends State<Chat> {
             listener: (context, state) {
               if (state is ChatOpened) {
                 setState(() {
+                  isChatNotActive = false;
                   chatName = state.chatName;
                   chatId = state.chatId;
                   receiverId = state.receiverId;
@@ -42,7 +44,7 @@ class _ChatState extends State<Chat> {
           listener: (context, state) {},
         )
       ],
-      child: messages.isEmpty
+      child: isChatNotActive
           ? BlankChat()
           : Expanded(
               child: Column(
@@ -71,16 +73,18 @@ class _ChatState extends State<Chat> {
                   ),
                 ),
                 // messages
-                Expanded(
-                    child: Container(
-                  color: Theme.of(context).colorScheme.tertiary,
-                  child: ListView.builder(
-                    itemCount: messages.length,
-                    itemBuilder: (context, index) {
-                      return MessageItem(message: messages[index]);
-                    },
-                  ),
-                )),
+                messages.isEmpty
+                    ? BlankChat()
+                    : Expanded(
+                        child: Container(
+                        color: Theme.of(context).colorScheme.tertiary,
+                        child: ListView.builder(
+                          itemCount: messages.length,
+                          itemBuilder: (context, index) {
+                            return MessageItem(message: messages[index]);
+                          },
+                        ),
+                      )),
               ],
             )),
     );
