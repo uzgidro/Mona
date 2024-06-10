@@ -18,6 +18,8 @@ class _ChatState extends State<Chat> {
   late String receiverId;
   List<MessageDto> messages = [];
 
+  final _messageController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
@@ -85,6 +87,38 @@ class _ChatState extends State<Chat> {
                           },
                         ),
                       )),
+                //Input
+                Container(
+                  decoration: BoxDecoration(
+                      border: Border(top: BorderSide(width: 0.25))),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8, right: 8),
+                          child: TextField(
+                            minLines: 1,
+                            maxLines: 10,
+                            autofocus: true,
+                            controller: _messageController,
+                            decoration: InputDecoration(
+                                border: InputBorder.none, hintText: "asdasd"),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 4.0),
+                        child: IconButton(
+                            onPressed: () {
+                              _messageController.clear();
+                            },
+                            icon: Icon(Icons.send)),
+                      )
+                    ],
+                  ),
+                )
               ],
             )),
     );
