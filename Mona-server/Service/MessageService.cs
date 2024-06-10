@@ -218,7 +218,7 @@ public class MessageService(ApplicationContext context) : IMessageService
         await context.Entry(entity).Reference(m => m.Sender).LoadAsync();
         await context.Entry(entity).Reference(m => m.RepliedMessage).LoadAsync();
         await context.Entry(entity).Reference(m => m.Chat).LoadAsync();
-        await context.Entry(entity).Collection(m => m.Chat.ChatUsers).LoadAsync();
+        await context.Entry(entity.Chat).Collection(m => m.ChatUsers).LoadAsync();
         await context.Entry(entity).Collection(m => m.Files).LoadAsync();
         await context.Entry(entity).Reference(m => m.ForwardedMessage).LoadAsync();
         await IncludeFiles(entity);
