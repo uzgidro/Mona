@@ -11,6 +11,7 @@ public static class Extensions
         if (string.IsNullOrEmpty(senderId)) throw new ArgumentNullException(nameof(senderId));
         //if (string.IsNullOrEmpty(request.Text) && string.IsNullOrEmpty(request.ForwardId))
         //  throw new ArgumentNullException(nameof(senderId), "Text and Forward id cannot be null at the same message");
+        if (request.CreatedAt.Year == 1) request.CreatedAt = DateTime.UtcNow;
         return new MessageModel
         {
             Text = request.ForwardId.IsNullOrEmpty() ? request.Text : null,

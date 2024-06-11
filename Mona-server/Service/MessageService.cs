@@ -283,6 +283,7 @@ public class MessageService(ApplicationContext context) : IMessageService
         var entity = message.ToMessageModel(senderId);
         var entityEntry = context.Messages.Add(entity);
         await context.SaveChangesAsync();
+        await AddNavigation(entityEntry.Entity);
         return entityEntry.Entity.ToDto();
     }
 

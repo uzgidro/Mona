@@ -3,25 +3,19 @@ import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
 import 'package:mona_desktop/core/dto/dto_export.dart';
-import 'package:mona_desktop/core/middleware/jwt_service.dart';
-import 'package:mona_desktop/repository/repository_export.dart';
-import 'package:signalr_netcore/signalr_client.dart';
+import 'package:mona_desktop/features/service/hub/hub_service.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 part 'hub_event.dart';
 part 'hub_state.dart';
 
-@LazySingleton()
+@Injectable()
 class HubBloc extends Bloc<HubEvent, HubState> {
-  HubBloc(this.authRepository, this.jwtService, this.talker, this.hubConnection)
-      : super(HubInitial()) {
+  HubBloc(this.talker, this.hubService) : super(HubInitial()) {
     on<StartConnection>((event, emit) async {
       try {
-        await hubConnection.start();
-        var jsonResponse =
-            await hubConnection.invoke('getChats') as List<dynamic>;
-        List<ChatDto> chatList =
-            jsonResponse.map((json) => ChatDto.fromJson(json)).toList();
+        await hubService.startConnection();
+        List<ChatDto> chatList = await hubService.fetchChats();
 
         // TODO(): Add loading until emitted
         emit(HubStarted(chatList: chatList));
@@ -32,11 +26,7 @@ class HubBloc extends Bloc<HubEvent, HubState> {
 
     on<LoadContacts>((event, emit) async {
       try {
-        var jsonResponse =
-            await hubConnection.invoke('getUsers') as List<dynamic>;
-
-        List<UserDto> users =
-            jsonResponse.map((json) => UserDto.fromJson(json)).toList();
+        List<UserDto> users = await hubService.fetchContacts();
 
         // TODO(): Add loading until emitted
         emit(ContactsLoaded(contacts: users));
@@ -46,8 +36,6 @@ class HubBloc extends Bloc<HubEvent, HubState> {
     });
   }
 
-  final HubConnection hubConnection;
-  final AbstractAuthRepository authRepository;
-  final JwtService jwtService;
+  final HubService hubService;
   final Talker talker;
 }

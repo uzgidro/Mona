@@ -3,15 +3,15 @@ import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
 import 'package:mona_desktop/core/dto/message_dto.dart';
-import 'package:signalr_netcore/signalr_client.dart';
+import 'package:mona_desktop/features/service/chat/chat_service.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 part 'chat_event.dart';
 part 'chat_state.dart';
 
-@LazySingleton()
+@Injectable()
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
-  ChatBloc(this.hubConnection, this.talker) : super(ChatInitial()) {
+  ChatBloc(this.chatService, this.talker) : super(ChatInitial()) {
     on<OpenChat>((event, emit) async {
       try {
         emit(ChatOpened(
@@ -20,9 +20,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             receiverId: event.receiverId));
 
         if (event.chatId != null) {
-          List<dynamic> jsonResponse = await hubConnection
-                  .invoke('getMessagesByChatId', args: [event.chatId!])
-              as List<dynamic>;
+          List<dynamic> jsonResponse = await chatService
+              .fetchMessagesByChatId(event.chatId!) as List<dynamic>;
           List<MessageDto> messages =
               jsonResponse.map((json) => MessageDto.fromJson(json)).toList();
 
@@ -35,6 +34,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     });
   }
 
-  final HubConnection hubConnection;
+  final ChatService chatService;
   final Talker talker;
 }

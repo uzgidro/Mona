@@ -22,18 +22,21 @@ class _SideMenuState extends State<SideMenu> {
                 return SizedBox.square(
                   child: IconButton(
                     onPressed: () => Scaffold.of(context).openDrawer(),
-                    icon: Icon(Icons.menu),
+                    icon: Icon(Icons.menu,
+                        color: Theme.of(context).colorScheme.background),
                   ),
                 );
               }),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Icon(Icons.forum_rounded),
+              child: Icon(Icons.forum_rounded,
+                  color: Theme.of(context).colorScheme.background),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Icon(Icons.group_rounded),
+              child: Icon(Icons.group_rounded,
+                  color: Theme.of(context).colorScheme.background),
             ),
           ],
         ),

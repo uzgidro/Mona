@@ -111,6 +111,7 @@ class _ChatState extends State<Chat> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 4.0),
                         child: IconButton(
+                            color: Theme.of(context).colorScheme.primary,
                             onPressed: () {
                               _messageController.clear();
                             },
