@@ -14,3 +14,12 @@ final class OpenChat extends ChatEvent {
   @override
   List<Object?> get props => [receiverId, chatId, chatName];
 }
+
+final class SendMessage extends ChatEvent {
+  final MessageRequest messageRequest;
+
+  SendMessage({required this.messageRequest});
+
+  @override
+  List<Object?> get props => [];
+}

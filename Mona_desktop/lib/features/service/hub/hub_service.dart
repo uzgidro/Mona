@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 import 'package:mona_desktop/core/dto/dto_export.dart';
-import 'package:mona_desktop/features/service/signalr_repository.dart';
+import 'package:mona_desktop/repository/signalr_repository.dart';
 
 @Injectable()
 class HubService {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mona_desktop/core/di/injections.dart';
 import 'package:mona_desktop/core/dto/message_dto.dart';
+import 'package:mona_desktop/core/dto/message_request.dart';
 import 'package:mona_desktop/features/service/service_export.dart';
 
 class Chat extends StatefulWidget {
@@ -104,7 +105,8 @@ class _ChatState extends State<Chat> {
                             autofocus: true,
                             controller: _messageController,
                             decoration: InputDecoration(
-                                border: InputBorder.none, hintText: "asdasd"),
+                                border: InputBorder.none,
+                                hintText: "Начните печатать..."),
                           ),
                         ),
                       ),
@@ -113,6 +115,14 @@ class _ChatState extends State<Chat> {
                         child: IconButton(
                             color: Theme.of(context).colorScheme.primary,
                             onPressed: () {
+                              chatBloc.add(SendMessage(
+                                  messageRequest: MessageRequest(
+                                      text: _messageController.text,
+                                      receiverId: receiverId,
+                                      chatId: chatId,
+                                      replyId: null,
+                                      forwardId: null,
+                                      createdAt: DateTime.now())));
                               _messageController.clear();
                             },
                             icon: Icon(Icons.send)),
@@ -131,7 +141,7 @@ class BlankChat extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
         child: Container(
-      color: Colors.lightGreenAccent,
+      color: Theme.of(context).colorScheme.tertiary,
     ));
   }
 }
@@ -151,11 +161,13 @@ class _MessageItemState extends State<MessageItem> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        padding: EdgeInsets.only(bottom: 8, top: 8, left: 16, right: 16),
         decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.background,
-            borderRadius: BorderRadius.circular(50)),
-        child: Text(widget.message.senderName),
+            borderRadius: BorderRadius.circular(8)),
+        child: ListTile(
+          title: Text(widget.message.senderName),
+          subtitle: Text(widget.message.message!),
+        ),
       ),
     );
   }

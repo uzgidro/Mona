@@ -4,7 +4,7 @@ import 'file_dto.dart';
 import 'forward_dto.dart';
 import 'reply_dto.dart';
 
-part 'generated/message_dto.g.dart';
+part 'message_dto.g.dart';
 
 @JsonSerializable()
 class MessageDto {
@@ -12,6 +12,7 @@ class MessageDto {
   final String senderId;
   final String senderName;
   final String chatId;
+  final String receiverId;
   final String? message;
   final List<FileDto>? files;
   final ForwardDto? forward;
@@ -20,11 +21,15 @@ class MessageDto {
   final bool isEdited;
   final DateTime createdAt;
 
+  factory MessageDto.fromJson(Map<String, dynamic> json) =>
+      _$MessageDtoFromJson(json);
+
   MessageDto(
       {required this.id,
       required this.senderId,
       required this.senderName,
       required this.chatId,
+      required this.receiverId,
       required this.message,
       required this.files,
       required this.forward,
@@ -32,9 +37,6 @@ class MessageDto {
       required this.isPinned,
       required this.isEdited,
       required this.createdAt});
-
-  factory MessageDto.fromJson(Map<String, dynamic> json) =>
-      _$MessageDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$MessageDtoToJson(this);
 }

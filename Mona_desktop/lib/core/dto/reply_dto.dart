@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'generated/reply_dto.g.dart';
+part 'reply_dto.g.dart';
 
 @JsonSerializable()
 class ReplyDto {

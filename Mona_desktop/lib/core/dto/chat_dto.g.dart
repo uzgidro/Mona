@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of '../chat_dto.dart';
+part of 'chat_dto.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
@@ -17,7 +17,7 @@ ChatDto _$ChatDtoFromJson(Map<String, dynamic> json) => ChatDto(
 Map<String, dynamic> _$ChatDtoToJson(ChatDto instance) => <String, dynamic>{
       'chatId': instance.chatId,
       'chatName': instance.chatName,
-      'receiverId': instance.receiverId,
       'message': instance.message,
+      'receiverId': instance.receiverId,
       'messageTime': instance.messageTime.toIso8601String(),
     };

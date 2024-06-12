@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of '../forward_dto.dart';
+part of 'forward_dto.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

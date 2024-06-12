@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of '../reply_dto.dart';
+part of 'reply_dto.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

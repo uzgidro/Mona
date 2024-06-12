@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'generated/file_dto.g.dart';
+part 'file_dto.g.dart';
 
 @JsonSerializable()
 class FileDto {

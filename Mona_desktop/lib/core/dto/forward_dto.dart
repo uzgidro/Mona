@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'generated/forward_dto.g.dart';
+part 'forward_dto.g.dart';
 
 @JsonSerializable()
 class ForwardDto {

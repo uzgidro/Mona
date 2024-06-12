@@ -1,4 +1,5 @@
 import 'package:injectable/injectable.dart';
+import 'package:mona_desktop/core/dto/message_request.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 
 @Injectable()
@@ -12,15 +13,21 @@ class SignalRRepository {
   }
 
   Future invokeGetChats() async {
-    return hubConnection.invoke(HubMethods.getChats);
+    return await hubConnection.invoke(HubMethods.getChats);
   }
 
   Future invokeGetUsers() async {
-    return hubConnection.invoke(HubMethods.getUsers);
+    return await hubConnection.invoke(HubMethods.getUsers);
   }
 
   Future invokeGetMessagesByChatId(String chatId) async {
-    return hubConnection.invoke(HubMethods.getMessagesByChatId, args: [chatId]);
+    return await hubConnection
+        .invoke(HubMethods.getMessagesByChatId, args: [chatId]);
+  }
+
+  Future sendMessage(MessageRequest messageRequest) async {
+    return await hubConnection
+        .send(HubMethods.sendMessage, args: [messageRequest]);
   }
 }
 
@@ -28,4 +35,5 @@ class HubMethods {
   static const String getChats = 'getChats';
   static const String getUsers = 'getUsers';
   static const String getMessagesByChatId = 'getMessagesByChatId';
+  static const String sendMessage = 'sendMessage';
 }
