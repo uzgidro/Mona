@@ -28,3 +28,12 @@ final class ChatLoaded extends ChatState {
   @override
   List<Object?> get props => messages;
 }
+
+final class MessageReceived extends ChatState {
+  final MessageDto message;
+
+  MessageReceived({required this.message});
+
+  @override
+  List<Object?> get props => [];
+}

@@ -29,6 +29,10 @@ class SignalRRepository {
     return await hubConnection
         .send(HubMethods.sendMessage, args: [messageRequest]);
   }
+
+  void receiveMessage(Function(List<Object?>?) method) {
+    hubConnection.on(HubListeners.receiveMessage, method);
+  }
 }
 
 class HubMethods {
@@ -36,4 +40,11 @@ class HubMethods {
   static const String getUsers = 'getUsers';
   static const String getMessagesByChatId = 'getMessagesByChatId';
   static const String sendMessage = 'sendMessage';
+}
+
+class HubListeners {
+  static const String receiveMessage = 'ReceiveMessage';
+// static const String getUsers = 'getUsers';
+// static const String getMessagesByChatId = 'getMessagesByChatId';
+// static const String sendMessage = 'sendMessage';
 }

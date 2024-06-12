@@ -18,4 +18,8 @@ class ChatService {
   Future sendMessage(MessageRequest messageRequest) async {
     await repository.sendMessage(messageRequest);
   }
+
+  void receiveMessage(Function(List<Object?>?) method) {
+    repository.receiveMessage(method);
+  }
 }
