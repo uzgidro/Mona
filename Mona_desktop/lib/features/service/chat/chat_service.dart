@@ -19,7 +19,11 @@ class ChatService {
     await repository.sendMessage(messageRequest);
   }
 
-  void receiveMessage(Function(List<Object?>?) method) {
-    repository.receiveMessage(method);
+  void receiveMessage(Function(MessageDto) onMessageReceived) {
+    repository.receiveMessage((response) {
+      var responseList = response as List<dynamic>;
+      var message = MessageDto.fromJson(responseList[0]);
+      onMessageReceived(message);
+    });
   }
 }

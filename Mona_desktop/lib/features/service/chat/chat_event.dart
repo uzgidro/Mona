@@ -21,5 +21,14 @@ final class SendMessage extends ChatEvent {
   SendMessage({required this.messageRequest});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [messageRequest];
+}
+
+final class ReceiveMessage extends ChatEvent {
+  final MessageDto message;
+
+  ReceiveMessage({required this.message});
+
+  @override
+  List<Object?> get props => [message];
 }

@@ -28,8 +28,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
           // TODO(): Add loading until emitted
           emit(ChatLoaded(messages: jsonResponse));
-          //TODO(): implement saving
-          chatService.receiveMessage((message) => print(message));
+
+          chatService.receiveMessage((message) {
+            add(ReceiveMessage(message: message));
+          });
         }
       } catch (e, st) {
         talker.handle(e, st);
@@ -42,6 +44,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       } catch (e, st) {
         talker.handle(e, st);
       }
+    });
+
+    on<ReceiveMessage>((event, emit) {
+      print(event.message.message);
+      emit(MessageReceived(message: event.message));
     });
   }
 
