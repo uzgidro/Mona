@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mona_desktop/core/di/injections.dart';
 import 'package:mona_desktop/core/dto/chat_dto.dart';
 import 'package:mona_desktop/features/service/service_export.dart';
-import 'package:signalr_netcore/hub_connection.dart';
 
 class ChatList extends StatefulWidget {
   @override
@@ -16,20 +15,36 @@ class _ChatListState extends State<ChatList> {
   double _width = 240;
   double _minWidth = 140;
   final List<ChatDto> list = [];
-  final hubConnection = getIt<HubConnection>();
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener(
-      bloc: hubBloc,
-      listener: (context, state) {
-        if (state is HubStarted) {
-          print(state.chatList);
-          setState(() {
-            list.addAll(state.chatList);
-          });
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<HubBloc, HubState>(
+          bloc: hubBloc,
+          listener: (context, state) {
+            if (state is HubStarted) {
+              print(state.chatList);
+              setState(() {
+                list.addAll(state.chatList);
+              });
+            }
+          },
+        ),
+        BlocListener<ChatBloc, ChatState>(
+          bloc: chatBloc,
+          listener: (context, state) {
+            if (state is MessageReceived) {
+              final message = state.message;
+              var chat = list
+                  .firstWhere((element) => element.chatId == message.chatId);
+              setState(() {
+                chat.message = message.message!;
+              });
+            }
+          },
+        ),
+      ],
       child: Container(
         decoration: BoxDecoration(
             border: Border(

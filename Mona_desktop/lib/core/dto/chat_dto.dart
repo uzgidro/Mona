@@ -6,10 +6,10 @@ part 'chat_dto.g.dart';
 @JsonSerializable()
 class ChatDto extends Equatable {
   final String chatId;
-  final String chatName;
-  final String message;
-  final String receiverId;
-  final DateTime messageTime;
+  late final String chatName;
+  late final String message;
+  late final String receiverId;
+  late final DateTime messageTime;
 
   factory ChatDto.fromJson(Map<String, dynamic> json) =>
       _$ChatDtoFromJson(json);

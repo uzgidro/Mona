@@ -130,7 +130,7 @@ class _ChatState extends State<Chat> {
                                       chatId: chatId,
                                       replyId: null,
                                       forwardId: null,
-                                      createdAt: DateTime.now())));
+                                      createdAt: DateTime.now().toUtc())));
                               _messageController.clear();
                             },
                             icon: Icon(Icons.send)),
