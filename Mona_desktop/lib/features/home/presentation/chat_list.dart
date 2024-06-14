@@ -12,6 +12,7 @@ class ChatList extends StatefulWidget {
 class _ChatListState extends State<ChatList> {
   final hubBloc = getIt<HubBloc>();
   final chatBloc = getIt<ChatBloc>();
+
   double _width = 240;
   double _minWidth = 140;
   final List<ChatDto> list = [];
@@ -39,7 +40,19 @@ class _ChatListState extends State<ChatList> {
               var chat = list
                   .firstWhere((element) => element.chatId == message.chatId);
               setState(() {
-                chat.message = message.message!;
+                list.remove(chat);
+                var newMessage = '';
+                if (message.message != null) {
+                  newMessage = message.message!;
+                } else if (message.files.isNotEmpty) {
+                  newMessage = '${message.files.length} files';
+                }
+                list.add(ChatDto(
+                    chatId: chat.chatId,
+                    chatName: chat.chatName,
+                    receiverId: chat.receiverId,
+                    message: newMessage,
+                    messageTime: message.createdAt));
               });
             }
           },

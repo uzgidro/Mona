@@ -13,8 +13,8 @@ MessageDto _$MessageDtoFromJson(Map<String, dynamic> json) => MessageDto(
       chatId: json['chatId'] as String,
       receiverId: json['receiverId'] as String,
       message: json['message'] as String?,
-      files: (json['files'] as List<dynamic>?)
-          ?.map((e) => FileDto.fromJson(e as Map<String, dynamic>))
+      files: (json['files'] as List<dynamic>)
+          .map((e) => FileDto.fromJson(e as Map<String, dynamic>))
           .toList(),
       forward: json['forward'] == null
           ? null

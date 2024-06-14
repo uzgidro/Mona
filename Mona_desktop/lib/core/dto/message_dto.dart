@@ -14,7 +14,7 @@ class MessageDto {
   final String chatId;
   final String receiverId;
   final String? message;
-  final List<FileDto>? files;
+  final List<FileDto> files;
   final ForwardDto? forward;
   final ReplyDto? reply;
   final bool isPinned;
