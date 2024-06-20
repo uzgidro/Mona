@@ -26,4 +26,12 @@ class ChatService {
       onMessageReceived(message);
     });
   }
+
+  void updateChat(Function(ChatDto) onChatReceived) {
+    repository.updateChat((response) {
+      var responseList = response as List<dynamic>;
+      var chat = ChatDto.fromJson(responseList[0]);
+      onChatReceived(chat);
+    });
+  }
 }

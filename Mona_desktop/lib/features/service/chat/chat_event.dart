@@ -32,3 +32,12 @@ final class ReceiveMessage extends ChatEvent {
   @override
   List<Object?> get props => [message];
 }
+
+final class UpdateChat extends ChatEvent {
+  final ChatDto chat;
+
+  UpdateChat({required this.chat});
+  @override
+  List<Object?> get props => [chat];
+  
+}

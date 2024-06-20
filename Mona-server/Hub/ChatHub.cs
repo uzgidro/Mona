@@ -2,6 +2,7 @@
 using Mona.Model;
 using Mona.Model.Dto;
 using Mona.Service.Interface;
+using Mona.Utilities;
 
 namespace Mona.Hub;
 
@@ -16,6 +17,7 @@ public class ChatHub(IMessageService service, IUserService userService)
             var messageItem = await service.CreateMessage(message, GetSender());
             var activeMessage = await service.ActiveMessage(messageItem.Id);
             await SetRoute(activeMessage).ReceiveMessage(activeMessage);
+            await SetRoute(activeMessage).UpdateChat(activeMessage.ToChatDto());
         }
         catch (Exception e)
         {

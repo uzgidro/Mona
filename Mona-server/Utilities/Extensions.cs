@@ -32,7 +32,7 @@ public static class Extensions
         var sender = model.Sender.FirstName + " " + model.Sender.LastName;
         var senderId = model.SenderId;
         ForwardDto? forward = null;
-        string? text;
+        var text = model.Text;
         List<FileDto> files;
         ReplyDto? replied = null;
         if (model.RepliedMessage != null)
@@ -101,6 +101,7 @@ public static class Extensions
             SenderName = sender,
             ChatId = model.ChatId,
             ReceiverId = model.ReceiverId,
+            Receiver = model.Receiver,
             Message = text,
             Files = files,
             Reply = replied,
@@ -108,6 +109,21 @@ public static class Extensions
             IsEdited = model.IsEdited,
             IsPinned = model.IsPinned,
             CreatedAt = model.CreatedAt,
+        };
+    }
+
+    public static ChatDto ToChatDto(this MessageDto messageDto)
+    {
+        return new ChatDto
+        {
+            ReceiverId = messageDto.ReceiverId,
+            SenderId = messageDto.SenderId,
+            SenderName = messageDto.SenderName,
+            Message = messageDto.Message.IsNullOrEmpty() ? messageDto.Files.Count().ToString() : messageDto.Message,
+            ChatName = messageDto.Receiver,
+            ChatId = messageDto.ChatId,
+            IsForward = messageDto.Forward != null,
+            MessageTime = messageDto.CreatedAt,
         };
     }
 }

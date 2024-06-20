@@ -13,7 +13,8 @@ class MessageDto {
   final String senderName;
   final String chatId;
   final String receiverId;
-  final String? message;
+  final String receiver;
+  String? message;
   final List<FileDto> files;
   final ForwardDto? forward;
   final ReplyDto? reply;
@@ -30,6 +31,7 @@ class MessageDto {
       required this.senderName,
       required this.chatId,
       required this.receiverId,
+      required this.receiver,
       required this.message,
       required this.files,
       required this.forward,

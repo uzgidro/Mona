@@ -56,6 +56,11 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options)
             .WithMany(c => c.ChatUsers)
             .HasForeignKey(cu => cu.ChatId);
 
+        builder.Entity<ChatClientModel>()
+            .HasOne(cu => cu.Client)
+            .WithMany()
+            .HasForeignKey(cu => cu.ClientId);
+
         builder.Entity<MessageModel>()
             .HasOne(m => m.Chat)
             .WithMany(c => c.Messages)

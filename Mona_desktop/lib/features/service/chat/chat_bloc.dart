@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
+import 'package:mona_desktop/core/dto/chat_dto.dart';
 import 'package:mona_desktop/core/dto/message_dto.dart';
 import 'package:mona_desktop/core/dto/message_request.dart';
 import 'package:mona_desktop/features/service/chat/chat_service.dart';
@@ -29,8 +30,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           // TODO(): Add loading until emitted
           emit(ChatLoaded(messages: jsonResponse));
 
+          // Listeners
           chatService.receiveMessage((message) {
             add(ReceiveMessage(message: message));
+          });
+          chatService.updateChat((chat) {
+            add(UpdateChat(chat: chat));
           });
         }
       } catch (e, st) {
@@ -47,8 +52,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     });
 
     on<ReceiveMessage>((event, emit) {
-      print(event.message.message);
       emit(MessageReceived(message: event.message));
+    });
+
+    on<UpdateChat>((event, emit) {
+      emit(ChatUpdated(chat: event.chat));
     });
   }
 

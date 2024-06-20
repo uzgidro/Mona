@@ -35,24 +35,12 @@ class _ChatListState extends State<ChatList> {
         BlocListener<ChatBloc, ChatState>(
           bloc: chatBloc,
           listener: (context, state) {
-            if (state is MessageReceived) {
-              final message = state.message;
+            if (state is ChatUpdated) {
               var chat = list
-                  .firstWhere((element) => element.chatId == message.chatId);
+                  .firstWhere((element) => element.chatId == state.chat.chatId);
               setState(() {
                 list.remove(chat);
-                var newMessage = '';
-                if (message.message != null) {
-                  newMessage = message.message!;
-                } else if (message.files.isNotEmpty) {
-                  newMessage = '${message.files.length} files';
-                }
-                list.add(ChatDto(
-                    chatId: chat.chatId,
-                    chatName: chat.chatName,
-                    receiverId: chat.receiverId,
-                    message: newMessage,
-                    messageTime: message.createdAt));
+                list.add(state.chat);
               });
             }
           },
@@ -72,7 +60,7 @@ class _ChatListState extends State<ChatList> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     title: Text(list[index].chatName),
-                    subtitle: Text(list[index].message),
+                    subtitle: Text(list[index].message, maxLines: 1,overflow: TextOverflow.ellipsis),
                     hoverColor: Colors.grey,
                     onTap: () async {
                       chatBloc.add(OpenChat(

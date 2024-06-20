@@ -7,6 +7,7 @@ public struct MessageDto
     public string SenderName { get; init; }
     public string ChatId { get; init; }
     public string ReceiverId { get; init; }
+    public string Receiver { get; init; }
     public string? Message { get; init; }
     public IEnumerable<FileDto>? Files { get; init; }
     public ForwardDto? Forward { get; init; }
