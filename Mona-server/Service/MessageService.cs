@@ -2,6 +2,7 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Mona.Context;
 using Mona.Model;
 using Mona.Model.Dto;
@@ -160,6 +161,11 @@ public class MessageService(ApplicationContext context) : IMessageService
                 LastMessage = cu.Chat.Messages.OrderByDescending(m => m.CreatedAt).FirstOrDefault()
             })
             .ToListAsync();
+        foreach (var chat in userChats)
+        {
+            await context.Entry(chat.LastMessage).Reference(m => m.Sender).LoadAsync();
+        }
+
         return userChats.Select(m => new ChatDto
         {
             ChatId = m.ChatId,
@@ -170,6 +176,9 @@ public class MessageService(ApplicationContext context) : IMessageService
                 : context.Users.Where(gm => string.Equals(gm.Id, m.CompanionId))
                     .Select(m => m.FirstName + " " + m.LastName).FirstOrDefault(),
             ReceiverId = m.CompanionId,
+            SenderId = m.LastMessage.SenderId,
+            SenderName = m.LastMessage.Sender.FirstName,
+            IsForward = !m.LastMessage.ForwardId.IsNullOrEmpty()
         }).OrderBy(m => m.MessageTime).ToList();
     }
 
@@ -222,6 +231,16 @@ public class MessageService(ApplicationContext context) : IMessageService
         await context.Entry(entity).Collection(m => m.Files).LoadAsync();
         await context.Entry(entity).Reference(m => m.ForwardedMessage).LoadAsync();
         await IncludeFiles(entity);
+        if (entity.ReceiverId.StartsWith("g-"))
+        {
+            entity.Receiver = await context.Groups.Where(m => string.Equals(m.Id, entity.ReceiverId))
+                .Select(m => m.Name).FirstOrDefaultAsync();
+        }
+        else
+        {
+            entity.Receiver = await context.Users.Where(m => string.Equals(m.Id, entity.ReceiverId))
+                .Select(m => m.FirstName + " " + m.LastName).FirstOrDefaultAsync();
+        }
     }
 
     private async Task<MessageModel> RetrieveMessage(string messageId)
@@ -283,6 +302,7 @@ public class MessageService(ApplicationContext context) : IMessageService
         var entity = message.ToMessageModel(senderId);
         var entityEntry = context.Messages.Add(entity);
         await context.SaveChangesAsync();
+        await AddNavigation(entityEntry.Entity);
         return entityEntry.Entity.ToDto();
     }
 

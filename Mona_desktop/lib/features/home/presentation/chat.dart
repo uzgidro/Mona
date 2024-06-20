@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mona_desktop/core/di/injections.dart';
 import 'package:mona_desktop/core/dto/message_dto.dart';
+import 'package:mona_desktop/core/dto/message_request.dart';
 import 'package:mona_desktop/features/service/service_export.dart';
 
 class Chat extends StatefulWidget {
@@ -12,10 +13,13 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> {
   final chatBloc = getIt<ChatBloc>();
   final hubBloc = getIt<HubBloc>();
+  bool isChatNotActive = true;
   late String chatName;
   late String? chatId;
   late String receiverId;
   List<MessageDto> messages = [];
+
+  final _messageController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +30,7 @@ class _ChatState extends State<Chat> {
             listener: (context, state) {
               if (state is ChatOpened) {
                 setState(() {
+                  isChatNotActive = false;
                   chatName = state.chatName;
                   chatId = state.chatId;
                   receiverId = state.receiverId;
@@ -36,13 +41,21 @@ class _ChatState extends State<Chat> {
                   messages = state.messages;
                 });
               }
+              if (state is MessageReceived) {
+                final message = state.message;
+                if (message.chatId == chatId) {
+                  setState(() {
+                    messages.add(state.message);
+                  });
+                }
+              }
             }),
         BlocListener(
           bloc: hubBloc,
           listener: (context, state) {},
         )
       ],
-      child: messages.isEmpty
+      child: isChatNotActive
           ? BlankChat()
           : Expanded(
               child: Column(
@@ -71,16 +84,60 @@ class _ChatState extends State<Chat> {
                   ),
                 ),
                 // messages
-                Expanded(
-                    child: Container(
-                  color: Theme.of(context).colorScheme.tertiary,
-                  child: ListView.builder(
-                    itemCount: messages.length,
-                    itemBuilder: (context, index) {
-                      return MessageItem(message: messages[index]);
-                    },
+                messages.isEmpty
+                    ? BlankChat()
+                    : Expanded(
+                        child: Container(
+                        color: Theme.of(context).colorScheme.tertiary,
+                        child: ListView.builder(
+                          itemCount: messages.length,
+                          itemBuilder: (context, index) {
+                            return MessageItem(message: messages[index]);
+                          },
+                        ),
+                      )),
+                //Input
+                Container(
+                  decoration: BoxDecoration(
+                      border: Border(top: BorderSide(width: 0.25))),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8, right: 8),
+                          child: TextField(
+                            minLines: 1,
+                            maxLines: 10,
+                            autofocus: true,
+                            controller: _messageController,
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Начните печатать..."),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 4.0),
+                        child: IconButton(
+                            color: Theme.of(context).colorScheme.primary,
+                            onPressed: () {
+                              chatBloc.add(SendMessage(
+                                  messageRequest: MessageRequest(
+                                      text: _messageController.text,
+                                      receiverId: receiverId,
+                                      chatId: chatId,
+                                      replyId: null,
+                                      forwardId: null,
+                                      createdAt: DateTime.now().toUtc())));
+                              _messageController.clear();
+                            },
+                            icon: Icon(Icons.send)),
+                      )
+                    ],
                   ),
-                )),
+                )
               ],
             )),
     );
@@ -92,7 +149,7 @@ class BlankChat extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
         child: Container(
-      color: Colors.lightGreenAccent,
+      color: Theme.of(context).colorScheme.tertiary,
     ));
   }
 }
@@ -112,11 +169,13 @@ class _MessageItemState extends State<MessageItem> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        padding: EdgeInsets.only(bottom: 8, top: 8, left: 16, right: 16),
         decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.background,
-            borderRadius: BorderRadius.circular(50)),
-        child: Text(widget.message.senderName),
+            borderRadius: BorderRadius.circular(8)),
+        child: ListTile(
+          title: Text(widget.message.senderName),
+          subtitle: Text(widget.message.message!),
+        ),
       ),
     );
   }

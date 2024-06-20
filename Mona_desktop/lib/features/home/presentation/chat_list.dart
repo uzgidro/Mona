@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mona_desktop/core/di/injections.dart';
 import 'package:mona_desktop/core/dto/chat_dto.dart';
 import 'package:mona_desktop/features/service/service_export.dart';
-import 'package:signalr_netcore/hub_connection.dart';
 
 class ChatList extends StatefulWidget {
   @override
@@ -13,23 +12,40 @@ class ChatList extends StatefulWidget {
 class _ChatListState extends State<ChatList> {
   final hubBloc = getIt<HubBloc>();
   final chatBloc = getIt<ChatBloc>();
+
   double _width = 240;
   double _minWidth = 140;
   final List<ChatDto> list = [];
-  final hubConnection = getIt<HubConnection>();
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener(
-      bloc: hubBloc,
-      listener: (context, state) {
-        if (state is HubStarted) {
-          print(state.chatList);
-          setState(() {
-            list.addAll(state.chatList);
-          });
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<HubBloc, HubState>(
+          bloc: hubBloc,
+          listener: (context, state) {
+            if (state is HubStarted) {
+              print(state.chatList);
+              setState(() {
+                list.addAll(state.chatList);
+              });
+            }
+          },
+        ),
+        BlocListener<ChatBloc, ChatState>(
+          bloc: chatBloc,
+          listener: (context, state) {
+            if (state is ChatUpdated) {
+              var chat = list
+                  .firstWhere((element) => element.chatId == state.chat.chatId);
+              setState(() {
+                list.remove(chat);
+                list.add(state.chat);
+              });
+            }
+          },
+        ),
+      ],
       child: Container(
         decoration: BoxDecoration(
             border: Border(
@@ -44,7 +60,7 @@ class _ChatListState extends State<ChatList> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     title: Text(list[index].chatName),
-                    subtitle: Text(list[index].message),
+                    subtitle: Text(list[index].message, maxLines: 1,overflow: TextOverflow.ellipsis),
                     hoverColor: Colors.grey,
                     onTap: () async {
                       chatBloc.add(OpenChat(

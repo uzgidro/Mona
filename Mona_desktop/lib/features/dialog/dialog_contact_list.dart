@@ -52,6 +52,7 @@ class _DialogContactListState extends State<DialogContactList> {
                                 receiverId: users[index].id,
                                 chatName: users[index].name,
                                 chatId: users[index].chatId));
+                            Navigator.pop(context);
                           },
                           child: ListTile(title: Text(users[index].name)));
                       // return ListTile(title: Text(users[index].name));

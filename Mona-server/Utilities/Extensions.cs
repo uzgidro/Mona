@@ -11,6 +11,7 @@ public static class Extensions
         if (string.IsNullOrEmpty(senderId)) throw new ArgumentNullException(nameof(senderId));
         //if (string.IsNullOrEmpty(request.Text) && string.IsNullOrEmpty(request.ForwardId))
         //  throw new ArgumentNullException(nameof(senderId), "Text and Forward id cannot be null at the same message");
+        if (request.CreatedAt.Year == 1) request.CreatedAt = DateTime.UtcNow;
         return new MessageModel
         {
             Text = request.ForwardId.IsNullOrEmpty() ? request.Text : null,
@@ -31,8 +32,8 @@ public static class Extensions
         var sender = model.Sender.FirstName + " " + model.Sender.LastName;
         var senderId = model.SenderId;
         ForwardDto? forward = null;
-        var text = string.Empty;
-        var files = new List<FileDto>();
+        var text = model.Text;
+        List<FileDto> files;
         ReplyDto? replied = null;
         if (model.RepliedMessage != null)
         {
@@ -43,61 +44,54 @@ public static class Extensions
             if (message.ForwardedMessage != null)
             {
                 var forwarded = message.ForwardedMessage;
-                replyTo = forwarded.Sender.FirstName + " " + forwarded.Sender.FirstName;
+                replyTo = message.Sender.FirstName + " " + message.Sender.FirstName + " -> " +
+                          forwarded.Sender.FirstName + " " + forwarded.Sender.FirstName;
                 id = forwarded.Id;
-                if (!forwarded.Files.IsNullOrEmpty())
+                if (!forwarded.Text.IsNullOrEmpty())
                 {
-                    replyText = forwarded.Files.Count + " files";
+                    replyText = forwarded.Text!;
                 }
                 else
                 {
-                    replyText = forwarded.Text!;
+                    replyText = forwarded.Files.Count + " files";
                 }
             }
             else
             {
                 replyTo = message.Sender.FirstName + " " + message.Sender.FirstName;
                 id = message.Id;
-                if (!message.Files.IsNullOrEmpty())
+                if (!message.Text.IsNullOrEmpty())
                 {
-                    replyText = message.Files.Count + " files";
+                    replyText = message.Text!;
                 }
                 else
                 {
-                    replyText = message.Text!;
+                    replyText = message.Files.Count + " files";
                 }
             }
 
             replied = new ReplyDto { RepliedMessage = replyText, ReplyTo = replyTo, Id = id };
+            files = model.Files.Select(
+                m => new FileDto { Id = m.Id, Name = m.Name, Size = m.Size, Path = string.Empty }).ToList();
+            text = model.Text;
         }
         else if (model.ForwardedMessage != null)
         {
             var forwarded = model.ForwardedMessage;
-            var forwardName = model.ForwardedMessage.Sender.FirstName + " " + model.ForwardedMessage.Sender.LastName;
-            var forwardId = model.ForwardedMessage.SenderId;
-            if (!forwarded.Files.IsNullOrEmpty())
-            {
-                files = forwarded.Files.Select(
-                    m => new FileDto { Id = m.Id, Name = m.Name, Size = m.Size, Path = string.Empty }).ToList();
-            }
-            else
-            {
-                text = forwarded.Text;
-            }
+            var forwardName = forwarded.Sender.FirstName + " " + forwarded.Sender.LastName;
+            var forwardId = forwarded.SenderId;
+
+            files = forwarded.Files.Select(
+                m => new FileDto { Id = m.Id, Name = m.Name, Size = m.Size, Path = string.Empty }).ToList();
+            text = forwarded.Text;
 
             forward = new ForwardDto { CreatorId = forwardId, CreatorName = forwardName };
         }
         else
         {
-            if (!model.Files.IsNullOrEmpty())
-            {
-                files = model.Files.Select(
-                    m => new FileDto { Id = m.Id, Name = m.Name, Size = m.Size, Path = string.Empty }).ToList();
-            }
-            else
-            {
-                text = model.Text;
-            }
+            files = model.Files.Select(
+                m => new FileDto { Id = m.Id, Name = m.Name, Size = m.Size, Path = string.Empty }).ToList();
+            text = model.Text;
         }
 
         return new MessageDto
@@ -107,6 +101,7 @@ public static class Extensions
             SenderName = sender,
             ChatId = model.ChatId,
             ReceiverId = model.ReceiverId,
+            Receiver = model.Receiver,
             Message = text,
             Files = files,
             Reply = replied,
@@ -114,6 +109,21 @@ public static class Extensions
             IsEdited = model.IsEdited,
             IsPinned = model.IsPinned,
             CreatedAt = model.CreatedAt,
+        };
+    }
+
+    public static ChatDto ToChatDto(this MessageDto messageDto)
+    {
+        return new ChatDto
+        {
+            ReceiverId = messageDto.ReceiverId,
+            SenderId = messageDto.SenderId,
+            SenderName = messageDto.SenderName,
+            Message = messageDto.Message.IsNullOrEmpty() ? messageDto.Files.Count().ToString() : messageDto.Message,
+            ChatName = messageDto.Receiver,
+            ChatId = messageDto.ChatId,
+            IsForward = messageDto.Forward != null,
+            MessageTime = messageDto.CreatedAt,
         };
     }
 }

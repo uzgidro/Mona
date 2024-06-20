@@ -13,4 +13,5 @@ public interface IHubInterfaces
     Task EditGroup(GroupModel group);
     Task AppendMember(GroupModel group);
     Task RemoveMember(GroupModel group);
+    Task UpdateChat(ChatDto chat);
 }

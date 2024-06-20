@@ -1,4 +1,6 @@
-﻿namespace Mona.Model;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Mona.Model;
 
 public class MessageModel
 {
@@ -9,6 +11,9 @@ public class MessageModel
     public string ChatId { get; set; }
     public ChatModel Chat { get; set; }
     public string ReceiverId { get; set; }
+
+    [NotMapped] public string Receiver { get; set; }
+
     public string? ReplyId { get; set; }
     public MessageModel? RepliedMessage { get; set; }
     public string? ForwardId { get; set; }

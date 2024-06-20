@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of '../message_dto.dart';
+part of 'message_dto.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
@@ -10,10 +10,12 @@ MessageDto _$MessageDtoFromJson(Map<String, dynamic> json) => MessageDto(
       id: json['id'] as String,
       senderId: json['senderId'] as String,
       senderName: json['senderName'] as String,
-      message: json['message'] as String?,
       chatId: json['chatId'] as String,
-      files: (json['files'] as List<dynamic>?)
-          ?.map((e) => FileDto.fromJson(e as Map<String, dynamic>))
+      receiverId: json['receiverId'] as String,
+      receiver: json['receiver'] as String,
+      message: json['message'] as String?,
+      files: (json['files'] as List<dynamic>)
+          .map((e) => FileDto.fromJson(e as Map<String, dynamic>))
           .toList(),
       forward: json['forward'] == null
           ? null
@@ -32,6 +34,8 @@ Map<String, dynamic> _$MessageDtoToJson(MessageDto instance) =>
       'senderId': instance.senderId,
       'senderName': instance.senderName,
       'chatId': instance.chatId,
+      'receiverId': instance.receiverId,
+      'receiver': instance.receiver,
       'message': instance.message,
       'files': instance.files,
       'forward': instance.forward,
