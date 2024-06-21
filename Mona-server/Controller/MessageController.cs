@@ -57,6 +57,7 @@ public class MessageController(
 
             return Created(nameof(Post), messageModel);
         }
+        // If message named part not provided
         catch (NullReferenceException e)
         {
             await hubContext.Clients.User(GetUserId()).ReceiveException(e);
@@ -65,7 +66,7 @@ public class MessageController(
         catch (ArgumentNullException e)
         {
             await hubContext.Clients.User(GetUserId()).ReceiveException(e);
-            return NotFound(e.Message);
+            return BadRequest(e.Message);
         }
         catch (Exception e)
         {

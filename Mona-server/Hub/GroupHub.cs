@@ -30,7 +30,7 @@ public class GroupHub(IMessageService service, IUserService userService, IGroupS
             foreach (var user in group.Users)
             {
                 await Groups.AddToGroupAsync(user.Id, group.Id);
-                await Clients.User(user.Id).AppendMember(group);
+                await Clients.User(user.Id).UpdateChat(await service.GetChatWithLastMessage(group.Id, userId));
             }
         }
         catch (Exception e)
@@ -44,7 +44,7 @@ public class GroupHub(IMessageService service, IUserService userService, IGroupS
         try
         {
             var group = await groupService.EditGroup(groupId, request);
-            await Clients.Group(group.Id).EditGroup(group);
+            // await Clients.Group(group.Id).EditGroup(group);
         }
         catch (Exception e)
         {
@@ -60,7 +60,8 @@ public class GroupHub(IMessageService service, IUserService userService, IGroupS
             foreach (var userGroup in members)
             {
                 await Groups.AddToGroupAsync(userGroup.UserId, userGroup.GroupId);
-                await Clients.User(userGroup.UserId).AppendMember(userGroup.GroupModel);
+                await Clients.User(userGroup.UserId)
+                    .UpdateChat(await service.GetChatWithLastMessage(userGroup.GroupModel.Id, GetSender()));
             }
         }
         catch (Exception e)
@@ -77,7 +78,7 @@ public class GroupHub(IMessageService service, IUserService userService, IGroupS
             foreach (var userGroup in members)
             {
                 await Groups.RemoveFromGroupAsync(userGroup.UserId, userGroup.GroupId);
-                await Clients.User(userGroup.UserId).RemoveMember(userGroup.GroupModel);
+                await Clients.User(userGroup.UserId).RemoveChat(userGroup.GroupModel.Id);
             }
         }
         catch (Exception e)
@@ -93,7 +94,7 @@ public class GroupHub(IMessageService service, IUserService userService, IGroupS
             var id = GetSender();
             var members = await groupService.LeaveGroup(groupId, id);
             await Groups.RemoveFromGroupAsync(id, groupId);
-            await Clients.Caller.RemoveMember(members.GroupModel);
+            await Clients.Caller.RemoveChat(members.GroupModel.Id);
         }
         catch (Exception e)
         {
@@ -109,7 +110,7 @@ public class GroupHub(IMessageService service, IUserService userService, IGroupS
             foreach (var userGroup in userGroups)
             {
                 await Groups.RemoveFromGroupAsync(userGroup.UserId, userGroup.GroupId);
-                await Clients.User(userGroup.UserId).RemoveMember(userGroup.GroupModel);
+                await Clients.User(userGroup.UserId).RemoveChat(userGroup.GroupModel.Id);
             }
         }
         catch (Exception e)

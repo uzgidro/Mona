@@ -1,5 +1,4 @@
-﻿using Mona.Model;
-using Mona.Model.Dto;
+﻿using Mona.Model.Dto;
 
 namespace Mona.Hub;
 
@@ -10,8 +9,6 @@ public interface IHubInterfaces
     Task DeleteMessage(string messageId);
     Task PinMessage(MessageDto message);
     Task ReceiveException(Exception e);
-    Task EditGroup(GroupModel group);
-    Task AppendMember(GroupModel group);
-    Task RemoveMember(GroupModel group);
     Task UpdateChat(ChatDto chat);
+    Task RemoveChat(string chatId);
 }

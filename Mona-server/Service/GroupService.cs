@@ -124,7 +124,6 @@ public class GroupService(ApplicationContext context) : IGroupService
         group.Name = request.Name;
         group.Description = request.Description;
         await context.SaveChangesAsync();
-        await AddNavigation(group);
         return group;
     }
 

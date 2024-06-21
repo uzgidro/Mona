@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Mona.Model;
 using Mona.Model.Dto;
 using Mona.Service.Interface;
 using Mona.Utilities;
@@ -25,7 +24,7 @@ public class ChatHub(IMessageService service, IUserService userService)
         }
     }
 
-    public async Task EditMessage(MessageModel message)
+    public async Task EditMessage(MessageRequest message)
     {
         try
         {
