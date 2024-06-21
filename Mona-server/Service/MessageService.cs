@@ -51,7 +51,7 @@ public class MessageService(ApplicationContext context) : IMessageService
         return entity.ToDto();
     }
 
-    public async Task<MessageDto> EditMessage(string caller, MessageModel message)
+    public async Task<MessageDto> EditMessage(string caller, MessageRequest message)
     {
         var entity = await RetrieveMessage(message.Id);
 
@@ -171,8 +171,8 @@ public class MessageService(ApplicationContext context) : IMessageService
             ChatId = m.ChatId,
             Message = m.LastMessage.Text,
             MessageTime = m.LastMessage.CreatedAt,
-            ChatName = m.CompanionId != null && m.CompanionId.StartsWith("g-")
-                ? context.Groups.Where(gm => string.Equals(gm.Id, m.CompanionId)).Select(m => m.Name).FirstOrDefault()
+            ChatName = m.CompanionId != null && m.ChatId.StartsWith("g-")
+                ? context.Groups.Where(gm => string.Equals(gm.Id, m.ChatId)).Select(m => m.Name).FirstOrDefault()
                 : context.Users.Where(gm => string.Equals(gm.Id, m.CompanionId))
                     .Select(m => m.FirstName + " " + m.LastName).FirstOrDefault(),
             ReceiverId = m.CompanionId,
@@ -180,6 +180,30 @@ public class MessageService(ApplicationContext context) : IMessageService
             SenderName = m.LastMessage.Sender.FirstName,
             IsForward = !m.LastMessage.ForwardId.IsNullOrEmpty()
         }).OrderBy(m => m.MessageTime).ToList();
+    }
+
+    public async Task<ChatDto> GetChatWithLastMessage(string chatId, string caller)
+    {
+        return await context.Chats.Where(m => string.Equals(m.Id, chatId))
+            .Select(m => new ChatDto
+            {
+                ChatId = m.Id,
+                Message = m.LastMessage.Text,
+                MessageTime = m.LastMessage.CreatedAt,
+                ChatName = chatId.StartsWith("g-")
+                    ? context.Groups.Where(gm => string.Equals(gm.Id, m.Id)).Select(m => m.Name).FirstOrDefault()
+                    : context.Users.Where(gm =>
+                            string.Equals(gm.Id, m.ChatUsers.First(cc => !string.Equals(cc.ClientId, caller))))
+                        .Select(m => m.FirstName + " " + m.LastName).FirstOrDefault(),
+                ReceiverId = chatId.StartsWith("g-")
+                    ? context.Groups.Where(gm => string.Equals(gm.Id, m.Id)).Select(m => m.Id).FirstOrDefault()
+                    : context.Users.Where(gm =>
+                            string.Equals(gm.Id, m.ChatUsers.First(cc => !string.Equals(cc.ClientId, caller))))
+                        .Select(m => m.Id).FirstOrDefault(),
+                SenderId = m.LastMessage.SenderId,
+                SenderName = m.LastMessage.Sender.FirstName,
+                IsForward = !m.LastMessage.ForwardId.IsNullOrEmpty()
+            }).FirstAsync();
     }
 
     public async Task<List<MessageDto>> GetMessagesByChatId(string caller, string chatId)
