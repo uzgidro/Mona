@@ -50,7 +50,7 @@
                    </div>
                     <div
                     class="relative ml-3 text-sm  py-2 px-4 shadow rounded-xl "
-                    (click)="openModal(message)"
+               
                    [ngClass]="{' bg-indigo-500 text-white': selectedChat?.id!==message?.senderId, 'bg-white text-black':selectedChat?.id==message?.senderId}"
                    >
                    <div>{{message.text}}</div>
@@ -61,7 +61,4 @@
               </div>
            </div>
           <!-- Send Message -->
-           <app-send-message
-            [selectedChat]="selectedChat"
-            >
-          </app-send-message>
+
