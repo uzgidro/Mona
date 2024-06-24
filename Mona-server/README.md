@@ -358,10 +358,15 @@ Response to Invoke method
 
 ```json
 {
-  "id": "string",
-  "name": "string",
   "chatId": "string",
-  "icon": "string"
+  "chatName": "string",
+  "message": "string",
+  "messageTime": "string (ISO 8601 format)",
+  "receiverId": "string",
+  "senderId": "string",
+  "senderName": "string",
+  "isForward": "boolean",
+  "chatIcon": "string"
 }
 ```
 
