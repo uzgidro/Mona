@@ -50,11 +50,11 @@
                    </div>
                     <div
                     class="relative ml-3 text-sm  py-2 px-4 shadow rounded-xl "
-               
+
                    [ngClass]="{' bg-indigo-500 text-white': selectedChat?.id!==message?.senderId, 'bg-white text-black':selectedChat?.id==message?.senderId}"
                    >
-                   <div>{{message.text}}</div>
-                   <div *ngIf="message.forwardedMessage">{{message.forwardedMessage.text}}</div>
+                   <div>{{message.message}}</div>
+                   <div *ngIf="message.forwardedMessage">{{message.forwardedMessage.message}}</div>
                     </div>
                   </div>
               </div>

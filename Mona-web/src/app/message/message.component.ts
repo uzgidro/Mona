@@ -1,6 +1,6 @@
 import {GroupModel, GroupRequest} from '../models/group';
 import {ForwardMessageComponent} from './message-actions/forward-message/forward-message.component';
-import {UserModel} from '../models/user';
+import {GetUserResponse, UserModel} from '../models/user';
 import {File, MessageModel, MessageRequest} from '../models/message';
 import {Component, OnInit, ViewChild} from '@angular/core';
 import * as signalR from '@microsoft/signalr';
@@ -18,6 +18,7 @@ import {DeleteGroupComponent} from './delete-group/delete-group.component';
 import {ViewGroupInfoComponent} from './view-group-info/view-group-info.component';
 import {HubMethods} from "../models/hub-methods";
 import {HubListeners} from "../models/hub-listeners";
+import { ChatDto } from '../models/chat';
 
 
 @Component({
@@ -34,9 +35,12 @@ export class MessageComponent implements OnInit {
     this.sidenav.toggle();
   }
 
-  users: UserModel[] = []
+
+  checkAChat:boolean=false
+  checkAGroup:boolean=false
+  users: GetUserResponse[] = []
   groups: GroupModel[] = []
-  selectedChat?: UserModel
+  selectedChat?: ChatDto
   selectedGroup?: GroupModel
   inputGroup = new FormGroup({
     message: new FormControl(''),
@@ -45,6 +49,13 @@ export class MessageComponent implements OnInit {
     groupFile: new FormControl('')
   })
 
+
+  messages:MessageModel[]=[]
+
+
+  chats:ChatDto[]=[]
+
+  selectedContact?:GetUserResponse
 
   selectedFiles?: any[]
   chatConnection?: HubConnection
@@ -57,7 +68,7 @@ export class MessageComponent implements OnInit {
   currentDate: Date = new Date();
 
   get income(): MessageModel[] {
-    return this._income.filter(item => item.directReceiverId == this.selectedChat?.id || item.senderId == this.selectedChat?.id || item.groupReceiverId == this.selectedChat?.id)
+    return this._income.filter(item => item)
   }
 
 
@@ -82,7 +93,6 @@ export class MessageComponent implements OnInit {
     this.apiService.getUserInfo(id).subscribe({
       next: (value: UserModel) => {
         this.currentUser = value; // Assigning value to currentUser
-        console.log(this.currentUser);
 
       },
       error: (error) => {
@@ -94,53 +104,62 @@ export class MessageComponent implements OnInit {
   }
 
   // TODO()-3: On Chat select
-  // selectChat(chat: UserModel) {
-  //   this.selectedChat = chat
-  //   this.selectedGroup = undefined
-  // }
+  selectChat(chat: ChatDto) {
+
+    this.selectedChat = chat
+    this.checkAChat=true;
+    this.checkAGroup=false
+    this.selectedGroup = undefined
+    console.log(this.selectedChat.chatId);
+    this.updateMessages()
+  }
+  selectContact(chat:GetUserResponse) {
+    this.selectedContact=chat
+    console.log(this.selectedContact);
+    if(this.selectedContact) {
+      this.checkAChat=true
+    }
+
+  }
   //
-  // selectGroup(group: GroupModel) {
-  //   this.selectedGroup = group
-  //   this.selectedChat = undefined
-  // }
+  selectGroup(group: GroupModel) {
+    this.selectedGroup = group
+    this.selectedChat = undefined
+  }
 
   // TODO()-4: If new chat - use receiverId, else use chatId
   sendMessage() {
     let message = this.inputGroup.get('message')?.value;
-    let replyId: string | undefined = this.repliedMessage ? this.repliedMessage.id : undefined;
-    let forwardId: string | undefined = this.forwardedMessage ? this.forwardedMessage.id : undefined;
     // TODO()-5: use chatId in messageRequest
+    console.log(message);
+
     const messageRequest: MessageRequest = {
-      text: message ? message : '',
-      receiverId: this.selectedChat?.id || this.selectedGroup.id,
+      text:message?message:'',
+      receiverId:this.selectedChat?this.selectedChat.receiverId:this.selectedContact.id,
       createdAt: new Date(),
-      replyId: replyId,
-      forwardId: forwardId,
     };
     console.log(messageRequest);
 
     if (this.selectedFiles) {
-      console.log(this.selectedFiles);
-
       let formData = new FormData();
       formData.append('message', JSON.stringify(messageRequest))
-      console.log(this.selectedFiles);
-
       const filesArr = [...this.selectedFiles]
       console.log(filesArr);
 
       filesArr.forEach(file => {
         console.log(file);
-
         formData.append("file", file, file.name);
       });
 
-
       this.apiService.sendMessage(formData)
+      this.updateMessages()
       this.inputGroup.get('file')?.setValue('')
     } else {
       this.chatConnection.send(HubMethods.SendMessage, messageRequest)
+      console.log(messageRequest);
+
     }
+    this.updateMessages()
     this.inputGroup.get('message')?.setValue('')
     this.repliedMessage = undefined
   }
@@ -166,20 +185,32 @@ export class MessageComponent implements OnInit {
   }
 
   onSelectEditingMessage(eventMessage: MessageModel) {
-    this.inputGroup.get('message')?.setValue(eventMessage.text)
+    this.inputGroup.get('message')?.setValue(eventMessage.message)
     this.editingMessage = eventMessage
   }
 
   downloadFile(file: File) {
+    console.log(file);
+
     this.apiService.downloadFile(file)
   }
 
+  downloadFiles(files: File[]) {
+    console.log(files);
+    this.apiService.downloadFiles(files)
+  }
+
   deleteMessageForMyself(eventMessageId: string) {
-    this.chatConnection?.send(HubMethods.DeleteMessageForMyself, eventMessageId)
+    console.log(eventMessageId);
+    this.chatConnection?.invoke(HubMethods.DeleteMessageForMyself, eventMessageId)
+    // this.updateMessages()
   }
 
   deleteMessageForEveryone(eventMessageId: string) {
-    this.chatConnection?.send(HubMethods.DeleteMessageForEveryone, eventMessageId)
+    console.log(eventMessageId);
+
+    this.chatConnection.invoke(HubMethods.DeleteMessageForEveryone, eventMessageId)
+    this.updateMessages()
   }
 
   replyMessage(eventMessage: MessageModel) {
@@ -284,7 +315,7 @@ export class MessageComponent implements OnInit {
         {
           users: this.users,
           // TODO()-6.1: Think something
-          // selectChat: this.selectChat.bind(this),
+          selectContact: this.selectContact.bind(this),
         },
 
     });
@@ -349,6 +380,27 @@ export class MessageComponent implements OnInit {
   }
 
 
+
+
+  updateMessages(){
+    if (this.selectedChat&&!this.selectedContact) {
+      this.chatConnection.invoke(HubMethods.GetMessagesByChatId,this.selectedChat.chatId).then((m)=>{
+        this.messages=m
+      })
+
+    }else if (!this.selectedChat&&this.selectedContact){
+      this.chatConnection.invoke(HubMethods.GetMessagesByUserId,this.selectedContact.id).then((m)=>{
+        this.messages=m
+      })
+
+    }
+
+
+
+
+  }
+
+
   private setChatConnection(accessToken: string) {
     const chatConnection = new signalR.HubConnectionBuilder()
       .withUrl("http://127.0.0.1:5031/chat", {
@@ -359,8 +411,7 @@ export class MessageComponent implements OnInit {
       .build();
     this.chatConnection = chatConnection
     chatConnection.on(HubListeners.ReceiveMessage, (message: MessageModel) => {
-      this._income.push(message)
-      console.log(this.income);
+     console.log(message);
     });
     chatConnection.on(HubListeners.ModifyMessage, (modifiedMessage: MessageModel) => {
       const index = this._income.findIndex(item => item.id === modifiedMessage.id);
@@ -382,8 +433,17 @@ export class MessageComponent implements OnInit {
       .then(() => {
         if (chatConnection) {
           // TODO()-1: Create new model(Chat), implement, store and display
-          chatConnection.invoke(HubMethods.GetChats).then((chats) => console.log(chats))
-          // chatConnection.invoke('getUsers').then((users: UserModel[]) => this.users = users)
+            chatConnection.invoke(HubMethods.GetChats).then((chats) => {
+              console.log(chats)
+              this.chats=chats
+              console.log(chats);
+            })
+          chatConnection.invoke('getUsers').then((users: GetUserResponse[]) => {
+            console.log(users)
+            this.users=users
+            console.log(this.users);
+          }
+          )
           // chatConnection.invoke('getHistory').then((messages: MessageModel[]) => {
           //   this._income = messages
           //   console.log(this._income);

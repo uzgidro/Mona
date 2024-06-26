@@ -53,7 +53,6 @@ export class MessageActionsComponent implements OnInit {
   deleteForMe() {
     if (this.data.deleteMessageForMyself) {
       console.log(this.data.message);
-
       this.data.deleteMessageForMyself(this.data.message.id);
       this.cancel()
     }
@@ -69,7 +68,7 @@ export class MessageActionsComponent implements OnInit {
 
 
   copyText(){
-    const messageContent = this.data.message.forwardedMessage?this.data.message.forwardedMessage.text:this.data.message.text;
+    const messageContent = this.data.message.forwardedMessage?this.data.message.forwardedMessage.message:this.data.message.message;
     navigator.clipboard.writeText(messageContent)
       .then(() => {
         console.log('Message copied to clipboard:', messageContent);

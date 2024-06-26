@@ -23,7 +23,7 @@ export interface File {
 
 export interface MessageModel{
   id: string;
-  text: string;
+  message: string;
   senderId: string;
   sender: UserModel;
   directReceiverId?: string;

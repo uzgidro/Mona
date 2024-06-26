@@ -50,6 +50,18 @@ export class ApiService {
     })
   }
 
+  downloadFiles(files: File[]) {
+    const headers = new HttpHeaders().set('Accept', 'application/octet-stream');
+
+    files.forEach(file => {
+      const url = BASE_URL + FILES + DOWNLOAD + '/' + file.id;
+
+      this.http.get(url, { headers: headers, responseType: 'blob' }).subscribe((response: Blob) => {
+        this.handleResponse(response, file.name);
+      });
+    });
+  }
+
   downloadFile( file: File) {
     const url=BASE_URL+FILES+DOWNLOAD+'/'+file.id;
     const headers = new HttpHeaders();
@@ -58,6 +70,7 @@ export class ApiService {
       this.handleResponse(response, file.name);
     });
   }
+
 
 
   getUserInfo(ID:string){
