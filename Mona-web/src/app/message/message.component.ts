@@ -1,7 +1,7 @@
 import {GroupModel, GroupRequest} from '../models/group';
 import {ForwardMessageComponent} from './message-actions/forward-message/forward-message.component';
 import {GetUserResponse, UserModel} from '../models/user';
-import {File, MessageModel, MessageRequest} from '../models/message';
+import {File, FileDto, MessageDto, MessageModel, MessageRequest} from '../models/message';
 import {Component, OnInit, ViewChild} from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import {HubConnection} from '@microsoft/signalr';
@@ -50,7 +50,7 @@ export class MessageComponent implements OnInit {
   })
 
 
-  messages:MessageModel[]=[]
+  messages:MessageDto[]=[]
 
 
   chats:ChatDto[]=[]
@@ -138,7 +138,7 @@ export class MessageComponent implements OnInit {
       receiverId:this.selectedChat?this.selectedChat.receiverId:this.selectedContact.id,
       createdAt: new Date(),
     };
-    console.log(messageRequest);
+    console.log('Message request: '+messageRequest);
 
     if (this.selectedFiles) {
       let formData = new FormData();
@@ -156,7 +156,7 @@ export class MessageComponent implements OnInit {
       this.inputGroup.get('file')?.setValue('')
     } else {
       this.chatConnection.send(HubMethods.SendMessage, messageRequest)
-      console.log(messageRequest);
+      console.log('Message request: '+messageRequest);
 
     }
     this.updateMessages()
@@ -189,28 +189,27 @@ export class MessageComponent implements OnInit {
     this.editingMessage = eventMessage
   }
 
-  downloadFile(file: File) {
+  downloadFile(file: FileDto) {
     console.log(file);
 
     this.apiService.downloadFile(file)
   }
 
-  downloadFiles(files: File[]) {
+  downloadFiles(files: FileDto[]) {
     console.log(files);
     this.apiService.downloadFiles(files)
   }
 
-  deleteMessageForMyself(eventMessageId: string) {
-    console.log(eventMessageId);
-    this.chatConnection?.invoke(HubMethods.DeleteMessageForMyself, eventMessageId)
+  deleteMessageForMyself(eventMessage: MessageDto) {
+    console.log(eventMessage);
+    this.chatConnection?.send(HubMethods.DeleteMessageForMyself, eventMessage.id)
     // this.updateMessages()
   }
 
-  deleteMessageForEveryone(eventMessageId: string) {
-    console.log(eventMessageId);
-
-    this.chatConnection.invoke(HubMethods.DeleteMessageForEveryone, eventMessageId)
-    this.updateMessages()
+  deleteMessageForEveryone(eventMessage: MessageDto) {
+    console.log(eventMessage);
+    this.chatConnection.invoke(HubMethods.DeleteMessageForEveryone, eventMessage.id)
+    // this.updateMessages()
   }
 
   replyMessage(eventMessage: MessageModel) {
@@ -253,7 +252,7 @@ export class MessageComponent implements OnInit {
   }
 
 
-  openMessageActions(message: MessageModel) {
+  openMessageActions(message: MessageDto) {
     const dialogRef = this.dialog.open(MessageActionsComponent, {
       width: '400px',
       data:
@@ -395,6 +394,10 @@ export class MessageComponent implements OnInit {
 
     }
 
+    this.chatConnection.invoke(HubMethods.GetChats).then((chats) => {
+      this.chats=chats
+    })
+
 
 
 
@@ -410,7 +413,7 @@ export class MessageComponent implements OnInit {
       })
       .build();
     this.chatConnection = chatConnection
-    chatConnection.on(HubListeners.ReceiveMessage, (message: MessageModel) => {
+    chatConnection.on(HubListeners.ReceiveMessage, (message: MessageDto) => {
      console.log(message);
     });
     chatConnection.on(HubListeners.ModifyMessage, (modifiedMessage: MessageModel) => {
@@ -418,7 +421,7 @@ export class MessageComponent implements OnInit {
       this._income[index] = modifiedMessage;
     });
     chatConnection.on(HubListeners.DeleteMessage, (deletedMessageId: string) => {
-      this._income = this._income.filter(item => item.id !== deletedMessageId);
+      this.messages = this.messages.filter(item => item.id!== deletedMessageId);
     });
     chatConnection.on(HubListeners.PinMessage, (pinnedMessage: MessageModel) => {
       console.log(pinnedMessage)
