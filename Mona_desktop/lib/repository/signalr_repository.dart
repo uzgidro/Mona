@@ -1,15 +1,18 @@
 import 'package:injectable/injectable.dart';
+import 'package:mona_desktop/core/di/scope_names.dart';
 import 'package:mona_desktop/core/dto/message_request.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 
-@Injectable()
+@Injectable(scope: ScopeNames.message)
 class SignalRRepository {
   final HubConnection hubConnection;
 
   SignalRRepository({required this.hubConnection});
 
   Future startConnection() async {
-    await hubConnection.start();
+    if (hubConnection.state?.index == 0) {
+      await hubConnection.start();
+    }
   }
 
   Future invokeGetChats() async {
@@ -33,7 +36,7 @@ class SignalRRepository {
   void receiveMessage(Function(List<Object?>?) method) {
     hubConnection.on(HubListeners.receiveMessage, method);
   }
-  
+
   void updateChat(Function(List<Object?>?) method) {
     hubConnection.on(HubListeners.updateChat, method);
   }
@@ -48,7 +51,7 @@ class HubMethods {
 
 class HubListeners {
   static const String receiveMessage = 'ReceiveMessage';
-static const String updateChat = 'UpdateChat';
+  static const String updateChat = 'UpdateChat';
 // static const String getMessagesByChatId = 'getMessagesByChatId';
 // static const String sendMessage = 'sendMessage';
 }

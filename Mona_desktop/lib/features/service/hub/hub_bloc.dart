@@ -2,6 +2,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
+import 'package:mona_desktop/core/di/scope_names.dart';
 import 'package:mona_desktop/core/dto/dto_export.dart';
 import 'package:mona_desktop/features/service/hub/hub_service.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -9,7 +10,7 @@ import 'package:talker_flutter/talker_flutter.dart';
 part 'hub_event.dart';
 part 'hub_state.dart';
 
-@lazySingleton
+@LazySingleton(scope: ScopeNames.message)
 class HubBloc extends Bloc<HubEvent, HubState> {
   HubBloc(this.talker, this.hubService) : super(HubInitial()) {
     on<StartConnection>((event, emit) async {

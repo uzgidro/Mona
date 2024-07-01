@@ -13,7 +13,8 @@ part 'auth_state.dart';
 
 @LazySingleton()
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc(this.authRepository, this.jwtService, this.talker) : super(AuthInitial()) {
+  AuthBloc(this.authRepository, this.jwtService, this.talker)
+      : super(AuthInitial()) {
     on<SignInEvent>((event, emit) async {
       try {
         var login = await authRepository.signIn(event.signInRequest);
@@ -67,7 +68,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     on<RefreshTokenEvent>((event, emit) async {
       try {
-        var tokenPair = await authRepository.refresh(await jwtService.getTokenPair());
+        var tokenPair =
+            await authRepository.refresh(await jwtService.getTokenPair());
         await jwtService.saveTokens(tokenPair);
       } on DioException catch (e) {
         if (e.response?.statusCode == 400) {

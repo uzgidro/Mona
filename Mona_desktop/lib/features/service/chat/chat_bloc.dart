@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
+import 'package:mona_desktop/core/di/scope_names.dart';
 import 'package:mona_desktop/core/dto/chat_dto.dart';
 import 'package:mona_desktop/core/dto/message_dto.dart';
 import 'package:mona_desktop/core/dto/message_request.dart';
@@ -11,7 +12,7 @@ import 'package:talker_flutter/talker_flutter.dart';
 part 'chat_event.dart';
 part 'chat_state.dart';
 
-@lazySingleton
+@LazySingleton(scope: ScopeNames.message)
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ChatBloc(this.chatService, this.talker) : super(ChatInitial()) {
     on<OpenChat>((event, emit) async {

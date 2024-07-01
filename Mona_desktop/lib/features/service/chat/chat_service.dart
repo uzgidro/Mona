@@ -1,9 +1,10 @@
 import 'package:injectable/injectable.dart';
+import 'package:mona_desktop/core/di/scope_names.dart';
 import 'package:mona_desktop/core/dto/dto_export.dart';
 import 'package:mona_desktop/core/dto/message_request.dart';
 import 'package:mona_desktop/repository/signalr_repository.dart';
 
-@Injectable()
+@Injectable(scope: ScopeNames.message)
 class ChatService {
   final SignalRRepository repository;
 

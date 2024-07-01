@@ -1,8 +1,9 @@
 import 'package:injectable/injectable.dart';
+import 'package:mona_desktop/core/di/scope_names.dart';
 import 'package:mona_desktop/core/dto/dto_export.dart';
 import 'package:mona_desktop/repository/signalr_repository.dart';
 
-@Injectable()
+@Injectable(scope: ScopeNames.message)
 class HubService {
   final SignalRRepository repository;
 
