@@ -25,3 +25,21 @@ final class ContactsLoaded extends HubState {
   @override
   List<Object?> get props => [contacts];
 }
+
+final class ChatUpdated extends HubState {
+  final ChatDto chat;
+
+  ChatUpdated({required this.chat});
+
+  @override
+  List<Object?> get props => [chat];
+}
+
+final class MessageReceived extends HubState {
+  final MessageDto message;
+
+  MessageReceived({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}

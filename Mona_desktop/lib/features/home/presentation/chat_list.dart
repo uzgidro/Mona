@@ -30,17 +30,12 @@ class _ChatListState extends State<ChatList> {
                 list.addAll(state.chatList);
               });
             }
-          },
-        ),
-        BlocListener<ChatBloc, ChatState>(
-          bloc: chatBloc,
-          listener: (context, state) {
             if (state is ChatUpdated) {
               var chat = list
                   .firstWhere((element) => element.chatId == state.chat.chatId);
               setState(() {
                 list.remove(chat);
-                list.add(state.chat);
+                list.insert(0, state.chat);
               });
             }
           },

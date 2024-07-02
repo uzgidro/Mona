@@ -21,6 +21,7 @@ import 'package:mona_desktop/features/service/chat/chat_bloc.dart' as _i18;
 import 'package:mona_desktop/features/service/chat/chat_service.dart' as _i16;
 import 'package:mona_desktop/features/service/hub/hub_bloc.dart' as _i19;
 import 'package:mona_desktop/features/service/hub/hub_service.dart' as _i17;
+import 'package:mona_desktop/features/service/service_export.dart' as _i20;
 import 'package:mona_desktop/repository/auth/abstract_auth_repository.dart'
     as _i9;
 import 'package:mona_desktop/repository/auth/auth_repository.dart' as _i10;
@@ -86,6 +87,7 @@ extension GetItInjectableX on _i1.GetIt {
         gh.lazySingleton<_i19.HubBloc>(() => _i19.HubBloc(
               gh<_i3.Talker>(),
               gh<_i17.HubService>(),
+              gh<_i20.ChatService>(),
             ));
       },
     );

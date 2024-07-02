@@ -41,18 +41,19 @@ class _ChatState extends State<Chat> {
                   messages = state.messages;
                 });
               }
-              if (state is MessageReceived) {
-                final message = state.message;
-                if (message.chatId == chatId) {
-                  setState(() {
-                    messages.add(state.message);
-                  });
-                }
-              }
             }),
         BlocListener(
           bloc: hubBloc,
-          listener: (context, state) {},
+          listener: (context, state) {
+            if (state is MessageReceived) {
+              final message = state.message;
+              if (message.chatId == chatId) {
+                setState(() {
+                  messages.add(state.message);
+                });
+              }
+            }
+          },
         )
       ],
       child: isChatNotActive

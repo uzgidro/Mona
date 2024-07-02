@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
 import 'package:mona_desktop/core/di/scope_names.dart';
-import 'package:mona_desktop/core/dto/chat_dto.dart';
 import 'package:mona_desktop/core/dto/message_dto.dart';
 import 'package:mona_desktop/core/dto/message_request.dart';
 import 'package:mona_desktop/features/service/chat/chat_service.dart';
@@ -32,12 +31,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           emit(ChatLoaded(messages: jsonResponse));
 
           // Listeners
-          chatService.receiveMessage((message) {
-            add(ReceiveMessage(message: message));
-          });
-          chatService.updateChat((chat) {
-            add(UpdateChat(chat: chat));
-          });
         }
       } catch (e, st) {
         talker.handle(e, st);
@@ -50,14 +43,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       } catch (e, st) {
         talker.handle(e, st);
       }
-    });
-
-    on<ReceiveMessage>((event, emit) {
-      emit(MessageReceived(message: event.message));
-    });
-
-    on<UpdateChat>((event, emit) {
-      emit(ChatUpdated(chat: event.chat));
     });
   }
 
