@@ -105,7 +105,8 @@ export class MessageComponent implements OnInit {
 
   // TODO()-3: On Chat select
   selectChat(chat: ChatDto) {
-
+    this.messages=[]
+    this.selectedContact=undefined
     this.selectedChat = chat
     this.checkAChat=true;
     this.checkAGroup=false
@@ -114,6 +115,8 @@ export class MessageComponent implements OnInit {
     this.updateMessages()
   }
   selectContact(chat:GetUserResponse) {
+     this.selectedChat=undefined
+     this.messages=[]
     this.selectedContact=chat
     console.log(this.selectedContact);
     if(this.selectedContact) {
@@ -393,7 +396,7 @@ export class MessageComponent implements OnInit {
       })
 
     }
-
+    
     this.chatConnection.invoke(HubMethods.GetChats).then((chats) => {
       this.chats=chats
     })
