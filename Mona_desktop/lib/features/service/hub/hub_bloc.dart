@@ -12,8 +12,7 @@ part 'hub_state.dart';
 
 @LazySingleton(scope: ScopeNames.message)
 class HubBloc extends Bloc<HubEvent, HubState> {
-  HubBloc(this.talker, this.hubService, this.chatService)
-      : super(HubInitial()) {
+  HubBloc(this.talker, this.hubService) : super(HubInitial()) {
     on<StartConnection>((event, emit) async {
       try {
         await hubService.startConnection();
@@ -21,12 +20,8 @@ class HubBloc extends Bloc<HubEvent, HubState> {
 
         // TODO(): Add loading until emitted
         emit(HubStarted(chatList: chatList));
-        chatService.updateChat((chat) {
-          add(UpdateChat(chat: chat));
-        });
-        chatService.receiveMessage((message) {
-          add(ReceiveMessage(message: message));
-        });
+
+        launchListeners();
       } catch (e, st) {
         talker.handle(e, st);
       }
@@ -53,6 +48,14 @@ class HubBloc extends Bloc<HubEvent, HubState> {
   }
 
   final HubService hubService;
-  final ChatService chatService;
   final Talker talker;
+
+  void launchListeners() {
+    hubService.launchUpdateChatListener((chat) {
+      add(UpdateChat(chat: chat));
+    });
+    hubService.launchReceiveMessageListener((message) {
+      add(ReceiveMessage(message: message));
+    });
+  }
 }

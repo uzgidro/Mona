@@ -33,11 +33,11 @@ class SignalRRepository {
         .send(HubMethods.sendMessage, args: [messageRequest]);
   }
 
-  void receiveMessage(Function(List<Object?>?) method) {
+  void subscribeOnReceiveMessage(Function(List<Object?>?) method) {
     hubConnection.on(HubListeners.receiveMessage, method);
   }
 
-  void updateChat(Function(List<Object?>?) method) {
+  void subscribeOnUpdateChat(Function(List<Object?>?) method) {
     hubConnection.on(HubListeners.updateChat, method);
   }
 }

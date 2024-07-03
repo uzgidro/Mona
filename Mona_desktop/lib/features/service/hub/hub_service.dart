@@ -22,4 +22,20 @@ class HubService {
     var jsonResponse = await repository.invokeGetUsers() as List<dynamic>;
     return jsonResponse.map((json) => UserDto.fromJson(json)).toList();
   }
+
+  void launchReceiveMessageListener(Function(MessageDto) onMessageReceived) {
+    repository.subscribeOnReceiveMessage((response) {
+      var responseList = response as List<dynamic>;
+      var message = MessageDto.fromJson(responseList[0]);
+      onMessageReceived(message);
+    });
+  }
+
+  void launchUpdateChatListener(Function(ChatDto) onChatReceived) {
+    repository.subscribeOnUpdateChat((response) {
+      var responseList = response as List<dynamic>;
+      var chat = ChatDto.fromJson(responseList[0]);
+      onChatReceived(chat);
+    });
+  }
 }

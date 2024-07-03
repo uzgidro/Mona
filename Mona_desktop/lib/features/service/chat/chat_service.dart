@@ -19,20 +19,4 @@ class ChatService {
   Future sendMessage(MessageRequest messageRequest) async {
     await repository.sendMessage(messageRequest);
   }
-
-  void receiveMessage(Function(MessageDto) onMessageReceived) {
-    repository.receiveMessage((response) {
-      var responseList = response as List<dynamic>;
-      var message = MessageDto.fromJson(responseList[0]);
-      onMessageReceived(message);
-    });
-  }
-
-  void updateChat(Function(ChatDto) onChatReceived) {
-    repository.updateChat((response) {
-      var responseList = response as List<dynamic>;
-      var chat = ChatDto.fromJson(responseList[0]);
-      onChatReceived(chat);
-    });
-  }
 }

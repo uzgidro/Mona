@@ -47,9 +47,17 @@ class _ChatState extends State<Chat> {
           listener: (context, state) {
             if (state is MessageReceived) {
               final message = state.message;
+              if (chatId == null &&
+                  (message.receiverId == receiverId ||
+                      message.senderId == receiverId)) {
+                setState(() {
+                  chatId ??= message.chatId;
+                  messages.add(message);
+                });
+              }
               if (message.chatId == chatId) {
                 setState(() {
-                  messages.add(state.message);
+                  messages.add(message);
                 });
               }
             }

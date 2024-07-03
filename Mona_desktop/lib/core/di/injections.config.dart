@@ -86,8 +86,7 @@ extension GetItInjectableX on _i1.GetIt {
             ));
         gh.lazySingleton<_i19.HubBloc>(() => _i19.HubBloc(
               gh<_i3.Talker>(),
-              gh<_i17.HubService>(),
-              gh<_i20.ChatService>(),
+              gh<_i20.HubService>(),
             ));
       },
     );
