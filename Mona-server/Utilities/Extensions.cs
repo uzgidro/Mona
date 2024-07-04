@@ -18,7 +18,7 @@ public static class Extensions
             SenderId = senderId,
             ChatId = request.ChatId,
             ReceiverId = request.ReceiverId,
-            CreatedAt = request.CreatedAt,
+            CreatedAt = request.CreatedAt.ToUniversalTime(),
             ModifiedAt = request.CreatedAt,
             ReplyId = request.ReplyId,
             ForwardId = request.ForwardId,
@@ -108,7 +108,7 @@ public static class Extensions
             Forward = forward,
             IsEdited = model.IsEdited,
             IsPinned = model.IsPinned,
-            CreatedAt = model.CreatedAt,
+            CreatedAt = DateTime.SpecifyKind(model.CreatedAt, DateTimeKind.Utc),
         };
     }
 
@@ -123,7 +123,7 @@ public static class Extensions
             ChatName = messageDto.Receiver,
             ChatId = messageDto.ChatId,
             IsForward = messageDto.Forward != null,
-            MessageTime = messageDto.CreatedAt,
+            MessageTime = DateTime.SpecifyKind(messageDto.CreatedAt, DateTimeKind.Utc),
         };
     }
 }

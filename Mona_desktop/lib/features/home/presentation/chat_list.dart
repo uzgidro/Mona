@@ -56,6 +56,7 @@ class _ChatListState extends State<ChatList> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     title: Text(list[index].chatName),
+                    trailing: Text(list[index].formattedTime ?? ''),
                     subtitle: Text(list[index].message,
                         maxLines: 1, overflow: TextOverflow.ellipsis),
                     hoverColor: Colors.grey,
