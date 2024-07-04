@@ -2,7 +2,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { File, MessageModel } from '../../models/message';
 import { UserModel } from '../../models/user';
-import { ForwardMessageDialogComponent } from '../dialog/dialog.component';
 
 @Component({
   selector: 'app-message-item',
@@ -58,17 +57,6 @@ export class MessageItemComponent {
  }
 
 
-  openModal(message:MessageModel) {
-    this.selectedMessage=message
-   if (this.selectedMessage) {
-    const dialogRef = this.dialog.open(ForwardMessageDialogComponent, {
-      width: '400px',
-      data: { message: this.selectedMessage }
-    });
-    dialogRef.afterClosed().subscribe(() => {
-    });
-  }
-}
 
 
 

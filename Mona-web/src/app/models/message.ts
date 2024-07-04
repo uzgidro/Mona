@@ -23,7 +23,7 @@ export interface File {
 
 export interface MessageModel{
   id: string;
-  text: string;
+  message: string;
   senderId: string;
   sender: UserModel;
   directReceiverId?: string;
@@ -40,3 +40,41 @@ export interface MessageModel{
   modifiedAt: string;
   files:File[]
 }
+
+
+
+
+export interface MessageDto {
+  id: string;
+  senderId: string;
+  senderName: string;
+  chatId: string;
+  receiverId: string;
+  receiver: string;
+  message: string;
+  files: FileDto[];
+  forward?: ForwardDto;
+  reply?: ReplyDto;
+  isPinned: boolean;
+  isEdited: boolean;
+  createdAt: string; // ISO 8601 format
+}
+
+export interface FileDto {
+  id: string;
+  name: string;
+  size: number;
+  path: string;
+}
+
+export interface ForwardDto {
+  creatorId: string;
+  creatorName: string;
+}
+
+export interface ReplyDto {
+  id: string;
+  replyTo: string;
+  repliedMessage: string;
+}
+

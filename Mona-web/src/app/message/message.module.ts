@@ -22,6 +22,7 @@ import { DeleteGroupComponent } from './delete-group/delete-group.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { ViewGroupInfoComponent } from './view-group-info/view-group-info.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { SharedModule } from '../directives/sharedmodule';
 
 
 @NgModule({
@@ -52,7 +53,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     MatIconModule,
     MatTooltipModule,
     MatCheckboxModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    SharedModule
 
   ],
 })
