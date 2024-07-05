@@ -150,60 +150,29 @@ public class MessageService(ApplicationContext context) : IMessageService
 
     public async Task<List<ChatDto>> GetChats(string caller)
     {
-        var userChats = await context.ChatClients
-            .Where(cu => string.Equals(cu.ClientId, caller))
-            .Select(cu => new
-            {
-                ChatId = cu.ChatId,
-                CompanionId = context.ChatClients
-                    .Where(m => string.Equals(m.ChatId, cu.ChatId) && !string.Equals(m.ClientId, caller))
-                    .Select(m => m.ClientId).FirstOrDefault(),
-                LastMessage = cu.Chat.Messages.OrderByDescending(m => m.CreatedAt).FirstOrDefault()
-            })
+        var messageList = await context.ChatClients
+            .Where(m => string.Equals(m.ClientId, caller))
+            .Select(m => m.Chat.Messages.OrderByDescending(m => m.CreatedAt).FirstOrDefault())
             .ToListAsync();
-        foreach (var chat in userChats)
+        foreach (var chat in messageList)
         {
-            await context.Entry(chat.LastMessage).Reference(m => m.Sender).LoadAsync();
+            await AddNavigation(chat);
         }
 
-        return userChats.Select(m => new ChatDto
-        {
-            ChatId = m.ChatId,
-            Message = m.LastMessage.Text,
-            MessageTime = m.LastMessage.CreatedAt,
-            ChatName = m.CompanionId != null && m.ChatId.StartsWith("g-")
-                ? context.Groups.Where(gm => string.Equals(gm.Id, m.ChatId)).Select(m => m.Name).FirstOrDefault()
-                : context.Users.Where(gm => string.Equals(gm.Id, m.CompanionId))
-                    .Select(m => m.FirstName + " " + m.LastName).FirstOrDefault(),
-            ReceiverId = m.CompanionId,
-            SenderId = m.LastMessage.SenderId,
-            SenderName = m.LastMessage.Sender.FirstName,
-            IsForward = !m.LastMessage.ForwardId.IsNullOrEmpty()
-        }).OrderBy(m => m.MessageTime).ToList();
+        return messageList.Select(m => m.ToDto().ToChatDto()).ToList();
     }
 
     public async Task<ChatDto> GetChatWithLastMessage(string chatId, string caller)
     {
-        return await context.Chats.Where(m => string.Equals(m.Id, chatId))
-            .Select(m => new ChatDto
-            {
-                ChatId = m.Id,
-                Message = m.LastMessage.Text,
-                MessageTime = m.LastMessage.CreatedAt,
-                ChatName = chatId.StartsWith("g-")
-                    ? context.Groups.Where(gm => string.Equals(gm.Id, m.Id)).Select(m => m.Name).FirstOrDefault()
-                    : context.Users.Where(gm =>
-                            string.Equals(gm.Id, m.ChatUsers.First(cc => !string.Equals(cc.ClientId, caller))))
-                        .Select(m => m.FirstName + " " + m.LastName).FirstOrDefault(),
-                ReceiverId = chatId.StartsWith("g-")
-                    ? context.Groups.Where(gm => string.Equals(gm.Id, m.Id)).Select(m => m.Id).FirstOrDefault()
-                    : context.Users.Where(gm =>
-                            string.Equals(gm.Id, m.ChatUsers.First(cc => !string.Equals(cc.ClientId, caller))))
-                        .Select(m => m.Id).FirstOrDefault(),
-                SenderId = m.LastMessage.SenderId,
-                SenderName = m.LastMessage.Sender.FirstName,
-                IsForward = !m.LastMessage.ForwardId.IsNullOrEmpty()
-            }).FirstAsync();
+        var message = await context.Chats.Where(m => string.Equals(m.Id, chatId)).Select(m => m.LastMessage)
+            .FirstAsync();
+        
+        // var message = await context.ChatClients
+        //     .Where(m => string.Equals(m.ClientId, caller) && string.Equals(m.ChatId, chatId))
+        //     .Select(m => m.Chat.Messages.OrderByDescending(m => m.CreatedAt).First())
+        //     .FirstAsync();
+        //     await AddNavigation(message);
+        return message.ToDto().ToChatDto();
     }
 
     public async Task<List<MessageDto>> GetMessagesByChatId(string caller, string chatId)

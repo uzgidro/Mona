@@ -1,6 +1,9 @@
-﻿import 'package:dio/dio.dart';
+﻿import 'dart:async';
+
+import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
+import 'package:mona_desktop/core/di/scope_names.dart';
 import 'package:mona_desktop/core/middleware/jwt_service.dart';
 import 'package:mona_desktop/core/middleware/middleware.dart';
 import 'package:signalr_netcore/signalr_client.dart';
@@ -34,7 +37,7 @@ abstract class InjectableModule {
     return dio;
   }
 
-  @lazySingleton
+  @Singleton(dispose: disposeHubConnection, scope: ScopeNames.message)
   HubConnection hubConnection(JwtService service) => HubConnectionBuilder()
       .withUrl("http://127.0.0.1:5031/chat",
           options: HttpConnectionOptions(
@@ -44,4 +47,8 @@ abstract class InjectableModule {
 
   @lazySingleton
   FlutterSecureStorage get secureStorage => const FlutterSecureStorage();
+}
+
+FutureOr disposeHubConnection(HubConnection instance) {
+  instance.stop();
 }

@@ -1,13 +1,14 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mona_desktop/core/di/injections.config.dart';
 import 'package:mona_desktop/core/di/injections.dart';
+import 'package:mona_desktop/core/di/scope_names.dart';
 import 'package:mona_desktop/features/auth/bloc/auth_bloc.dart';
 import 'package:mona_desktop/features/home/presentation/chat_list.dart';
 import 'package:mona_desktop/features/home/presentation/drawer.dart';
 import 'package:mona_desktop/features/home/presentation/side_menu.dart';
 import 'package:mona_desktop/features/service/service_export.dart';
-import 'package:signalr_netcore/signalr_client.dart';
 
 import 'chat.dart';
 
@@ -17,13 +18,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final authBloc = getIt<AuthBloc>();
-  final hubBloc = getIt<HubBloc>();
-  final hubConnection = getIt<HubConnection>();
+  late final AuthBloc authBloc;
+  late final HubBloc hubBloc;
 
   @override
   void initState() {
     super.initState();
+    getIt.initMessageScope();
+    authBloc = getIt<AuthBloc>();
+    hubBloc = getIt<HubBloc>();
     hubBloc.add(StartConnection());
   }
 
@@ -45,9 +48,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             BlocListener<AuthBloc, AuthState>(
                 bloc: authBloc,
-                listener: (context, state) {
+                listener: (context, state) async {
                   if (state is SignOutSuccess) {
                     context.go('/');
+                    await getIt.dropScope(ScopeNames.message);
                   }
                 }),
           ],

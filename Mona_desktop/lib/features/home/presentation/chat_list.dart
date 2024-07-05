@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mona_desktop/core/di/injections.dart';
 import 'package:mona_desktop/core/dto/chat_dto.dart';
 import 'package:mona_desktop/features/service/service_export.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 class ChatList extends StatefulWidget {
   @override
@@ -30,17 +31,12 @@ class _ChatListState extends State<ChatList> {
                 list.addAll(state.chatList);
               });
             }
-          },
-        ),
-        BlocListener<ChatBloc, ChatState>(
-          bloc: chatBloc,
-          listener: (context, state) {
             if (state is ChatUpdated) {
-              var chat = list
-                  .firstWhere((element) => element.chatId == state.chat.chatId);
+              var chat = list.firstWhereOrNull(
+                  (element) => element.chatId == state.chat.chatId);
               setState(() {
-                list.remove(chat);
-                list.add(state.chat);
+                if (chat != null) list.remove(chat);
+                list.insert(0, state.chat);
               });
             }
           },
@@ -60,7 +56,9 @@ class _ChatListState extends State<ChatList> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     title: Text(list[index].chatName),
-                    subtitle: Text(list[index].message, maxLines: 1,overflow: TextOverflow.ellipsis),
+                    trailing: Text(list[index].formattedTime ?? ''),
+                    subtitle: Text(list[index].message,
+                        maxLines: 1, overflow: TextOverflow.ellipsis),
                     hoverColor: Colors.grey,
                     onTap: () async {
                       chatBloc.add(OpenChat(
