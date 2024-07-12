@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mona_desktop/core/di/injections.dart';
 import 'package:mona_desktop/core/dto/message_dto.dart';
 import 'package:mona_desktop/core/dto/message_request.dart';
+import 'package:mona_desktop/core/utils/intents.dart';
 import 'package:mona_desktop/features/service/service_export.dart';
 
 class Chat extends StatefulWidget {
@@ -20,6 +22,18 @@ class _ChatState extends State<Chat> {
   List<MessageDto> messages = [];
 
   final _messageController = TextEditingController();
+
+  void _sendMessage() {
+    chatBloc.add(SendMessage(
+        messageRequest: MessageRequest(
+            text: _messageController.text.trim(),
+            receiverId: receiverId,
+            chatId: chatId,
+            replyId: null,
+            forwardId: null,
+            createdAt: DateTime.now().toUtc())));
+    _messageController.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,45 +120,54 @@ class _ChatState extends State<Chat> {
                         ),
                       )),
                 //Input
-                Container(
-                  decoration: BoxDecoration(
-                      border: Border(top: BorderSide(width: 0.25))),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8, right: 8),
-                          child: TextField(
-                            minLines: 1,
-                            maxLines: 10,
-                            autofocus: true,
-                            controller: _messageController,
-                            decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Начните печатать..."),
+                Shortcuts(
+                  shortcuts: <LogicalKeySet, Intent>{
+                    LogicalKeySet(LogicalKeyboardKey.control,
+                        LogicalKeyboardKey.enter): const CtrlEnterIntent(),
+                    LogicalKeySet(LogicalKeyboardKey.enter):
+                        const EnterIntent(),
+                  },
+                  child: Actions(
+                    actions: <Type, Action<Intent>>{
+                      CtrlEnterIntent: CallbackAction(
+                          onInvoke: (intent) => _messageController.text =
+                              "${_messageController.text}\n"),
+                      EnterIntent:
+                          CallbackAction(onInvoke: (intent) => _sendMessage()),
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          border: Border(top: BorderSide(width: 0.25))),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8, right: 8),
+                              child: TextField(
+                                minLines: 1,
+                                maxLines: 10,
+                                autofocus: true,
+                                controller: _messageController,
+                                decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: "Начните печатать..."),
+                              ),
+                            ),
                           ),
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 4.0),
+                            child: IconButton(
+                                color: Theme.of(context).colorScheme.primary,
+                                onPressed: () {
+                                  _sendMessage();
+                                },
+                                icon: Icon(Icons.send)),
+                          )
+                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 4.0),
-                        child: IconButton(
-                            color: Theme.of(context).colorScheme.primary,
-                            onPressed: () {
-                              chatBloc.add(SendMessage(
-                                  messageRequest: MessageRequest(
-                                      text: _messageController.text,
-                                      receiverId: receiverId,
-                                      chatId: chatId,
-                                      replyId: null,
-                                      forwardId: null,
-                                      createdAt: DateTime.now().toUtc())));
-                              _messageController.clear();
-                            },
-                            icon: Icon(Icons.send)),
-                      )
-                    ],
+                    ),
                   ),
                 )
               ],

@@ -14,7 +14,7 @@ public static class Extensions
         if (request.CreatedAt.Year == 1) request.CreatedAt = DateTime.UtcNow;
         return new MessageModel
         {
-            Text = request.ForwardId.IsNullOrEmpty() ? request.Text : null,
+            Text = request.ForwardId.IsNullOrEmpty() ? request.Text.Trim() : null,
             SenderId = senderId,
             ChatId = request.ChatId,
             ReceiverId = request.ReceiverId,
