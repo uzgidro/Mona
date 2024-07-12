@@ -1,7 +1,7 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MessageModel } from '../../models/message';
-import { UserModel } from '../../models/user';
+import { UserModel,GetUserResponse } from '../../models/user';
 import { ApiService } from '../../services/api.service';
 import { AddContactComponent } from './add-contact/add-contact.component';
 
@@ -10,20 +10,25 @@ import { AddContactComponent } from './add-contact/add-contact.component';
   templateUrl: './contacts.component.html',
   styleUrl: './contacts.component.css'
 })
-export class ContactsComponent {
+export class ContactsComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<ContactsComponent>,
     @Inject(MAT_DIALOG_DATA) public data:
      {
-      users:UserModel[],
-      selectChat: (user: UserModel) => void,
+      users:GetUserResponse[],
+      selectContact: (user:GetUserResponse) => void,
     },
     private apiService:ApiService,
     private dialog: MatDialog,
   ) {
   }
 
+
+  ngOnInit(): void {
+    console.log(this.data.users);
+
+  }
 
 
   cancel(){
@@ -33,8 +38,8 @@ export class ContactsComponent {
 
 
 
-  onSelectUser(user:UserModel){
-    this.data.selectChat(user)
+  onSelectUser(user:GetUserResponse){
+    this.data.selectContact(user)
     this.cancel()
   }
 

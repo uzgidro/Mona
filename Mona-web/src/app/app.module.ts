@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {MatButtonModule} from '@angular/material/button';
 import { MessageActionsComponent } from './message/message-actions/message-actions.component';
+import { DisableContextMenuDirective } from './directives/disable-context-menu.directive';
 @NgModule({
   declarations: [
     AppComponent,

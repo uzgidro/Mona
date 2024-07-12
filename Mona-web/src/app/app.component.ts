@@ -10,11 +10,7 @@ import {HubConnection} from "@microsoft/signalr";
 export class AppComponent {
   constructor() {}
 
-  // Prevent browser's default contextmenu is disabled
-  @HostListener('document:contextmenu', ['$event'])
-  onRightClick(event: MouseEvent) {
-    event.preventDefault();
-    console.log('Right-click menu disabled globally');
-  }
+
+
 
 }

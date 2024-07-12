@@ -24,3 +24,11 @@ export interface UserModel{
   lockoutEnabled: boolean;
   accessFailedCount: number;
 }
+
+
+export interface GetUserResponse {
+  id: string;
+  name: string;
+  chatId: string;
+  icon: string;
+}
